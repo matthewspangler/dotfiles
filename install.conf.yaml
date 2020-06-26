@@ -1,0 +1,19 @@
+# Config file for dotbot
+# August Valera (@4U6U57)
+# Run ./install.sh to run dotbot
+
+- defaults:
+    link:
+      create: true
+      relink: true
+
+- shell:
+  - ["mkdir -p ~/.config", Creating .config]
+  - ["mkdir -p ~/.config/awesome", Creating .config/awesome]
+
+- clean:
+  - '~'
+
+- link:
+    ~/.vimrc: .vimrc
+    ~/.xinitrc: .xinitrc
