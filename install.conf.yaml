@@ -10,10 +10,33 @@
 - shell:
   - ["mkdir -p ~/.config", Creating .config]
   - ["mkdir -p ~/.config/awesome", Creating .config/awesome]
+  - ["mkdir -p ~/.config/awesome/themes", Creating themes directory]
+  - ["mkdir -p ~/.config/awesome/themes/pywal", Creating pywal theme directory]
+  - ["mkdir -p ~/.config/awesome/debian", Created awesome's debian directory]
 
 - clean:
   - '~'
 
 - link:
-    ~/.vimrc: .vimrc
-    ~/.xinitrc: .xinitrc
+    ~/.vimrc: vimrc
+    ~/.xinitrc: xinitrc
+    ~/.zshrc: zshrc
+    ~/.config/wal/templates/colors.lua: colors.lua
+    ~/.config/awesome/rc.lua: rc.lua
+    ~/.config/awesome/nordvpn.lua: nordvpn.lua
+    ~/.config/awesome/battery_widget.lua: battery_widget.lua
+    ~/.config/awesome/themes/pywal/pywal_theme.lua: pywal_theme.lua
+    ~/.config/awesome/debian/menu.lua: menu.lua
+    ~/.Xresources: Xresources
+    ~/set_background.sh: set_background.sh
+    ~/.xprofile: xprofile
+    ~/.config/compton.conf: compton.conf
+    ~/.config/rofi/config.rasi: config.rasi
+
+# wal -R won't work unless pywal has been installed & a wallpaper selected already
+- shell:
+  - ["wal -R"]
+  - ["xrdb ~/.Xresources"]
+
+- link:
+    ~/.cache/wal/colors.lua: ~/.config/awesome/colors.lua
