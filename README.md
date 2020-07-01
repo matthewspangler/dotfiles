@@ -23,3 +23,7 @@ git clone <this repository> && cd ./dotfiles && sh ./install
 
 ## Other info:
 I am currently working on an Ansible playbook that will set up and configure all the dependencies.
+
+## Screenshot:
+
+![Alt text](screenshot.png?raw=true "Screenshot")
