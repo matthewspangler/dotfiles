@@ -1,23 +1,25 @@
 My dotfiles for Debian
 
 ## Dependencies:
-Window Manager: awesome (window manager)
-Terminals: xterm, lxterminal
-Color scheme: pywal, wpgtk
-File Managers: ranger, thunar
-Settings: xsettingsd, lxappearance
-Editor: vim
-Programming: ctags, python3
-Productivity: tmux
-Composite manager: compton
-Utility: xautolock, xscreensaver, pasystray
-Fonts: fonts-powerline, fonts-roboto
-Networking: network-manager-gnome, network-manager-openvpn-gnome
-Icons: papirus-icon-theme
-Other: NordVPN CLI (https://nordvpn.com/download/)
+*Window Manager: awesome (window manager)
+*Terminal: lxterminal
+*Theming:: pywal, wpgtk
+*File Manager: thunar
+*Settings: xsettingsd, lxappearance
+*Editor: vim
+*Programming: ctags, python3
+*Productivity: tmux
+*Composite manager: compton
+*Utility: xscreensaver, pasystray
+*Fonts: fonts-powerline, fonts-roboto
+*Networking: network-manager-gnome, network-manager-openvpn-gnome
+*Icons: papirus-icon-theme
+*Other: NordVPN CLI (https://nordvpn.com/download/)
 
-## How to install:
+#My vimrc depends on YouCompleteMe, which needs manually compiled.
+
+## How to install the dotfiles:
 git clone <this repository> && cd ./dotfiles && sh ./install
 
-## Other:
-setup_debian.sh contains sh commands I use for setting up my desktop environment on Debian minimal.
+## Other info:
+I am currently working on an Ansible playbook that will set up and configure all the dependencies.
