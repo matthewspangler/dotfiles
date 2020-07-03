@@ -1,9 +1,12 @@
-My dotfiles for Debian
+My dotfiles for AwesomeWM, vim, etc.
+
+I have tested and used these dotfiles on a minimal, stable Debian buster installation.
 
 ## Dependencies:
 * Window Manager: awesome (window manager)
 * Terminal: lxterminal
-* Theming:: pywal, wpgtk
+* CLI shell: zsh
+* Theming: pywal, wpgtk
 * File Manager: thunar
 * Settings: xsettingsd, lxappearance
 * Editor: vim
@@ -19,7 +22,7 @@ My dotfiles for Debian
 My vimrc depends on YouCompleteMe, which needs manually compiled.
 
 ## How to install the dotfiles:
-git clone <this repository> && cd ./dotfiles && sh ./install
+Clone this repository, navigate to the downloaded folder, and run the ./install script.
 
 ## Other info:
 I am currently working on an Ansible playbook that will set up and configure all the dependencies.
