@@ -19,10 +19,10 @@ I have tested and used these dotfiles on a minimal, stable Debian buster install
 * Icons: papirus-icon-theme
 * Other: NordVPN CLI (https://nordvpn.com/download/)
 
-My vimrc depends on YouCompleteMe, which needs manually compiled.
-
 ## How to install the dotfiles:
 Clone this repository, navigate to the downloaded folder, and run the ./install script.
+
+I also have an ansible playbook that installs the dotfiles and dependencies, in /ansible-debian.
 
 ## Other info:
 I am currently working on an Ansible playbook that will set up and configure all the dependencies.
