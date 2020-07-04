@@ -37,7 +37,6 @@
 
 - shell:
   - ["./set_background.sh ~/Pictures/Backgrounds/default.jpg"]
-  - ["xrdb ~/.Xresources"]
 
 - link:
-    ~/.cache/wal/colors.lua: ~/.config/awesome/colors.lua
+    ~/.config/awesome/colors.lua: ~/.cache/wal/colors.lua
