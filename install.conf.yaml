@@ -14,6 +14,7 @@
   - ["mkdir -p ~/.config/awesome/themes/pywal", Creating pywal theme directory]
   - ["mkdir -p ~/.config/awesome/debian", Created awesome's debian directory]
   - ["mkdir -p ~/Pictures/Backgrounds", Make background wallpapers directory] 
+  - ["mkdir -p ~/.config/lxterminal", Make lxterminal directory]
 
 - clean:
   - '~'
@@ -34,6 +35,7 @@
     ~/.config/compton.conf: compton.conf
     ~/.config/rofi/config.rasi: config.rasi
     ~/Pictures/Backgrounds/default.jpg: default.jpg
+    ~/.config/lxterminal/lxterminal.conf: lxterminal.conf
 
 - shell:
   - ["./set_background.sh ~/Pictures/Backgrounds/default.jpg"]
