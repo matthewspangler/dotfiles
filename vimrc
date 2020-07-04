@@ -6,6 +6,17 @@ endif
 
 autocmd vimenter * NERDTree
 
+" Function to build YCM if it hasn't been built yet
+function! BuildYCM(info)
+  " info is a dictionary with 3 fields
+  " - name:   name of the plugin
+  " - status: 'installed', 'updated', or 'unchanged'
+  " - force:  set on PlugInstall! or PlugUpdate!
+  if a:info.status == 'installed' || a:info.force
+    !./install.py --clang-completer --cs-completer
+  endif
+endfunction
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vim-plug plugins
 
@@ -30,7 +41,7 @@ Plug 'kien/ctrlp.vim'
 " Plug 'davidhalter/jedi-vim'
 
 " Faster autocomplete (Needs compiled, https://github.com/ycm-core/YouCompleteMe#linux-64-bit)
-Plug 'valloric/youcompleteme'
+Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 
 " Python cold folding
 Plug 'tmhedberg/simpylfold'

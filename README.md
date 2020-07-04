@@ -10,7 +10,7 @@ I have tested and used these dotfiles on a minimal, stable Debian buster install
 * File Manager: thunar
 * Settings: xsettingsd, lxappearance
 * Editor: vim
-* Programming: ctags, python3
+* Programming: ctags, python3, mono
 * Productivity: tmux
 * Composite manager: compton
 * Utility: xscreensaver, pasystray
