@@ -80,7 +80,16 @@ Plug 'dylanaraps/wal.vim'
 " Plugin for Ansible & Yaml
 Plug 'pearofducks/ansible-vim'
 
+" C# IDE
+Plug 'OmniSharp/omnisharp-vim'
+
 call plug#end()
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Omnisharp
+
+" stdio
+let g:OmniSharp_server_stdio = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Airline
