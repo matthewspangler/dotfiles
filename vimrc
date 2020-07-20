@@ -41,7 +41,7 @@ Plug 'kien/ctrlp.vim'
 " Plug 'davidhalter/jedi-vim'
 
 " Faster autocomplete (Needs compiled, https://github.com/ycm-core/YouCompleteMe#linux-64-bit)
-Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+Plug 'valloric/youcompleteme', { 'do': function('BuildYCM') }
 
 " Python cold folding
 Plug 'tmhedberg/simpylfold'
@@ -81,7 +81,7 @@ Plug 'dylanaraps/wal.vim'
 Plug 'pearofducks/ansible-vim'
 
 " C# IDE
-Plug 'OmniSharp/omnisharp-vim'
+" Plug 'OmniSharp/omnisharp-vim'
 
 call plug#end()
 
@@ -89,7 +89,7 @@ call plug#end()
 " Omnisharp
 
 " stdio
-let g:OmniSharp_server_stdio = 1
+" let g:OmniSharp_server_stdio = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Airline
