@@ -23,6 +23,7 @@
     ~/.vimrc: vimrc
     ~/.xinitrc: xinitrc
     ~/.zshrc: zshrc
+    ~/.spacemacs: spacemacs
     ~/.config/wal/templates/colors.lua: colors.lua
     ~/.config/awesome/rc.lua: rc.lua
     ~/.config/awesome/nordvpn.lua: nordvpn.lua
