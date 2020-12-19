@@ -15,7 +15,7 @@ function! BuildYCM(info)
   " - status: 'installed', 'updated', or 'unchanged'
   " - force:  set on PlugInstall! or PlugUpdate!
   if a:info.status == 'installed' || a:info.force
-    !./install.py --clang-completer --cs-completer
+    !./install.py --clang-completer
   endif
 endfunction
 
@@ -55,13 +55,13 @@ Plug 'kien/ctrlp.vim'
 Plug 'Valloric/YouCompleteMe', { 'commit': 'd98f896', 'do': function('BuildYCM') }
 
 " Gruvbox theme
-Plug 'morhetz/gruvbox'
+" Plug 'morhetz/gruvbox'
 
 " Python cold folding
 Plug 'tmhedberg/simpylfold'
 
-" Python static syntax and PEP8 style checker
-Plug 'nvie/vim-flake8'
+" Python static syntax and PEP8 style checker (using syntastic instead)
+" Plug 'nvie/vim-flake8'
 
 " Check syntax
 Plug 'vim-syntastic/syntastic'
@@ -148,7 +148,7 @@ set sessionoptions-=blank
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Airline
-" let g:airline_powerline_fonts = 1
+let g:airline_powerline_fonts = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Wal
@@ -205,7 +205,7 @@ let g:python_pep8_indent_multiline_string = -1
 " Python Flake8
 
 " PEP8 errors at bottom of screen
-autocmd BufWritePost *.py call Flake8()
+" autocmd BufWritePost *.py call Flake8()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Tagbar
@@ -215,7 +215,7 @@ nmap <F8> :TagbarToggle<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Gruvbox
-:colorscheme gruvbox
+" :colorscheme gruvbox
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 " General vim stuffs

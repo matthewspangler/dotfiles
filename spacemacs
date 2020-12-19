@@ -20,7 +20,7 @@ This function should only modify configuration layer settings."
    ;; installation feature and you have to explicitly list a layer in the
    ;; variable `dotspacemacs-configuration-layers' to install it.
    ;; (default 'unused)
-   dotspacemacs-enable-lazy-installation nil
+   dotspacemacs-enable-lazy-installation 'unused
 
    ;; If non-nil then Spacemacs will ask for confirmation before installing
    ;; a layer lazily. (default t)
@@ -39,23 +39,21 @@ This function should only modify configuration layer settings."
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      auto-completion
-     ;; better-defaults
+     better-defaults
+     (elfeed :variables rmh-elfeed-org-files (list "~/Documents/Org-Notebooks/rss.org"))
      emacs-lisp
-     ;; git
+     git
      helm
      ;; lsp
      markdown
      multiple-cursors
-     neotree
      org
-     (python :variables python-backend 'anaconda)
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
-     semantic
+     python
      spell-checking
      syntax-checking
-     themes-megapack
      ;; version-control
      treemacs)
 
@@ -83,27 +81,7 @@ This function should only modify configuration layer settings."
    ;; installs only the used packages but won't delete unused ones. `all'
    ;; installs *all* packages supported by Spacemacs and never uninstalls them.
    ;; (default is `used-only')
-   dotspacemacs-install-packages 'used-only)
-
-  ;; My custom layer settings
-
-  ;; Neotree theme (mimic NERDTree)
-  (setq neo-theme 'nerd)
-
-  ;; Auto-completion settings
-
-  ;; Show snippets in auto-completion popup
-  (setq-default dotspacemacs-configuration-layers
-                '((auto-completion :variables
-                                   auto-completion-enable-snippets-in-popup t)))
-
-  ;; Enable automatic docstring tooltips
-
-  (setq-default dotspacemacs-configuration-layers
-                '((auto-completion :variables
-                                   auto-completion-enable-help-tooltip t)))
-
-  )
+   dotspacemacs-install-packages 'used-only))
 
 (defun dotspacemacs/init ()
   "Initialization:
@@ -235,7 +213,7 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(gruvbox-dark-soft
+   dotspacemacs-themes '(xresources
                          spacemacs-dark
                          spacemacs-light)
 
@@ -252,8 +230,10 @@ It should only modify the values of Spacemacs settings."
    ;; (default t)
    dotspacemacs-colorize-cursor-according-to-state t
 
-   ;; Default font or prioritized list of fonts.
-   dotspacemacs-default-font '("Source Code Pro for Powerline"
+   ;; Default font or prioritized list of fonts. The `:size' can be specified as
+   ;; a non-negative integer (pixel size), or a floating-point (point size).
+   ;; Point size is recommended, because it's device independent. (default 10.0)
+   dotspacemacs-default-font '("Source Code Pro"
                                :size 10.0
                                :weight normal
                                :width normal)
@@ -519,6 +499,7 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/private/themes/")
   )
 
 (defun dotspacemacs/user-load ()
@@ -548,9 +529,10 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(elfeed-feeds
+   '("https://www.youtube.com/feeds/videos.xml?channel_id=UCaZSbl6ZE8FmA6sATtcmIZQ" "https://www.youtube.com/feeds/videos.xml?channel_id=UCkRMqL3hLrIYhxNCac4vR3w" "https://www.youtube.com/feeds/videos.xml?channel_id=UCyXMP8HqouQgNZiPnIt8IqQ" "https://www.youtube.com/feeds/videos.xml?channel_id=UCmS_rlbDdzruoc0_e_di-3Q" "https://www.youtube.com/feeds/videos.xml?channel_id=UCyo4FFY5_6v_ZzPl-Fq6FZw" "https://www.youtube.com/feeds/videos.xml?channel_id=UCKdqC98rSFNiMWoIGhOk4Hg" "https://www.youtube.com/feeds/videos.xml?channel_id=UCqoAEDirJPjEUFcF2FklnBA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCbWm0JYZTmfyrjvQEe2ZdVA" "https://www.youtube.com/feeds/videos.xml?channel_id=UC_OtnV-9QZmBj6oWBelMoZw" "https://www.youtube.com/feeds/videos.xml?channel_id=UCxvd7LlRAuOBdg8j615w_SA" "https://www.youtube.com/feeds/videos.xml?channel_id=UClMJgjg2z_IrRm6J9KrhcuQ" "https://www.youtube.com/feeds/videos.xml?channel_id=UC5qDet6sa6rODi7t6wfpg8g" "https://www.youtube.com/feeds/videos.xml?channel_id=UCzR-rom72PHN9Zg7RML9EbA" "https://www.youtube.com/feeds/videos.xml?channel_id=UCs7yDP7KWrh0wd_4qbDP32g" "https://www.youtube.com/feeds/videos.xml?channel_id=UCs4aHmggTfFrpkPcWSaBN9g" "https://www.youtube.com/feeds/videos.xml?channel_id=UCtc8gcFs2KXRzpV5iwJA8-w" "https://www.youtube.com/feeds/videos.xml?channel_id=UC2-SuHfWKg_XmqF7Q5-MCig" "https://feeds.feedburner.com/d0od" "http://www.linuxinsider.com/perl/syndication/rssfull.pl" "http://lwn.net/headlines/rss" "http://www.linuxjournal.com/news.rss" "http://rss.slashdot.org/Slashdot/slashdotLinux" "http://www.osnews.com/files/recent.rdf" "http://programming.reddit.com/.rss" "http://arstechnica.com/index.ars/rss" "http://feeds.feedburner.com/darknethackers" "http://news.bbc.co.uk/rss/newsonline_world_edition/health/rss091.xml" "https://www.srb2.org/feed/" "http://www.bay12games.com/dwarves/dev_release.rss"))
  '(package-selected-packages
-   (quote
-    (company-quickhelp srefactor yapfify stickyfunc-enhance sphinx-doc pytest pyenv-mode py-isort pippel pipenv pyvenv pip-requirements lsp-python-ms lsp-pyright live-py-mode importmagic epc ctable concurrent deferred helm-pydoc helm-gtags helm-cscope xcscope ggtags dap-mode posframe lsp-treemacs bui lsp-mode dash-functional cython-mode counsel-gtags counsel swiper ivy company-anaconda blacken anaconda-mode pythonic zenburn-theme zen-and-art-theme yasnippet-snippets ws-butler writeroom-mode winum white-sand-theme which-key volatile-highlights vi-tilde-fringe uuidgen use-package undo-tree underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toxi-theme toc-org tao-theme tangotango-theme tango-plus-theme tango-2-theme symon symbol-overlay sunny-day-theme sublime-themes subatomic256-theme subatomic-theme string-inflection spaceline-all-the-icons spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme seti-theme reverse-theme restart-emacs request rebecca-theme rainbow-delimiters railscasts-theme purple-haze-theme professional-theme popwin planet-theme phoenix-dark-pink-theme phoenix-dark-mono-theme pcre2el password-generator paradox overseer organic-green-theme org-superstar org-rich-yank org-projectile org-present org-pomodoro org-mime org-download org-cliplink org-brain open-junk-file omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme naquadah-theme nameless mustang-theme move-text monokai-theme monochrome-theme molokai-theme moe-theme modus-vivendi-theme modus-operandi-theme mmm-mode minimal-theme material-theme markdown-toc majapahit-theme madhat2r-theme macrostep lush-theme lorem-ipsum link-hint light-soap-theme kaolin-themes jbeans-theme jazz-theme ir-black-theme inkpot-theme indent-guide hybrid-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org-rifle helm-org helm-mode-manager helm-make helm-ls-git helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme google-translate golden-ratio gnuplot gh-md gandalf-theme fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-package flycheck-elsa flx-ido flatui-theme flatland-theme fill-column-indicator farmhouse-theme fancy-battery eziam-theme eyebrowse expand-region exotica-theme evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-easymotion evil-cleverparens evil-args evil-anzu eval-sexp-fu espresso-theme emr elisp-slime-nav editorconfig dumb-jump dracula-theme dotenv-mode doom-themes django-theme dired-quick-sort diminish devdocs define-word darktooth-theme darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme column-enforce-mode color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme clean-aindent-mode chocolate-theme cherry-blossom-theme centered-cursor-mode busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes aggressive-indent afternoon-theme ace-link ace-jump-helm-line ac-ispell))))
+   '(yasnippet-snippets yapfify unfill treemacs-magit sphinx-doc smeargle pytest pyenv-mode py-isort pippel pipenv pyvenv pip-requirements orgit org-rich-yank org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download org-cliplink org-brain mwim mmm-mode markdown-toc magit-svn magit-section magit-gitflow magit-popup live-py-mode importmagic epc ctable concurrent deferred htmlize helm-pydoc helm-org-rifle helm-gitignore helm-git-grep helm-company helm-c-yasnippet gnuplot gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy forge markdown-mode ghub closql emacsql-sqlite emacsql treepy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip evil-org evil-magit magit git-commit with-editor transient elfeed-org elfeed-goodies ace-jump-mode noflet elfeed cython-mode company-anaconda company blacken auto-yasnippet yasnippet auto-dictionary anaconda-mode pythonic ac-ispell auto-complete ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe valign uuidgen use-package undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org symon symbol-overlay string-inflection spaceline-all-the-icons restart-emacs request rainbow-delimiters popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless move-text macrostep lorem-ipsum link-hint indent-guide hybrid-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-ls-git helm-flx helm-descbinds helm-ag google-translate golden-ratio font-lock+ flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-easymotion evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav editorconfig dumb-jump dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

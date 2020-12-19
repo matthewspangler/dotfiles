@@ -1,16 +1,21 @@
-!! UXTerm Font
-UXTerm.vt100.faceName: Roboto Mono:size=9
+!! Global
+!*font: xft:DejaVu Sans Mono for Powerline:size=10
 
 !! URxvt
 URxvt.internalBorder:    1
 URxvt.externalBorder:    1
-URxvt.depth:             24
+! Set depth to make transparency work.
+URxvt*depth: 32
 URxvt.saveLines:         10000
 URxvt*geometry:          96x23
 URxvt*terminalName:      rxvt-unicode-256color
 URxvt*visualBell:        false
 URxvt.perl-ext-common: tabbed
-urxvt*blurRadius: 10
+urxvt*blurRadius: 5
+URxvt.font: xft:Hack:size=9,xft:DejaVu Sans Mono for Powerline:size=9
+URxvt.letterspace: -2
+URxvt.locale: true
+URxvt.utf8: true
 
 !! Scrollbar
 URxvt.scrollBar:         false

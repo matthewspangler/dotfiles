@@ -1,6 +1,7 @@
 [ -f /etc/xprofile ] && . /etc/xprofile
 [ -f ~/.xprofile ] && . ~/.xprofile
 
+# xscreensaver &
 wal -R
 xrdb -merge ~/.Xresources
-exec awesome
+exec qtile
