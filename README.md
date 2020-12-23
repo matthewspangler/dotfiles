@@ -1,4 +1,4 @@
-My dotfiles for AwesomeWM, vim, etc.
+I switched from AwesomeWM to Qtile, so this branch is no longer maintained.
 
 I have tested and used these dotfiles on a minimal, stable Debian buster installation.
 
