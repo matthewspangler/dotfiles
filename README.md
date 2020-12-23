@@ -1,28 +1,27 @@
-My dotfiles for AwesomeWM, vim, etc.
+My dotfiles for Arch Linux.
 
-I have tested and used these dotfiles on a minimal, stable Debian buster installation.
+## Rig
+Thinkpad X1 Carbon (4th Gen)
 
 ## Dependencies:
-* Window Manager: awesome (window manager)
-* Terminal: lxterminal
-* CLI shell: zsh
+* Window Manager: qtile
+* Terminal: urxvt
+* CLI shell: zsh + oh-my-zsh + powerlevel10k theme
 * Theming: pywal, wpgtk
-* File Manager: thunar
+* File Manager: ranger
 * Settings: xsettingsd, lxappearance
-* Editor: vim
-* Programming: ctags, python3, mono
+* Editor: spacemacs, vim
+* Programming: ctags, python3
 * Productivity: tmux
-* Composite manager: compton
-* Utility: xscreensaver, pasystray
+* Composite manager: picom
+* Utility: xscreensaver, volumeicon, i3lock, xss-lock
 * Fonts: fonts-powerline, fonts-roboto
-* Networking: network-manager-gnome, network-manager-openvpn-gnome
+* Networking: network-manager, openpyn-nordvpn
 * Icons: papirus-icon-theme
-* Other: NordVPN CLI (https://nordvpn.com/download/)
+* Other: cadence (a jack audio manager)
 
 ## How to install the dotfiles:
 Clone this repository, navigate to the downloaded folder, and run the ./install script.
-
-Or, the playbook in my ansible-debian repository installs all the dotfiles and their dependencies.
 
 ## Screenshot:
 

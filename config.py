@@ -137,24 +137,21 @@ keys = [
     #Key(['control'], 'Print', lazy.spawn('deepin-screenshot')),
 ]
 
-groups = [Group(i) for i in "1234uiop"]
+group_names = [("WWW", {'layout': 'max'}),
+               ("DEV", {'layout': 'monadtall'}),
+               ("SYS", {'layout': 'monadtall'}),
+               ("DOC", {'layout': 'monadtall'}),
+               ("VBOX", {'layout': 'monadtall'}),
+               ("CHAT", {'layout': 'monadtall'}),
+               ("MUS", {'layout': 'monadtall'}),
+               ("GAME", {'layout': 'floating'}),
+               ("GFX", {'layout': 'floating'})]
 
-for i in groups:
-    keys.extend([
-        # mod1 + letter of group = switch to group
-        Key([mod], i.name, lazy.group[i.name].toscreen(),
-            desc="Switch to group {}".format(i.name)),
+groups = [Group(name, **kwargs) for name, kwargs in group_names]
 
-        # mod1 + shift + letter of group
-        # = switch to & move focused window to group
-        Key([mod, "shift"], i.name, lazy.window.togroup(
-            i.name, switch_group=True),
-            desc="Switch to & move focused window to group {}".format(i.name)),
-        # Or, use below if you prefer not to switch to that group.
-        # # mod1 + shift + letter of group = move focused window to group
-        # Key([mod, "shift"], i.name, lazy.window.togroup(i.name),
-        #     desc="move focused window to group {}".format(i.name)),
-    ])
+for i, (name, kwargs) in enumerate(group_names, 1):
+    keys.append(Key([mod], str(i), lazy.group[name].toscreen()))        # Switch to another group
+    keys.append(Key([mod, "shift"], str(i), lazy.window.togroup(name))) # Send current window to another group
 
 # This allows you to drag windows around with the mouse if you want.
 mouse = [
@@ -170,6 +167,11 @@ mouse = [
 layout_theme = {
     "border_width":     2,
     "margin":           10,
+    "border_focus":     pywal["foreground"],
+    "border_normal":    pywal["background"]
+}
+
+layout_colors = {
     "border_focus":     pywal["foreground"],
     "border_normal":    pywal["background"]
 }
@@ -190,9 +192,10 @@ layouts = [
     # layout.Columns(),
     #layout.Matrix(),
     layout.MonadTall(**layout_theme),
-    layout.Tile(**layout_theme),
-    layout.Max(**layout_theme),
-    layout.Floating(**layout_theme)
+    layout.Tile(**layout_colors),
+    layout.Max(**layout_colors),
+    layout.Floating(**layout_colors),
+    layout.Stack(**layout_colors, num_stacks=2)
     # layout.MonadWide(),
     # layout.RatioTile(),
     # layout.TreeTab(),
@@ -201,13 +204,24 @@ layouts = [
 ]
 
 widget_defaults = dict(
-    font='Hack',
-    fontsize=12,
+    font='Inconsolata for Powerline',
+    fontsize=15,
     padding=3,
     foreground=pywal["foreground"],
-    background=pywal["background"]
+    background=pywal["background"],
 )
 extension_defaults = widget_defaults.copy()
+
+groupbox_theme = {
+    "highlight_color": 			pywal["foreground"],
+    "foreground":			pywal["foreground"],
+    "block_highlight_text_color":	pywal["foreground"],
+    "inactive": 			pywal["color8"],
+    "highlight_method":			"block",
+    "active":				pywal["color3"],
+    "this_current_screen_border":	pywal["color2"],
+    "this_screen_border":		pywal["color2"]
+}
 
 ## Screens
 
@@ -215,8 +229,10 @@ screens = [
     Screen(
         bottom=bar.Bar(
             [
+                widget.GroupBox(**groupbox_theme),
+                widget.Sep(**seperator_theme),
                 widget.CurrentLayout(),
-                widget.GroupBox(),
+                widget.Sep(**seperator_theme),
                 widget.Prompt(),
                 widget.WindowName(),
                 widget.Chord(
@@ -285,7 +301,7 @@ wmname = "LG3D"
 import os
 import subprocess
 
-@hook.subscribe.startup_once
+@hook.subscribe.startup
 def autostart():
-    home = os.path.expanduser('~')
-    subprocess.Popen("volumeicon")
+    home = os.path.expanduser('~/.config/qtile/autostart.sh')
+    subprocess.call([home])

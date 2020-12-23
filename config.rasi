@@ -3,7 +3,7 @@ configuration {
 /*	width: 50;*/
 	lines: 10;
 /*	columns: 1;*/
-	font: "Hack 12";
+	font: "Inconsolata for Powerline 12";
 	bw: 0;
 /*	location: 0;*/
 	padding: 10;

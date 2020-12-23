@@ -14,7 +14,9 @@
   - ["mkdir -p ~/.config/qtile", Creating .config/qtile]
   - ["mkdir -p ~/Pictures", Make Pictures directory]
   - ["mkdir -p ~/Pictures/Backgrounds", Make background wallpapers directory] 
-  - ["mkdir ~/.emacs.d/private/themes", Make themes directory for spacemacs]
+  - ["mkdir -p ~/.emacs.d/private/themes", Make themes directory for spacemacs]
+  - ["mkdir -p ~/Scripts", Make scripts directory]
+  - ["mkdir -p .config/picom", Make picom directory]
 
 - clean:
   - '~'
@@ -33,6 +35,8 @@
     ~/.config/rofi/config.rasi: config.rasi
     ~/Pictures/Backgrounds/default.jpg: default.jpg
     ~/.emacs.d/private/themes/xresources-theme.el: xresources-theme.el
+    ~/Scripts/autostart.sh: autostart.sh
+    ~/.config/picom/picom.conf: picom.conf
 
 - shell:
   - ["./set_background.sh ~/Pictures/Backgrounds/default.jpg"]

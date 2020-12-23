@@ -1,5 +1,5 @@
 !! Global
-!*font: xft:DejaVu Sans Mono for Powerline:size=10
+*font: xft:Inconsolata for Powerline:size=11,xft:DejaVu Sans Mono for Powerline:size=9
 
 !! URxvt
 URxvt.internalBorder:    1
@@ -11,9 +11,9 @@ URxvt*geometry:          96x23
 URxvt*terminalName:      rxvt-unicode-256color
 URxvt*visualBell:        false
 URxvt.perl-ext-common: tabbed
-urxvt*blurRadius: 5
-URxvt.font: xft:Hack:size=9,xft:DejaVu Sans Mono for Powerline:size=9
-URxvt.letterspace: -2
+!urxvt*blurRadius: 10
+!URxvt.font: xft:DejaVu Sans Mono for Powerline:size=9
+!URxvt.letterspace: -2
 URxvt.locale: true
 URxvt.utf8: true
 
@@ -22,9 +22,9 @@ URxvt.scrollBar:         false
 URxvt*scrollTtyOutput:   false
 URxvt*scrollWithBuffer:  true
 URxvt*scrollTtyKeypress: true
-URxvt*transparent: true
-URxvt*shading: 30
-URxvt.letterSpace:       true
+!URxvt*transparent: true
+!URxvt*shading: 25
+!URxvt.letterSpace:       true
 
 !! Rofi
 rofi.modi: run,ssh,window
