@@ -248,7 +248,8 @@ let mapleader      = ' '
 set encoding=utf-8
 
 " Allow access to system clipboard
-set clipboard=unnamed
+set clipboard=unnamedplus
+"set clipboard=unnamed
 
 " Color column (for PEP8) for python
 autocmd FileType python set colorcolumn=80

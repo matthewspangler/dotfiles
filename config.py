@@ -37,7 +37,7 @@ from theme import pywal
 ## Main configuration
 
 mod = "mod4"
-terminal = guess_terminal()
+terminal = 'urxvt' #guess_terminal()
 
 # add 'PlayPause', 'Next' or 'Previous'
 music_cmd = ('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify '
@@ -140,12 +140,12 @@ keys = [
 group_names = [("WWW", {'layout': 'max'}),
                ("DEV", {'layout': 'monadtall'}),
                ("SYS", {'layout': 'monadtall'}),
-               ("DOC", {'layout': 'monadtall'}),
-               ("VBOX", {'layout': 'monadtall'}),
-               ("CHAT", {'layout': 'monadtall'}),
-               ("MUS", {'layout': 'monadtall'}),
-               ("GAME", {'layout': 'floating'}),
-               ("GFX", {'layout': 'floating'})]
+               ("ORG", {'layout': 'monadtall'}),
+               ("DOC", {'layout': 'max'}),
+               ("JACK", {'layout': 'floating'}),
+               ("DAW", {'layout': 'max'}),
+               ("ART", {'layout': 'floating'}),
+               ("GAME", {'layout': 'floating'})]
 
 groups = [Group(name, **kwargs) for name, kwargs in group_names]
 
@@ -188,9 +188,9 @@ seperator_theme = {
 layouts = [
     #layout.Stack(num_stacks=2),
     # Try more layouts by unleashing below layouts.
-    # layout.Bsp(),
+    layout.Bsp(**layout_theme),
     # layout.Columns(),
-    #layout.Matrix(),
+    layout.Matrix(**layout_theme),
     layout.MonadTall(**layout_theme),
     layout.Tile(**layout_colors),
     layout.Max(**layout_colors),

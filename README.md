@@ -26,3 +26,4 @@ Clone this repository, navigate to the downloaded folder, and run the ./install 
 ## Screenshot:
 
 ![Alt text](screenshot.png?raw=true "Screenshot")
+![Alt text](screenshot2.png?raw=true "Screenshot 2")
