@@ -10,7 +10,7 @@ Thinkpad X1 Carbon (4th Gen)
 * Theming: pywal, wpgtk
 * File Manager: ranger
 * Settings: xsettingsd, lxappearance
-* Editor: spacemacs, vim
+* Editor: emacs, vim
 * Programming: ctags, python3
 * Productivity: tmux
 * Composite manager: picom
