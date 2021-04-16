@@ -1,12 +1,14 @@
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
-" YCM setup
+" Plug.vim install
 
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" YCM setup
 
 " Function to build YCM if it hasn't been built yet
 function! BuildYCM(info)
