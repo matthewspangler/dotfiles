@@ -25,7 +25,7 @@
     ~/.vimrc: vimrc
     ~/.xinitrc: xinitrc
     ~/.zshrc: zshrc
-    ~/.spacemacs: spacemacs
+    ~/.emacs: emacs
     ~/.config/wal/templates/theme.py: theme.py
     ~/.config/qtile/config.py: config.py
     ~/.Xresources: Xresources
