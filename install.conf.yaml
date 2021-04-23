@@ -10,36 +10,29 @@
       relink: true
 
 - shell:
-  - ["mkdir -p ~/.config", Creating .config]
-  - ["mkdir -p ~/.config/qtile", Creating .config/qtile]
-  - ["mkdir -p ~/Pictures", Make Pictures directory]
-  - ["mkdir -p ~/Pictures/Backgrounds", Make background wallpapers directory] 
-  - ["mkdir -p ~/.emacs.d/private/themes", Make themes directory for spacemacs]
   - ["mkdir -p ~/Scripts", Make scripts directory]
-  - ["mkdir -p .config/picom", Make picom directory]
+  - ["mkdir -p ~/.emacs.d", Make .emacs.d directory]
+  - ["mkdir -p ~/.emacs.d/elisp", Make .emacs.d/elisp directory]
 
 - clean:
   - '~'
 
 - link:
     ~/.vimrc: vimrc
-    ~/.xinitrc: xinitrc
     ~/.zshrc: zshrc
-    ~/.emacs: emacs
-    ~/.config/wal/templates/theme.py: theme.py
-    ~/.config/qtile/config.py: config.py
-    ~/.Xresources: Xresources
-    ~/set_background.sh: set_background.sh
-    ~/.xprofile: xprofile
-    ~/.config/compton.conf: compton.conf
-    ~/.config/rofi/config.rasi: config.rasi
-    ~/Pictures/Backgrounds/default.jpg: default.jpg
-    ~/.emacs.d/private/themes/xresources-theme.el: xresources-theme.el
-    ~/Scripts/autostart.sh: autostart.sh
-    ~/.config/picom/picom.conf: picom.conf
-
-- shell:
-  - ["./set_background.sh ~/Pictures/Backgrounds/default.jpg"]
-
-- link:
-    ~/.config/qtile/theme.py: ~/.cache/wal/theme.py
+    ~/.wl: wl
+    ~/.folders: folders
+    ~/.emacs.d/init.el: init.el
+    ~/.emacs.d/elisp/base.el: base.el
+    ~/.emacs.d/elisp/base-extensions.el: base-extensions.el 
+    ~/.emacs.d/elisp/base-functions.el: base-functions.el
+    ~/.emacs.d/elisp/base-global-keys.el: base-global-keys.el
+    ~/.emacs.d/elisp/base-theme.el: base-theme.el
+    ~/.emacs.d/elisp/lang-c.el: lang-c.el
+    ~/.emacs.d/elisp/lang-go.el: lang-go.el
+    ~/.emacs.d/elisp/lang-haskell.el: lang-haskell.el
+    ~/.emacs.d/elisp/lang-python.el: lang-python.el
+    ~/.emacs.d/elisp/lang-rust.el: lang-rust.el
+    ~/.emacs.d/elisp/lang-web.el: lang-web.el
+    ~/.emacs.d/config.org: config.org
+    ~/.emacs.d/irc.org: irc.org

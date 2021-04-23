@@ -1,0 +1,10 @@
+#%:"philosopheratlarge@protonmail.com"@127.0.0.1:1143! "INBOX"
+Protonmail{
+	%INBOX "Inbox"
+	%Sent "Sent"
+	%Drafts "Drafts"
+	%Trash "Trash"
+# These are labels not folders:
+#	%"Contact Them" "Contact Them
+#	%Completed "Completed"
+}

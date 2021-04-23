@@ -1,0 +1,82 @@
+* General Settings
+#+name: general-settings
+#+begin_src emacs-lisp
+  ;; You can autoload, but at the end of this block we'll
+  ;; connect to two networks anyway.
+  (require 'rcirc)
+
+  ;; Don't print /away messages.
+  ;; This does not require rcirc to be loaded already,
+  ;; since rcirc doesn't define a 301 handler (yet).
+  (defun rcirc-handler-301 (process cmd sender args)
+    "/away message handler.")
+
+  ;; Turn on spell checking.
+  (add-hook 'rcirc-mode-hook (lambda ()
+			       (flyspell-mode 1)))
+
+  ;; Keep input line at bottom.
+  (add-hook 'rcirc-mode-hook
+	    (lambda ()
+	      (set (make-local-variable 'scroll-conservatively)
+		   8192)))
+
+  ;; Turn on logging everything to a special buffer, for debugging.
+  (setq rcirc-debug-flag t)
+
+  ;; Adjust the colours of one of the faces.
+  (set-face-foreground 'rcirc-my-nick "red" nil)
+
+  ;; Set typeface for rcirc buffers; this example uses variable-width Verdana size 10
+  ;; (dolist (rcirc-face (remove-if-not
+  ;;		     (lambda (elt) (equal (cadr elt) 'custom-face))
+  ;;		     (get 'rcirc-faces 'custom-group)))
+  ;; (set-face-font (car rcirc-face) "verdana-10"))
+
+  ;; Include date in time stamp.
+  (setq rcirc-time-format "%Y-%m-%d %H:%M ")
+#+end_src
+
+* Nicks
+#+name: nicks
+#+begin_src emacs-lisp
+  ;; Change user info
+  (setq rcirc-default-nick "NebulaSurfer")
+  (setq rcirc-default-user-name "NebulaSurfer")
+  (setq rcirc-default-full-name "NebulaSurfer")
+
+  (setq rcirc-authinfo `(("freenode" nickserv ms:irc-nickname ms:irc-password)))
+#+end_src
+
+* Authentication
+#+name authentication
+#+begin_src emacs-lisp
+  ;;; Load authentication file. I put this information in a seperate file because it contains my passwords, and I want to avoid uploading my passwords to github.
+  ;;; In the future, I'd like to pull my IRC passwords from passwordsafe so they are not in plaintext files.
+  ;;; An example of the syntax in this file: (setq rcirc-authinfo `(("freenode" nickserv "nickname" "password")))
+  (org-babel-load-file "~/.emacs.d/irc-auth.org")
+#+end_src
+** TODO impliment passwordsafe so IRC passwords are not pulled from plaintext files.
+
+* Freenode
+#+name: freenode
+#+begin_src emacs-lisp
+  (add-to-list 'rcirc-server-alist
+	       '("irc.freenode.net"
+		 :channels ("#emacs" "##astrophysics" "##physics" "#spiritscience" "##skepticism" "#trilug")))
+#+end_src
+
+* Rizon
+#+name: rizon
+#+begin_src emacs-lisp
+  (add-to-list 'rcirc-server-alist
+	       '("irc.rizon.net"
+		 :channels ("#atheism")))
+#+end_src
+
+* Esper
+#+name: esper
+#+begin_src emacs-lisp
+
+#+end_src
+

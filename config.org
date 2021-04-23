@@ -1,0 +1,189 @@
+#+TITLE: My Emacs Configuration
+#+AUTHOR: Matthew Spangler
+#+EMAIL: mattspangler@protonmail.com
+#+OPTIONS: num:nil
+
+* Interface
+** Centaur tabs
+- [[https://github.com/ema2159/centaur-tabs][Centaur tabs github]]
+#+name: centaur-tabs
+#+begin_src emacs-lisp
+  (use-package centaur-tabs
+    :demand
+    :config
+    (centaur-tabs-mode t)
+    :bind
+    ("C-<prior>" . centaur-tabs-backward)
+    ("C-<next>" . centaur-tabs-forward))
+#+end_src
+
+** Dashboard
+- [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard github]]
+#+name: dashboard
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :config
+    (dashboard-setup-startup-hook))
+#+end_src
+
+#+name: dashboard-config
+#+begin_src emacs-lisp
+  (setq dashboard-items '((recents  . 5)
+			  (bookmarks . 5)
+			  (projects . 5)
+			  (agenda . 5)
+			  (registers . 5)))
+  (setq dashboard-set-navigator t)
+  (setq dashboard-week-agenda t)
+#+end_src
+
+** Zoom
+- [[https://github.com/cyrus-and/zoom][Zoom github]]
+#+name: zoom-install
+#+begin_src emacs-lisp
+  (use-package zoom
+    :ensure t)
+#+end_src
+
+#+name: zoom-config
+#+begin_src emacs-lisp
+  (custom-set-variables '(zoom-mode t))
+  (custom-set-variables
+   '(zoom-size '(0.618 . 0.618)))
+ #+end_src
+
+** Neotree
+- [[https://www.emacswiki.org/emacs/NeoTree][Neotree wiki page]]
+#+name: neotree-install
+#+begin_src emacs-lisp
+    (use-package neotree
+      :ensure t)
+#+end_src
+
+#+name neotree-config
+#+begin_src emacs-lisp
+  (setq neo-smart-open t)
+  (setq projectile-switch-project-action 'neotree-projectile-action)
+#+end_src
+
+* Organization
+** Agenda
+#+name: org-agenda-config
+#+begin_src emacs-lisp
+  (setq org-agenda-files '("~/Documents"))
+#+end_src
+
+#+name: org-super-agenda-install
+#+begin_src emacs-lisp
+  (use-package org-super-agenda :ensure t)
+#+end_src
+
+#+name: org-super-agenda-config
+#+begin_src emacs-lisp
+  (let ((org-super-agenda-groups
+	 '(;; Each group has an implicit boolean OR operator between its selectors.
+	   (:name "Today"  ; Optionally specify section name
+		  :time-grid t  ; Items that appear on the time grid
+		  :todo "TODAY")  ; Items that have this TODO keyword
+	   (:name "Important"
+		  ;; Single arguments given alone
+		  :tag "bills"
+		  :priority "A")
+	   ;; Set order of multiple groups at once
+	   (:order-multi (2 (:name "Shopping in town"
+				   ;; Boolean AND group matches items that match all subgroups
+				   :and (:tag "shopping" :tag "@town"))
+			    (:name "Food-related"
+				   ;; Multiple args given in list with implicit OR
+				   :tag ("food" "dinner"))
+			    (:name "Personal"
+				   :habit t
+				   :tag "personal")
+			    (:name "Space-related (non-moon-or-planet-related)"
+				   ;; Regexps match case-insensitively on the entire entry
+				   :and (:regexp ("space" "NASA")
+						 ;; Boolean NOT also has implicit OR between selectors
+						 :not (:regexp "moon" :tag "planet")))))
+	   ;; Groups supply their own section names when none are given
+	   (:todo "WAITING" :order 8)  ; Set order of this section
+	   (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
+		  ;; Show this group at the end of the agenda (since it has the
+		  ;; highest number). If you specified this group last, items
+		  ;; with these todo keywords that e.g. have priority A would be
+		  ;; displayed in that group instead, because items are grouped
+		  ;; out in the order the groups are listed.
+		  :order 9)
+	   (:priority<= "B"
+			;; Show this section after "Today" and "Important", because
+			;; their order is unspecified, defaulting to 0. Sections
+			;; are displayed lowest-number-first.
+			:order 1)
+	   ;; After the last group, the agenda will display items that didn't
+	   ;; match any of these groups, with the default order position of 99
+	   )))
+    (org-agenda nil "a"))
+#+end_src
+
+** Finances
+#+name: ledger-mode-install
+#+begin_src emacs-lisp
+  (use-package ledger-mode
+    :ensure t)
+#+end_src
+
+** Creative
+#+name: org-brain-install
+#+begin_src emacs-lisp
+  (use-package org-brain :ensure t
+    :init
+    (setq org-brain-path "~/Documents/Org-Brain")
+    ;; For Evil users
+    :config
+    (bind-key "C-c b" 'org-brain-prefix-map org-mode-map)
+    (setq org-id-track-globally t)
+    (setq org-id-locations-file "~/Documents/Org-Brain/.org-id-locations")
+    (add-hook 'before-save-hook #'org-brain-ensure-ids-in-buffer)
+    (push '("b" "Brain" plain (function org-brain-goto-end)
+	    "* %i%?" :empty-lines 1)
+	  org-capture-templates))
+#+end_src
+
+** Projectile
+- [[https://docs.projectile.mx/projectile/usage.html][Projectile Documentation]]
+#+name: projectile
+#+begin_src emacs-lisp
+  (use-package projectile
+    :ensure t)
+#+end_src
+
+* Babel
+#+name: babel-config
+#+begin_src emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (haskell . nil)
+     (ledger . t)
+     (python . t)
+     (ruby . t)))
+#+end_src
+
+* Communication
+** Email
+- [[http://juanjose.garciaripoll.com/blog/emacs-wanderlust-email/index.html][Configuration example]]
+#+name: wanderlust-install
+#+begin_src emacs-lisp
+  (use-package wl
+    :ensure wanderlust
+    :init
+    (autoload 'wl "wl" "Wanderlust" t))
+  (add-hook 'mime-view-mode-hook #'(lambda () (setq show-trailing-whitespace nil)))
+#+end_src
+
+** IRC
+#+name: irc-config
+#+begin_src emacs-lisp
+;;; My IRC configuration using org-babel
+(org-babel-load-file "~/.emacs.d/irc.org")
+#+end_src
