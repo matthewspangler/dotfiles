@@ -36,6 +36,9 @@
 			  (registers . 5)))
   (setq dashboard-set-navigator t)
   (setq dashboard-week-agenda t)
+
+  ; Set banner
+  (setq dashboard-startup-banner 'logo)
 #+end_src
 
 ** Zoom
@@ -53,21 +56,129 @@
    '(zoom-size '(0.618 . 0.618)))
  #+end_src
 
-** Neotree
-- [[https://www.emacswiki.org/emacs/NeoTree][Neotree wiki page]]
-#+name: neotree-install
+** Treemacs
+- [[https://github.com/Alexander-Miller/treemacs][Treemacs github]]
+#+name: treemacs-install
 #+begin_src emacs-lisp
-    (use-package neotree
-      :ensure t)
+  (use-package treemacs
+    :ensure t
+    :defer t
+    :init
+    (with-eval-after-load 'winum
+      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+    :config
+    (progn
+      (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+	    treemacs-deferred-git-apply-delay      0.5
+	    treemacs-directory-name-transformer    #'identity
+	    treemacs-display-in-side-window        t
+	    treemacs-eldoc-display                 t
+	    treemacs-file-event-delay              5000
+	    treemacs-file-extension-regex          treemacs-last-period-regex-value
+	    treemacs-file-follow-delay             0.2
+	    treemacs-file-name-transformer         #'identity
+	    treemacs-follow-after-init             t
+	    treemacs-git-command-pipe              ""
+	    treemacs-goto-tag-strategy             'refetch-index
+	    treemacs-indentation                   2
+	    treemacs-indentation-string            " "
+	    treemacs-is-never-other-window         nil
+	    treemacs-max-git-entries               5000
+	    treemacs-missing-project-action        'ask
+	    treemacs-move-forward-on-expand        nil
+	    treemacs-no-png-images                 nil
+	    treemacs-no-delete-other-windows       t
+	    treemacs-project-follow-cleanup        nil
+	    treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+	    treemacs-position                      'left
+	    treemacs-read-string-input             'from-child-frame
+	    treemacs-recenter-distance             0.1
+	    treemacs-recenter-after-file-follow    nil
+	    treemacs-recenter-after-tag-follow     nil
+	    treemacs-recenter-after-project-jump   'always
+	    treemacs-recenter-after-project-expand 'on-distance
+	    treemacs-show-cursor                   nil
+	    treemacs-show-hidden-files             t
+	    treemacs-silent-filewatch              nil
+	    treemacs-silent-refresh                nil
+	    treemacs-sorting                       'alphabetic-asc
+	    treemacs-space-between-root-nodes      t
+	    treemacs-tag-follow-cleanup            t
+	    treemacs-tag-follow-delay              1.5
+	    treemacs-user-mode-line-format         nil
+	    treemacs-user-header-line-format       nil
+	    treemacs-width                         35
+	    treemacs-workspace-switch-cleanup      nil)
+
+      ;; The default width and height of the icons is 22 pixels. If you are
+      ;; using a Hi-DPI display, uncomment this to double the icon size.
+      ;;(treemacs-resize-icons 44)
+
+      (treemacs-follow-mode t)
+      (treemacs-filewatch-mode t)
+      (treemacs-fringe-indicator-mode 'always)
+      (pcase (cons (not (null (executable-find "git")))
+		   (not (null treemacs-python-executable)))
+	(`(t . t)
+	 (treemacs-git-mode 'deferred))
+	(`(t . _)
+	 (treemacs-git-mode 'simple))))
+    :bind
+    (:map global-map
+	  ("M-0"       . treemacs-select-window)
+	  ("C-x t 1"   . treemacs-delete-other-windows)
+	  ("C-x t t"   . treemacs)
+	  ("C-x t B"   . treemacs-bookmark)
+	  ("C-x t C-t" . treemacs-find-file)
+	  ("C-x t M-t" . treemacs-find-tag)))
+
+  (use-package treemacs-projectile
+    :after (treemacs projectile)
+    :ensure t)
+
+  (use-package treemacs-icons-dired
+    :after (treemacs dired)
+    :ensure t
+    :config (treemacs-icons-dired-mode))
+
+  (use-package treemacs-magit
+    :after (treemacs magit)
+    :ensure t)
 #+end_src
 
-#+name neotree-config
+** Doom Modeline
+- [[https://seagle0128.github.io/doom-modeline/][Doom Modeline website]]
+#+name: doom-modeline-install
 #+begin_src emacs-lisp
-  (setq neo-smart-open t)
-  (setq projectile-switch-project-action 'neotree-projectile-action)
-#+end_src
+  (use-package doom-modeline
+    :ensure t
+    :init (doom-modeline-mode 1))
 
-* Organization
+  ;; Or use this
+  ;; Use `window-setup-hook' if the right segment is displayed incorrectly
+  (use-package doom-modeline
+    :ensure t
+    :hook (after-init . doom-modeline-mode))
+#+end_src
+~This package requires the fonts included with all-the-icons to be installed. Run [M-x all-the-icons-install-fonts] to do so. Please refer to the installation guide.~
+
+* Org-mode
+** Configuration
+ #+name org-mode-config
+ #+begin_src emacs-lisp
+   ; Do not truncate lines and enable word wrap
+   (set-default 'truncate-lines nil)
+   (set-default 'word-wrap t)
+   (setq helm-buffers-truncate-lines nil)
+   (setq org-startup-truncated nil)
+
+   ; Set bullets for heading levels
+   (setq org-bullets-bullet-list (quote ("♚" "♛" "♜" "♝" "♞" "♟")))
+
+   ; Fold content on startup
+   (setq org-startup-folded t)
+ #+end_src
+
 ** Agenda
 #+name: org-agenda-config
 #+begin_src emacs-lisp
@@ -125,14 +236,14 @@
     (org-agenda nil "a"))
 #+end_src
 
-** Finances
+** Ledger
 #+name: ledger-mode-install
 #+begin_src emacs-lisp
   (use-package ledger-mode
     :ensure t)
 #+end_src
 
-** Creative
+** Brain
 #+name: org-brain-install
 #+begin_src emacs-lisp
   (use-package org-brain :ensure t
@@ -157,16 +268,88 @@
     :ensure t)
 #+end_src
 
-* Babel
-#+name: babel-config
+** Roam
+- [[https://github.com/org-roam/org-roam][Org-roam github]]
+#+name: org-roam-install
 #+begin_src emacs-lisp
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (haskell . nil)
-     (ledger . t)
-     (python . t)
-     (ruby . t)))
+  (use-package org-roam
+	:ensure t
+	:hook
+	(after-init . org-roam-mode)
+	:custom
+	(org-roam-directory "~/Documents")
+	:bind (:map org-roam-mode-map
+		(("C-c n l" . org-roam)
+		 ("C-c n f" . org-roam-find-file)
+		 ("C-c n g" . org-roam-graph))
+		:map org-mode-map
+		(("C-c n i" . org-roam-insert))
+		(("C-c n I" . org-roam-insert-immediate))))
+#+end_src
+
+** Download
+#+name: org-download-install
+#+begin_src emacs-lisp
+  (use-package org-download
+    :ensure t)
+  ;; Drag-and-drop to `dired`
+  (add-hook 'dired-mode-hook 'org-download-enable)
+#+end_src
+
+* Coding
+** SX (Stack Overflow)
+- [[https://github.com/vermiculus/sx.el/][SX github]]
+#+name: sx-install
+#+begin_src emacs-lisp
+(require 'use-package)
+
+(use-package sx
+  :config
+  (bind-keys :prefix "C-c s"
+             :prefix-map my-sx-map
+             :prefix-docstring "Global keymap for SX."
+             ("q" . sx-tab-all-questions)
+             ("i" . sx-inbox)
+             ("o" . sx-open-link)
+             ("u" . sx-tab-unanswered-my-tags)
+             ("a" . sx-ask)
+             ("s" . sx-search)))
+#+end_src
+
+** Color identifiers
+#+name: color-identifiers-mode-install
+#+begin_src emacs-lisp
+  (use-package color-identifiers-mode
+    :ensure t)
+  (add-hook 'after-init-hook 'global-color-identifiers-mode)
+#+end_src
+
+* Feeds
+** Elfeed
+- [[
+#+name: elfeed-install
+#+begin_src emacs-lisp
+  (use-package elfeed
+    :ensure t)
+#+end_src
+
+#+name: elfeed-org-install
+#+begin_src emacs-lisp
+  (use-package elfeed-org
+    :ensure t)
+#+end_src
+
+#+name: elfeed-org-config
+#+begin_src emacs-lisp
+  ;; Initialize elfeed-org
+  ;; This hooks up elfeed-org to read the configuration when elfeed
+  ;; is started with =M-x elfeed=
+  (elfeed-org)
+
+  ;; Optionally specify a number of files containing elfeed
+  ;; configuration. If not set then the location below is used.
+  ;; Note: The customize interface is also supported.
+  (setq rmh-elfeed-org-files (list "~/Documents/rss.org"))
 #+end_src
 
 * Communication
@@ -185,5 +368,13 @@
 #+name: irc-config
 #+begin_src emacs-lisp
 ;;; My IRC configuration using org-babel
-(org-babel-load-file "~/.emacs.d/irc.org")
+(org-babel-load-file "~/.emacs.d/babel/irc.org")
+#+end_src
+
+* Misc
+** Restart Emacs
+#+name: restart-emacs-install
+#+begin_src emacs-lisp
+  (use-package restart-emacs
+    :ensure t)
 #+end_src

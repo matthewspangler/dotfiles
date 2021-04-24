@@ -26,5 +26,16 @@
 
 (require 'lang-c)
 
+(require 'lang-ios)
+
+;;; org-babel setup
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (haskell . nil)
+   (ledger . t)
+   (python . t)
+   (ruby . t)))
+
 ;;; My configuation using org-babel
-(org-babel-load-file "~/.emacs.d/config.org")
+(org-babel-load-file "~/.emacs.d/babel/config.org")

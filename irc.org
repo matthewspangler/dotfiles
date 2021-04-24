@@ -44,17 +44,15 @@
   (setq rcirc-default-nick "NebulaSurfer")
   (setq rcirc-default-user-name "NebulaSurfer")
   (setq rcirc-default-full-name "NebulaSurfer")
-
-  (setq rcirc-authinfo `(("freenode" nickserv ms:irc-nickname ms:irc-password)))
 #+end_src
 
 * Authentication
-#+name authentication
+#+name: authentication
 #+begin_src emacs-lisp
   ;;; Load authentication file. I put this information in a seperate file because it contains my passwords, and I want to avoid uploading my passwords to github.
   ;;; In the future, I'd like to pull my IRC passwords from passwordsafe so they are not in plaintext files.
   ;;; An example of the syntax in this file: (setq rcirc-authinfo `(("freenode" nickserv "nickname" "password")))
-  (org-babel-load-file "~/.emacs.d/irc-auth.org")
+  (org-babel-load-file "~/.emacs.d/babel/irc-auth.org")
 #+end_src
 ** TODO impliment passwordsafe so IRC passwords are not pulled from plaintext files.
 
@@ -79,4 +77,3 @@
 #+begin_src emacs-lisp
 
 #+end_src
-
