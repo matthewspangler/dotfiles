@@ -1,4 +1,4 @@
-My dotfiles for Arch/Manjaro Linux.
+My dotfiles for Arch and Manjaro Linux. Mostly Emacs configuration files, also my vim configuration.
 
 ## Rig
 Thinkpad X1 Carbon (4th Gen)
