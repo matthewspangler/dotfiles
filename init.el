@@ -7,6 +7,8 @@
 ;;; Code:
 
 (add-to-list 'load-path (concat user-emacs-directory "elisp"))
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+(setq vc-follow-symlinks t)
 
 (require 'base)
 (require 'base-theme)
@@ -39,3 +41,4 @@
 
 ;;; My configuation using org-babel
 (org-babel-load-file "~/.emacs.d/babel/config.org")
+

@@ -6,15 +6,24 @@
 * Interface
 ** Centaur tabs
 - [[https://github.com/ema2159/centaur-tabs][Centaur tabs github]]
-#+name: centaur-tabs
+#+name: centaur-tabs-install
 #+begin_src emacs-lisp
   (use-package centaur-tabs
     :demand
-    :config
-    (centaur-tabs-mode t)
     :bind
     ("C-<prior>" . centaur-tabs-backward)
     ("C-<next>" . centaur-tabs-forward))
+
+#+end_src
+
+#+name: centaur-tabs-config
+#+begin_src emacs-lisp
+  (centaur-tabs-mode t)
+  (setq centaur-tabs-set-icons t)
+  (setq centaur-tabs-style "bar")
+  (setq centaur-tabs-set-bar 'under)
+  (setq x-underline-at-descent-line t)
+  (setq centaur-tabs-cycle-scope 'tabs)
 #+end_src
 
 ** Dashboard
@@ -37,7 +46,7 @@
   (setq dashboard-set-navigator t)
   (setq dashboard-week-agenda t)
 
-  ; Set banner
+					  ; Set banner - I sneakily set the official logo to a random xkcd comic later! Change 'logo to 'official to see it.
   (setq dashboard-startup-banner 'logo)
 #+end_src
 
@@ -162,10 +171,22 @@
 #+end_src
 ~This package requires the fonts included with all-the-icons to be installed. Run [M-x all-the-icons-install-fonts] to do so. Please refer to the installation guide.~
 
+** Dash
+#+name: dash-install
+#+begin_src emacs-lisp
+  (use-package dash
+    :ensure t)
+  (use-package helm-dash
+    :ensure t)
+#+end_src
+
 * Org-mode
 ** Configuration
  #+name org-mode-config
  #+begin_src emacs-lisp
+   (with-eval-after-load 'org
+     (setq org-directory "~/Documents"))
+
    ; Do not truncate lines and enable word wrap
    (set-default 'truncate-lines nil)
    (set-default 'word-wrap t)
@@ -296,6 +317,13 @@
   (add-hook 'dired-mode-hook 'org-download-enable)
 #+end_src
 
+** Rifle
+#+name: org-rifle-helm-install
+#+begin_src emacs-lisp
+  (use-package helm-org-rifle
+    :ensure t)
+#+end_src
+
 * Coding
 ** SX (Stack Overflow)
 - [[https://github.com/vermiculus/sx.el/][SX github]]
@@ -326,7 +354,7 @@
 
 * Feeds
 ** Elfeed
-- [[
+- [[https://github.com/skeeto/elfeed][Elfeed Github]]
 #+name: elfeed-install
 #+begin_src emacs-lisp
   (use-package elfeed
@@ -372,9 +400,60 @@
 #+end_src
 
 * Misc
+** XKCD + dashboard
+#+name: xkcd
+#+begin_src emacs-lisp
+  (use-package xkcd
+    :ensure t)
+
+;;  ;; to get a rand comic and to set dashboard image (png)
+;;  (let ((rand-id-xkcd nil))
+;;    (with-temp-buffer
+;;      (setq rand-id-xkcd (string-to-number (xkcd-rand)))
+;;      (xkcd-kill-buffer))
+;;    (let ((last-xkcd-png (concat xkcd-cache-dir (number-to-string rand-id-xkcd) ".png")))
+;;      (if (file-exists-p last-xkcd-png)
+;;      (setq dashboard-banner-official-png last-xkcd-png))))
+#+end_src
+
 ** Restart Emacs
 #+name: restart-emacs-install
 #+begin_src emacs-lisp
   (use-package restart-emacs
     :ensure t)
+#+end_src
+
+** F
+#+name: f-install
+#+begin_src emacs-lisp
+  (use-package f
+    :ensure t)
+#+end_src
+
+** S
+#+name: s-install
+#+begin_src emacs-lisp
+  (use-package s
+    :ensure t)
+#+end_src
+
+** IDO
+#+name: ido-install
+#+begin_src emacs-lisp
+  (use-package ido
+    :ensure t)
+#+end_src
+
+** Other
+#+name: other
+#+begin_src emacs-lisp
+  ; I don't like the scratch buffer in my face :(
+  (setq initial-scratch-message nil)
+  (kill-buffer "*scratch*")
+
+  ; restore previous buffers
+  (desktop-save-mode 1)
+
+					  ; so I can use C-x b to cycle buffers
+  (ido-mode 1)
 #+end_src

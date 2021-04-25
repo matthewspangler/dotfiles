@@ -32,7 +32,6 @@
 
 (use-package flycheck)
 
-
 (use-package counsel
   :bind
   ("M-x" . counsel-M-x)
@@ -47,15 +46,17 @@
   :config
   (counsel-projectile-on))
 
-(use-package ivy
-  :bind
-  ("C-x s" . swiper)
-  ("C-x C-r" . ivy-resume)
-  :config
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers nil)
-  (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
+; (use-package ivy
+;   :bind
+;   ("C-x s" . swiper)
+;   ("C-x C-r" . ivy-resume)
+;   :config
+;   (ivy-mode 1)
+;   (setq ivy-use-virtual-buffers nil)
+;   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
 
+; Decided to go with Helm instead of Ivy
+(straight-use-package 'helm)
 
 (use-package hlinum
   :config
