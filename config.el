@@ -1,11 +1,15 @@
 (use-package centaur-tabs
   :demand
-  :config
-  (centaur-tabs-mode t)
-  (setq centaur-tabs-set-icons t)
   :bind
   ("C-<prior>" . centaur-tabs-backward)
   ("C-<next>" . centaur-tabs-forward))
+
+(centaur-tabs-mode t)
+(setq centaur-tabs-set-icons t)
+(setq centaur-tabs-style "bar")
+(setq centaur-tabs-set-bar 'under)
+(setq x-underline-at-descent-line t)
+(setq centaur-tabs-cycle-scope 'tabs)
 
 (use-package dashboard
   :ensure t
@@ -20,15 +24,21 @@
 (setq dashboard-set-navigator t)
 (setq dashboard-week-agenda t)
 
-; Set banner
+					; Set banner - I sneakily set the official logo to a random xkcd comic later! Change 'logo to 'official to see it.
 (setq dashboard-startup-banner 'logo)
 
 (use-package zoom
   :ensure t)
 
 (custom-set-variables '(zoom-mode t))
+;(custom-set-variables
+; '(zoom-size '(0.618 . 0.618)))
+(defun size-callback ()
+  (cond ((> (frame-pixel-width) 1280) '(90 . 0.75))
+	(t                            '(0.5 . 0.5))))
+
 (custom-set-variables
- '(zoom-size '(0.618 . 0.618)))
+ '(zoom-size 'size-callback))
 
 (use-package treemacs
   :ensure t
@@ -125,6 +135,11 @@
   :ensure t
   :hook (after-init . doom-modeline-mode))
 
+(use-package dash
+  :ensure t)
+(use-package helm-dash
+  :ensure t)
+
 (with-eval-after-load 'org
   (setq org-directory "~/Documents"))
 
@@ -206,6 +221,10 @@
 (use-package projectile
   :ensure t)
 
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
 (use-package org-roam
       :ensure t
       :hook
@@ -246,6 +265,10 @@
   :ensure t)
 (add-hook 'after-init-hook 'global-color-identifiers-mode)
 
+(use-package fill-column-indicator
+  :ensure t)
+(add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+
 (use-package elfeed
   :ensure t)
 
@@ -271,5 +294,36 @@
 ;;; My IRC configuration using org-babel
 (org-babel-load-file "~/.emacs.d/babel/irc.org")
 
+(use-package xkcd
+    :ensure t)
+
+;;  ;; to get a rand comic and to set dashboard image (png)
+;;  (let ((rand-id-xkcd nil))
+;;    (with-temp-buffer
+;;      (setq rand-id-xkcd (string-to-number (xkcd-rand)))
+;;      (xkcd-kill-buffer))
+;;    (let ((last-xkcd-png (concat xkcd-cache-dir (number-to-string rand-id-xkcd) ".png")))
+;;      (if (file-exists-p last-xkcd-png)
+;;      (setq dashboard-banner-official-png last-xkcd-png))))
+
 (use-package restart-emacs
   :ensure t)
+
+(use-package f
+  :ensure t)
+
+(use-package s
+  :ensure t)
+
+(use-package ido
+  :ensure t)
+
+; I don't like the scratch buffer in my face :(
+(setq initial-scratch-message nil)
+(kill-buffer "*scratch*")
+
+; restore previous buffers
+(desktop-save-mode 1)
+
+					; so I can use C-x b to cycle buffers
+(ido-mode 1)
