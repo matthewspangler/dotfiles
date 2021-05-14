@@ -320,6 +320,14 @@
     :ensure t)
 #+end_src
 
+** Hugo
+#+name: hugo-install
+#+begin_src emacs-lisp
+  (use-package ox-hugo
+    :ensure t            ;Auto-install the package from Melpa (optional)
+    :after ox)
+#+end_src
+
 * Coding
 ** SX (Stack Overflow)
 - [[https://github.com/vermiculus/sx.el/][SX github]]
@@ -499,6 +507,13 @@
   ; restore previous buffers
   (desktop-save-mode 1)
 
-					  ; so I can use C-x b to cycle buffers
+  ; so I can use C-x b to cycle buffers
   (ido-mode 1)
+
+  ; Tab and indentation configuration
+  (setq tab-width 4) ; or any other preferred value
+  (defvaralias 'c-basic-offset 'tab-width)
+  (defvaralias 'cperl-indent-level 'tab-width)
+  (setq org-src-preserve-indentation nil
+	org-edit-src-content-indentation 0)
 #+end_src

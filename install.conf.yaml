@@ -13,6 +13,7 @@
   - ["mkdir -p ~/Scripts", Make scripts directory]
   - ["mkdir -p ~/.emacs.d", Make .emacs.d directory]
   - ["mkdir -p ~/.emacs.d/elisp", Make .emacs.d/elisp directory]
+  - ["mkdir -p ~/.emacs.d/babel", Make .emacs.d/babel directory]
 
 - clean:
   - '~'
@@ -34,5 +35,6 @@
     ~/.emacs.d/elisp/lang-python.el: lang-python.el
     ~/.emacs.d/elisp/lang-rust.el: lang-rust.el
     ~/.emacs.d/elisp/lang-web.el: lang-web.el
-    ~/.emacs.d/config.org: config.org
-    ~/.emacs.d/irc.org: irc.org
+    ~/.emacs.d/babel/config.org: config.org
+    ~/.emacs.d/babel/irc.org: irc.org
+    ~/.emacs.d/elisp/lang-ios.el: lang-ios.el 
