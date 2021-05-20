@@ -215,8 +215,14 @@
        :ensure t)
      (nyan-mode +1)
    #+end_src
-=======
->>>>>>> 8c7950ba14fb4a2c5d9a82786395220e44a4f96c
+
+** Beacon Mode
+   #+name: beacon-mode-install
+   #+begin_src emacs-lisp
+     (use-package beacon
+       :ensure t)
+     (beacon-mode 1)
+   #+end_src
 
 * Org-mode
 ** Configuration
