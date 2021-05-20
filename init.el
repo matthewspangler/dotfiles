@@ -30,6 +30,13 @@
 
 (require 'lang-ios)
 
+;;; Quelpa
+(unless (package-installed-p 'quelpa)
+  (with-temp-buffer
+    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+    (eval-buffer)
+    (quelpa-self-upgrade)))
+
 ;;; org-babel setup
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -41,4 +48,3 @@
 
 ;;; My configuation using org-babel
 (org-babel-load-file "~/.emacs.d/babel/config.org")
-

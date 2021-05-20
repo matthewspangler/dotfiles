@@ -75,7 +75,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git debian cp web-search vi-mode colorize colored-man-pages extract z github pip python lol ansible)
+plugins=(git debian cp web-search vi-mode colorize colored-man-pages extract z github pip python lol ansible archlinux)
 
 source $ZSH/oh-my-zsh.sh
 
