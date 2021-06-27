@@ -2,6 +2,31 @@
 #+AUTHOR: Matthew Spangler
 #+EMAIL: mattspangler@protonmail.com
 #+OPTIONS: num:nil
+* General
+  #+name: general
+  #+begin_src emacs-lisp
+    ; I don't like the scratch buffer in my face :(
+    (setq initial-scratch-message nil)
+    (kill-buffer "*scratch*")
+
+    ; restore previous buffers
+    (desktop-save-mode 1)
+
+    ; so I can use C-x b to cycle buffers
+    (ido-mode 1)
+
+    (setq org-src-tab-acts-natively t)
+
+    ; Flyspell spell checker
+    (setq ispell-program-name "hunspell")
+    (setq ispell-local-dictionary "en_US")
+    (setq ispell-local-dictionary-alist
+      '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)))
+    (flyspell-mode 1)
+
+    ; Autocomplete from company-mode
+    (add-hook 'after-init-hook 'global-company-mode)
+  #+end_src
 
 * Programs
 ** Keepass
@@ -214,7 +239,6 @@
     (use-package imenu-list
       :ensure t)
   #+end_src
-<<<<<<< HEAD
 
 ** Nyan Mode
    #+name: nyan-mode-install
@@ -250,6 +274,10 @@
 
      ; Fold content on startup
      (setq org-startup-folded t)
+
+     ; Autocomplete
+     ;(add-to-list 'ac-modes 'org-mode)
+     ;(ac-set-trigger-key "TAB")
   #+end_src
 
 ** Agenda
@@ -548,20 +576,4 @@
   #+begin_src emacs-lisp
     (use-package ido
       :ensure t)
-  #+end_src
-
-** Other
-  #+name: other
-  #+begin_src emacs-lisp
-    ; I don't like the scratch buffer in my face :(
-    (setq initial-scratch-message nil)
-    (kill-buffer "*scratch*")
-
-    ; restore previous buffers
-    (desktop-save-mode 1)
-
-    ; so I can use C-x b to cycle buffers
-    (ido-mode 1)
-
-    (setq org-src-tab-acts-natively t)
   #+end_src
