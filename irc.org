@@ -1,8 +1,6 @@
 * General Settings
 #+name: general-settings
 #+begin_src emacs-lisp
-  ;; You can autoload, but at the end of this block we'll
-  ;; connect to two networks anyway.
   (require 'rcirc)
 
   ;; Don't print /away messages.
@@ -49,31 +47,6 @@
 * Authentication
 #+name: authentication
 #+begin_src emacs-lisp
-  ;;; Load authentication file. I put this information in a seperate file because it contains my passwords, and I want to avoid uploading my passwords to github.
-  ;;; In the future, I'd like to pull my IRC passwords from passwordsafe so they are not in plaintext files.
-  ;;; An example of the syntax in this file: (setq rcirc-authinfo `(("freenode" nickserv "nickname" "password")))
+  ; I put any personal data like passwords in this file and exclude it from being uploaded to github:
   (org-babel-load-file "~/.emacs.d/babel/irc-auth.org")
-#+end_src
-** TODO impliment passwordsafe so IRC passwords are not pulled from plaintext files.
-
-* Freenode
-#+name: freenode
-#+begin_src emacs-lisp
-  (add-to-list 'rcirc-server-alist
-	       '("irc.freenode.net"
-		 :channels ("#emacs" "##astrophysics" "##physics" "#spiritscience" "##skepticism" "#trilug")))
-#+end_src
-
-* Rizon
-#+name: rizon
-#+begin_src emacs-lisp
-  (add-to-list 'rcirc-server-alist
-	       '("irc.rizon.net"
-		 :channels ("#atheism")))
-#+end_src
-
-* Esper
-#+name: esper
-#+begin_src emacs-lisp
-
 #+end_src

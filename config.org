@@ -4,11 +4,19 @@
 #+OPTIONS: num:nil
 
 * Programs
+** Keepass
   #+name: keepass-mode-install
   #+begin_src emacs-lisp
     (use-package keepass-mode
       :ensure t)
   #+end_src
+
+** vterm
+   #+name: vterm-install
+   #+begin_src emacs-lisp
+     (use-package vterm
+       :ensure t)
+   #+end_src
 
 * Interface
 ** Centaur tabs
