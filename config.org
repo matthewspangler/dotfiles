@@ -1,4 +1,4 @@
-#+TITLE: My Emacs Configuration
+#+TITLE: Space Cadet Emacs Config
 #+AUTHOR: Matthew Spangler
 #+EMAIL: mattspangler@protonmail.com
 #+OPTIONS: num:nil
@@ -26,6 +26,14 @@
 
     ; Autocomplete from company-mode
     (add-hook 'after-init-hook 'global-company-mode)
+  #+end_src
+
+* EXWM
+  - [[https://wiki.archlinux.org/title/EXWM][Arch wiki page for EXWM]]
+  #+name: EXWM
+  #+begin_src emacs-lisp
+    ;;; My EXWM configuation using org-babel - commented out because I'm not using it currently.
+    ;; (org-babel-load-file "~/.emacs.d/babel/exwm.org")
   #+end_src
 
 * Programs
