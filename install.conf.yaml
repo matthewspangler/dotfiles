@@ -24,6 +24,7 @@
     ~/.wl: wl
     ~/.folders: folders
     ~/.emacs.d/init.el: init.el
+    ~/.emacs.d/emacs-custom.el: emacs-custom.el
     ~/.emacs.d/elisp/base.el: base.el
     ~/.emacs.d/elisp/base-extensions.el: base-extensions.el 
     ~/.emacs.d/elisp/base-functions.el: base-functions.el
