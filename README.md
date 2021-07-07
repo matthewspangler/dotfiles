@@ -18,9 +18,9 @@ $ ./install
 ```
 
 ## Branches:
-Qtile - includes my dotfiles for the Qtile window manager. I no longer use this Window manager having moved to a combination of EXWM and XFCE.
-AwesomeWM - includes my dotfiles for Awesome window manager. I no longer use this either.
-Master - current, updated dotfiles and EXWM configuration.
+* Qtile - includes my dotfiles for the Qtile window manager. I no longer use this Window manager having moved to a combination of EXWM and XFCE.
+* AwesomeWM - includes my dotfiles for Awesome window manager. I no longer use this either.
+* Master - current, updated dotfiles and EXWM configuration.
 
 ## What's included in the master branch:
 
