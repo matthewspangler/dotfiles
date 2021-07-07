@@ -10,6 +10,7 @@ $ ./install
 ```
 
 ### Windows:
+Run the following commands using git-bash as administrator:
 ```
 $ git clone https://github.com/matthewspangler/dotfiles
 $ cd dotfiles
