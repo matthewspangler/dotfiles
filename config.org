@@ -52,7 +52,7 @@
    #+end_src
 
 * Interface
-** Centaur tabs
+Yeah! Right now I think it's going to be** Centaur tabs
 - [[https://github.com/ema2159/centaur-tabs][Centaur tabs github]]
   #+name: centaur-tabs-install
   #+begin_src emacs-lisp
@@ -584,4 +584,14 @@
   #+begin_src emacs-lisp
     (use-package ido
       :ensure t)
+  #+end_src
+
+* Work Related
+** Trello
+   [[https://org-trello.github.io/][Github page]]
+  #+name: trello
+  #+begin_src emacs-lisp
+    (use-package org-trello
+      :ensure t)
+    (custom-set-variables '(org-trello-files '("~/Documents/Org-Notebooks/miningstore-trello.org")))
   #+end_src
