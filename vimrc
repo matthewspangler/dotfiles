@@ -10,14 +10,13 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 " YCM setup
 
-" Function to build YCM if it hasn't been built yet
 function! BuildYCM(info)
   " info is a dictionary with 3 fields
   " - name:   name of the plugin
   " - status: 'installed', 'updated', or 'unchanged'
   " - force:  set on PlugInstall! or PlugUpdate!
   if a:info.status == 'installed' || a:info.force
-    !./install.py --clang-completer
+    !./install.py
   endif
 endfunction
 
@@ -54,7 +53,7 @@ Plug 'kien/ctrlp.vim'
 " Latest version, will work on debian bullseye:
 " Plug 'valloric/youcompleteme', { 'do': function('BuildYCM') }
 " Older version, for debian buster:
-Plug 'Valloric/YouCompleteMe', { 'commit': 'd98f896', 'do': function('BuildYCM') }
+Plug 'ycm-core/YouCompleteMe', { 'do': function('BuildYCM') }
 
 " Gruvbox theme
 " Plug 'morhetz/gruvbox'
