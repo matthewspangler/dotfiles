@@ -2,14 +2,18 @@
 # August Valera (@4U6U57)
 # Run ./install.sh to run dotbot
 
-# Lines involving awesomewm are commented out, as I've switch to qtile
-
 - defaults:
     link:
       create: true
       relink: true
+    shell:
+      stderr: true
+
+- clean: ['~', '~/.oh-my-zsh/custom/', '~/.oh-my-zsh/custom/plugins/']
 
 - shell:
+  - ["sh pre-install.sh", Running pre installation script]
+  - ["rm ~/.zshrc", Remove previous .zshrc]
   - ["mkdir -p ~/Scripts", Make scripts directory]
   - ["mkdir -p ~/.emacs.d", Make .emacs.d directory]
   - ["mkdir -p ~/.emacs.d/elisp", Make .emacs.d/elisp directory]
