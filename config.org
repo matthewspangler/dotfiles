@@ -548,6 +548,13 @@ Depends on org-contrib:
 	:config
 	(which-key-mode))
   #+end_src
+** Jupyter Notebooks
+- [[https://sqrtminusone.xyz/posts/2021-05-01-org-python/][How to]]
+  #+begin_src emacs-lisp
+    (use-package jupyter
+      :straight t)
+
+  #+end_src
 
 * Feeds
 ** Elfeed

@@ -45,7 +45,8 @@
    ;; Commented out due to ledger-mode bug:
    ;;(ledger . t)
    (python . t)
-   (ruby . t)))
+   (ruby . t)
+   (jupyter . t))
 
 ;;; My configuation using org-babel
 (org-babel-load-file "~/.emacs.d/babel/config.org")
