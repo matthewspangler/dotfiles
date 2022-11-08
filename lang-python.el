@@ -12,8 +12,8 @@
     (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
     :config
     (setq elpy-rpc-backend "jedi")
-    ;; (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
-    ;;flycheck-python-flake8-executable "/usr/local/bin/flake8"
+    (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+    flycheck-python-flake8-executable "/usr/local/bin/flake8"
     :bind (:map elpy-mode-map
 	      ("M-." . elpy-goto-definition)
 	      ("M-," . pop-tag-mark)))
@@ -59,6 +59,11 @@
 
 (add-hook 'after-init-hook 'pyenv-init)
 (add-hook 'projectile-after-switch-project-hook 'pyenv-activate-current-project)
+
+(use-package jedi
+  :ensure t)
+;;(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
 
 (provide 'lang-python)
 ;;; base-python.el ends here

@@ -42,7 +42,8 @@
  'org-babel-load-languages
  '((emacs-lisp . t)
    (haskell . nil)
-   (ledger . t)
+   ;; Commented out due to ledger-mode bug:
+   ;;(ledger . t)
    (python . t)
    (ruby . t)))
 

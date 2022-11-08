@@ -2,6 +2,11 @@ My dotfiles, including configuration files for vim and emacs. Although I primari
 
 ## How to install the dotfiles:
 
+### Dependencies:
+
+- cmake
+- ledger
+
 ### Linux:
 ```
 $ git clone https://github.com/matthewspangler/dotfiles
