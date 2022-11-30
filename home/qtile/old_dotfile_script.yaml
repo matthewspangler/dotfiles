@@ -1,0 +1,45 @@
+# Config file for dotbot
+# August Valera (@4U6U57)
+# Run ./install.sh to run dotbot
+
+# Lines involving awesomewm are commented out, as I've switch to qtile
+
+- defaults:
+    link:
+      create: true
+      relink: true
+
+- shell:
+  - ["mkdir -p ~/.config", Creating .config]
+  - ["mkdir -p ~/.config/qtile", Creating .config/qtile]
+  - ["mkdir -p ~/Pictures", Make Pictures directory]
+  - ["mkdir -p ~/Pictures/Backgrounds", Make background wallpapers directory] 
+  - ["mkdir -p ~/.emacs.d/private/themes", Make themes directory for spacemacs]
+  - ["mkdir -p ~/Scripts", Make scripts directory]
+  - ["mkdir -p .config/picom", Make picom directory]
+
+- clean:
+  - '~'
+
+- link:
+    ~/.vimrc: vimrc
+    ~/.xinitrc: xinitrc
+    ~/.zshrc: zshrc
+    ~/.emacs: emacs
+    ~/.config/wal/templates/theme.py: theme.py
+    ~/.config/qtile/config.py: config.py
+    ~/.Xresources: Xresources
+    ~/set_background.sh: set_background.sh
+    ~/.xprofile: xprofile
+    ~/.config/compton.conf: compton.conf
+    ~/.config/rofi/config.rasi: config.rasi
+    ~/Pictures/Backgrounds/default.jpg: default.jpg
+    ~/.emacs.d/private/themes/xresources-theme.el: xresources-theme.el
+    ~/Scripts/autostart.sh: autostart.sh
+    ~/.config/picom/picom.conf: picom.conf
+
+- shell:
+  - ["./set_background.sh ~/Pictures/Backgrounds/default.jpg"]
+
+- link:
+    ~/.config/qtile/theme.py: ~/.cache/wal/theme.py

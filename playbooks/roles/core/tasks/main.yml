@@ -1,0 +1,40 @@
+- name: Update pacman cache
+  become: yes
+  community.general.pacman:
+    update_cache: true
+
+- name: Install git
+  become: yes
+  community.general.pacman:
+    name: git
+    state: present
+
+- name: Install GNU Stow
+  become: yes
+  community.general.pacman:
+    name: stow
+    state: present
+
+- name: Install Docker
+  become: yes
+  community.general.pacman:
+    name: docker
+    state: present
+
+- name: Install docker-compose
+  become: yes
+  community.general.pacman:
+    name: docker-compose
+    state: present
+
+- name: Install docker-compose
+  become: yes
+  community.general.pacman:
+    name: tmux
+    state: present
+
+- name: Install thefuck
+  become: yes
+  community.general.pacman:
+    name: thefuck
+    state: present

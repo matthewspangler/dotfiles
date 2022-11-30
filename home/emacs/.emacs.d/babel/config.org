@@ -1,0 +1,1605 @@
+#+TITLE: Space Cadet Emacs Config
+#+AUTHOR: Matthew Spangler
+#+EMAIL: mattspangler@protonmail.com
+#+OPTIONS: num:nil
+[[https://github.com/emacs-tw/awesome-emacs][Awesome Emacs Github Page]]
+* Setup
+This is stuff that needs to be run first, because lines further down the config depend on these commands.
+** Base
+#+name: base-setup
+#+begin_src emacs-lisp
+  (package-initialize)
+  (add-to-list 'package-archives
+               '("melpa" . "https://melpa.org/packages/")
+               '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+
+  (when (not package-archive-contents)
+    (package-refresh-contents))
+
+  ; Straight - https://github.com/raxod502/straight.el#getting-started
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (require 'use-package)
+
+  (defconst private-dir  (expand-file-name "private" user-emacs-directory))
+  (defconst temp-dir (format "%s/cache" private-dir)
+    "Hostname-based elisp temp directories")
+
+  ;; Core settings
+  ;; UTF-8 please
+  (set-charset-priority 'unicode)
+  (setq locale-coding-system   'utf-8)   ; pretty
+  (set-terminal-coding-system  'utf-8)   ; pretty
+  (set-keyboard-coding-system  'utf-8)   ; pretty
+  (set-selection-coding-system 'utf-8)   ; please
+  (prefer-coding-system        'utf-8)   ; with sugar on top
+  (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+
+  ;; Emacs customizations
+  (setq confirm-kill-emacs                  'y-or-n-p
+        confirm-nonexistent-file-or-buffer  t
+        save-interprogram-paste-before-kill t
+        mouse-yank-at-point                 t
+        require-final-newline               t
+        visible-bell                        nil
+        ring-bell-function                  'ignore
+        custom-file                         "~/.emacs.d/emacs-custom.el"
+        ;; http://ergoemacs.org/emacs/emacs_stop_cursor_enter_prompt.html
+        minibuffer-prompt-properties
+        '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)
+
+        ;; Disable non selected window highlight
+        cursor-in-non-selected-windows     nil
+        highlight-nonselected-windows      nil
+        ;; PATH
+        exec-path                          (append exec-path '("/usr/local/bin/"))
+        indent-tabs-mode                   nil
+        inhibit-startup-message            t
+        fringes-outside-margins            t
+        x-select-enable-clipboard          t
+        use-package-always-ensure          t)
+
+  ;; Bookmarks
+  (setq
+   ;; persistent bookmarks
+   bookmark-save-flag                      t
+   bookmark-default-file              (concat temp-dir "/bookmarks"))
+
+  ;; Backups enabled, use nil to disable
+  (setq
+   history-length                     1000
+   backup-inhibited                   nil
+   make-backup-files                  t
+   auto-save-default                  t
+   auto-save-list-file-name           (concat temp-dir "/autosave")
+   create-lockfiles                   nil
+   backup-directory-alist            `((".*" . ,(concat temp-dir "/backup/")))
+   auto-save-file-name-transforms    `((".*" ,(concat temp-dir "/auto-save-list/") t)))
+
+  (unless (file-exists-p (concat temp-dir "/auto-save-list"))
+                         (make-directory (concat temp-dir "/auto-save-list") :parents))
+
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (global-auto-revert-mode t)
+
+  ;; Disable toolbar & menubar
+  (menu-bar-mode -1)
+  (when (fboundp 'tool-bar-mode)
+    (tool-bar-mode -1))
+  (when (  fboundp 'scroll-bar-mode)
+    (scroll-bar-mode -1))
+
+  (show-paren-mode 1)
+
+  ;; Need to load custom file to avoid being overwritten
+  ;; more at https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Customizations.html
+  (load custom-file)
+
+  ;; Delete trailing whitespace before save
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+#+end_src
+** Theme
+  #+name:
+  #+begin_src emacs-lisp
+    (use-package doom-themes
+      :ensure t
+      :config
+      ;; Global settings (defaults)
+      (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+            doom-themes-enable-italic t) ; if nil, italics is universally disabled
+      (load-theme 'doom-one t)
+
+      ;; Enable flashing mode-line on errors
+      (doom-themes-visual-bell-config)
+      ;; Enable custom neotree theme (all-the-icons must be installed!)
+      (doom-themes-neotree-config)
+      ;; or for treemacs users
+      (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+      (doom-themes-treemacs-config)
+      ;; Corrects (and improves) org-mode's native fontification.
+      (doom-themes-org-config))
+  #+end_src
+** Base Extensions
+#+name base-extensions-setup
+#+begin_src emacs-lisp
+
+  (use-package avy
+    :bind
+    ("C-c SPC" . avy-goto-char))
+
+
+  (use-package company
+    :config
+    (add-hook 'after-init-hook 'global-company-mode))
+
+  (use-package dashboard
+    :config
+    (dashboard-setup-startup-hook))
+
+  (use-package ediff
+    :config
+    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+    (setq-default ediff-highlight-all-diffs 'nil)
+    (setq ediff-diff-options "-w"))
+
+  (use-package exec-path-from-shell
+    :config
+    ;; Add GOPATH to shell
+    (when (memq window-system '(mac ns))
+      (exec-path-from-shell-copy-env "GOPATH")
+      (exec-path-from-shell-copy-env "PYTHONPATH")
+      (exec-path-from-shell-initialize)))
+
+  (use-package expand-region
+    :bind
+    ("C-=" . er/expand-region))
+
+  (use-package flycheck)
+
+  (use-package counsel
+    :bind
+    ("M-x" . counsel-M-x)
+    ("C-x C-m" . counsel-M-x)
+    ("C-x C-f" . counsel-find-file)
+    ("C-x c k" . counsel-yank-pop))
+
+  (use-package counsel-projectile
+    :bind
+    ("C-x v" . counsel-projectile)
+    ("C-x c p" . counsel-projectile-ag)
+    :config
+    (counsel-projectile-on))
+
+  ; (use-package ivy
+  ;   :bind
+  ;   ("C-x s" . swiper)
+  ;   ("C-x C-r" . ivy-resume)
+  ;   :config
+  ;   (ivy-mode 1)
+  ;   (setq ivy-use-virtual-buffers nil)
+  ;   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history))
+
+  ; Decided to go with Helm instead of Ivy
+  (straight-use-package 'helm)
+
+  (use-package hlinum
+    :config
+    (hlinum-activate))
+
+  (use-package linum
+    :config
+    (setq linum-format " %3d ")
+    (global-linum-mode nil))
+
+  (use-package magit
+    :config
+
+    (setq magit-completing-read-function 'ivy-completing-read)
+
+    :bind
+    ;; Magic
+    ("C-x g s" . magit-status)
+    ("C-x g x" . magit-checkout)
+    ("C-x g c" . magit-commit)
+    ("C-x g p" . magit-push)
+    ("C-x g u" . magit-pull)
+    ("C-x g e" . magit-ediff-resolve)
+    ("C-x g r" . magit-rebase-interactive))
+
+  (use-package magit-popup)
+
+  (use-package multiple-cursors
+    :bind
+    ("C-S-c C-S-c" . mc/edit-lines)
+    ("C->" . mc/mark-next-like-this)
+    ("C-<" . mc/mark-previous-like-this)
+    ("C-c C->" . mc/mark-all-like-this))
+
+  (use-package neotree
+    :config
+    (setq neo-theme 'arrow
+          neotree-smart-optn t
+          neo-window-fixed-size nil)
+    ;; Disable linum for neotree
+    (add-hook 'neo-after-create-hook 'disable-neotree-hook))
+
+  (use-package org
+    :config
+    (setq org-directory "~/org-files"
+          org-default-notes-file (concat org-directory "/todo.org"))
+    :bind
+    ("C-c l" . org-store-link)
+    ("C-c a" . org-agenda))
+
+  (use-package org-projectile
+    :config
+    (org-projectile-per-project)
+    (setq org-projectile-per-project-filepath "todo.org"
+          org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
+
+  (use-package org-bullets
+    :config
+    (setq org-hide-leading-stars t)
+    (add-hook 'org-mode-hook
+              (lambda ()
+                (org-bullets-mode t))))
+
+  (use-package page-break-lines)
+
+  (use-package projectile
+    :config
+    (setq projectile-known-projects-file
+          (expand-file-name "projectile-bookmarks.eld" temp-dir))
+
+    (setq projectile-completion-system 'ivy)
+
+    (projectile-global-mode))
+
+  (use-package recentf
+    :config
+    (setq recentf-save-file (recentf-expand-file-name "~/.emacs.d/private/cache/recentf"))
+    (recentf-mode 1))
+
+  (use-package smartparens)
+
+  (use-package smex)
+
+  (use-package undo-tree
+    :config
+    ;; Remember undo history
+    (setq
+     undo-tree-auto-save-history nil
+     undo-tree-history-directory-alist `(("." . ,(concat temp-dir "/undo/"))))
+    (global-undo-tree-mode 1))
+
+  (use-package which-key
+    :config
+    (which-key-mode))
+
+  (use-package windmove
+    :bind
+    ("C-x <up>" . windmove-up)
+    ("C-x <down>" . windmove-down)
+    ("C-x <left>" . windmove-left)
+    ("C-x <right>" . windmove-right))
+
+  (use-package wgrep)
+
+  (use-package yasnippet
+    :config
+    (yas-global-mode 1))
+
+  (use-package dumb-jump
+    :config
+      (dumb-jump-mode))
+#+end_src
+* Coding
+** C
+#+name: c-setup
+#+begin_src emacs-lisp
+  ;; C-IDE based on https://github.com/tuhdo/emacs-c-ide-demo
+  (use-package cc-mode
+    :config
+    ;; Available C style:
+    ;; "gnu": The default style for GNU projects
+    ;; "k&r": What Kernighan and Ritchie, the authors of C used in their book
+    ;; "bsd": What BSD developers use, aka "Allman style" after Eric Allman.
+    ;; "whitesmith": Popularized by the examples that came with Whitesmiths C, an early commercial C compiler.
+    ;; "stroustrup": What Stroustrup, the author of C++ used in his book
+    ;; "ellemtel": Popular C++ coding standards as defined by "Programming in C++, Rules and Recommendations," Erik Nyquist and Mats Henricson, Ellemtel
+    ;; "linux": What the Linux developers use for kernel development
+    ;; "python": What Python developers use for extension modules
+    ;; "java": The default style for java-mode (see below)
+    ;; "user": When you want to define your own style
+    (setq c-default-style "linux") ;; set style to "linux"
+    (setq gdb-many-windows t ;; use gdb-many-windows by default
+          gdb-show-main t))
+
+  (use-package semantic
+    :config
+    (global-semanticdb-minor-mode 1)
+    (global-semantic-idle-scheduler-mode 1)
+    (global-semantic-stickyfunc-mode 1)
+    (semantic-mode 1))
+
+  (use-package ede
+    :config
+    ;; Enable EDE only in C/C++
+    (global-ede-mode))
+
+  (use-package ggtags
+    :config
+    (ggtags-mode 1)
+    (add-hook 'c-mode-common-hook
+              (lambda ()
+                (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+                  (ggtags-mode 1))))
+
+    (dolist (map (list ggtags-mode-map))
+      (define-key map (kbd "C-c g s") 'ggtags-find-other-symbol)
+      (define-key map (kbd "C-c g h") 'ggtags-view-tag-history)
+      (define-key map (kbd "C-c g r") 'ggtags-find-reference)
+      (define-key map (kbd "C-c g f") 'ggtags-find-file)
+      (define-key map (kbd "C-c g c") 'ggtags-create-tags)
+      (define-key map (kbd "C-c g u") 'ggtags-update-tags)
+      (define-key map (kbd "M-.")     'ggtags-find-tag-dwim)
+      (define-key map (kbd "M-,")     'pop-tag-mark)
+      (define-key map (kbd "C-c <")   'ggtags-prev-mark)
+      (define-key map (kbd "C-c >")   'ggtags-next-mark)))
+
+  ;; company-c-headers
+  (use-package company-c-headers
+    :init
+    (add-to-list 'company-backends 'company-c-headers))
+
+  (use-package cc-mode
+    :init
+    (define-key c-mode-map  [(tab)] 'company-complete)
+    (define-key c++-mode-map  [(tab)] 'company-complete))
+
+  ;; git@github.com:syohex/emacs-counsel-gtags.git
+  ;(use-package counsel-gtags
+  ;  :load-path "vendor/emacs-counsel-gtags/"
+  ;  :ensure nil
+  ;  :config
+  ;  (add-hook 'c-mode-hook 'counsel-gtags-mode)
+  ;  (add-hook 'c++-mode-hook counsel-gtags-mode)
+  ;
+  ;  (with-eval-after-load 'counsel-gtags
+  ;    (define-key counsel-gtags-mode-map (kbd "M-t") 'counsel-gtags-find-definition)
+  ;    ;(define-key counsel-gtags-mode-map (kbd "M-r") 'counsel-gtags-find-reference)
+  ;    ;(define-key counsel-gtags-mode-map (kbd "M-s") 'counsel-gtags-find-symbol)
+  ;    (define-key counsel-gtags-mode-map (kbd "M-,") 'counsel-gtags-pop-stack)))
+
+  (defun alexott/cedet-hook ()
+    (local-set-key (kbd "C-c C-j") 'semantic-ia-fast-jump)
+    (local-set-key (kbd "C-c C-s") 'semantic-ia-show-summary))
+
+  ;; hs-minor-mode for folding source code
+  (add-hook 'c-mode-common-hook 'hs-minor-mode)
+  (add-hook 'c-mode-common-hook 'alexott/cedet-hook)
+  (add-hook 'c-mode-hook 'alexott/cedet-hook)
+  (add-hook 'c++-mode-hook 'alexott/cedet-hook)
+#+end_src
+** Go
+#+name: go-setup
+#+begin_src emacs-lisp
+(use-package lsp-mode
+  :ensure t
+  :commands (lsp lsp-deferred)
+  :hook (go-mode . lsp-deferred))
+
+;; Set up before-save hooks to format buffer and add/delete imports.
+;; Make sure you don't have other gofmt/goimports hooks enabled.
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+
+;; Optional - provides fancier overlays.
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
+
+;; Company mode is a standard completion package that works well with lsp-mode.
+(use-package company
+  :ensure t
+  :config
+  ;; Optionally enable completion-as-you-type behavior.
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 1))
+
+;; Optional - provides snippet support.
+(use-package yasnippet
+  :ensure t
+  :commands yas-minor-mode
+  :hook (go-mode . yas-minor-mode))
+
+(provide 'lang-go)
+#+end_src
+** Cisco iOS
+#+name: ios-setup
+#+begin_src emacs-lisp
+  ;;; ios-config-mode.el --- edit Cisco IOS configuration files
+
+  ;; Copyright (C) 2004 Noufal Ibrahim <nkv at nibrahim.net.in>
+  ;;
+  ;; This program is not part of Gnu Emacs
+  ;;
+  ;; ios-config-mode.el is free software; you can
+  ;; redistribute it and/or modify it under the terms of the GNU General
+  ;; Public License as published by the Free Software Foundation; either
+  ;; version 2 of the License, or (at your option) any later version.
+  ;;
+  ;; This program is distributed in the hope that it will be useful,
+  ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ;; GNU General Public License for more details.
+  ;;
+  ;; You should have received a copy of the GNU General Public License
+  ;; along with this program; if not, write to the Free Software
+  ;; Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+  ;;; Code:
+
+  (defvar ios-config-mode-hook nil
+    "Hook called by \"ios-config-mode\"")
+
+  (defvar ios-config-mode-map
+    (let
+        ((ios-config-mode-map (make-keymap)))
+      (define-key ios-config-mode-map "\C-j" 'newline-and-indent)
+      ios-config-mode-map)
+    "Keymap for Cisco router configuration major mode")
+
+  ;; Font locking definitions.
+  (defvar ios-config-command-face 'ios-config-command-face "Face for basic router commands")
+  (defvar ios-config-toplevel-face 'ios-config-toplevel-face "Face for top level commands")
+  (defvar ios-config-no-face 'ios-config-no-face "Face for \"no\"")
+  (defvar ios-config-ipadd-face 'ios-config-ipadd-face "Face for IP addresses")
+
+  (defface ios-config-ipadd-face
+    '(
+      (((type tty) (class color)) (:foreground "yellow"))
+      (((type graphic) (class color)) (:foreground "LightGoldenrod"))
+      (t (:foreground "LightGoldenrod" ))
+      )
+    "Face for IP addresses")
+
+  (defface ios-config-command-face
+    '(
+      (((type tty) (class color)) (:foreground "cyan"))
+      (((type graphic) (class color)) (:foreground "cyan"))
+      (t (:foreground "cyan" ))
+      )
+    "Face for basic router commands")
+
+  (defface ios-config-toplevel-face
+    '(
+      (((type tty) (class color)) (:foreground "blue"))
+      (((type graphic) (class color)) (:foreground "lightsteelblue"))
+      (t (:foreground "lightsteelblue" ))
+      )
+    "Face for basic router commands")
+
+  (defface ios-config-no-face
+    '(
+      (t (:underline t))
+      )
+    "Face for \"no\"")
+
+
+  ;; (regexp-opt '("interface" "ip vrf" "controller" "class-map" "redundancy" "line" "policy-map" "router" "access-list" "route-map") t)
+  ;; (regexp-opt '("diagnostic" "hostname" "logging" "service" "alias" "snmp-server" "boot" "card" "vtp" "version" "enable") t)
+
+  (defconst ios-config-font-lock-keywords
+    (list
+     '( "\\<\\(access-list\\|c\\(?:lass-map\\|ontroller\\)\\|i\\(?:nterface\\|p vrf\\)\\|line\\|policy-map\\|r\\(?:edundancy\\|oute\\(?:-map\\|r\\)\\)\\)\\>". ios-config-toplevel-face)
+     '( "\\<\\(alias\\|boot\\|card\\|diagnostic\\|^enable\\|hostname\\|logging\\|s\\(?:ervice\\|nmp-server\\)\\|v\\(?:ersion\\|tp\\)\\)\\>" . ios-config-command-face)
+     '("\\<\\(no\\)\\>" . ios-config-no-face)
+     '("\\<\\([0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\\)\\>" . ios-config-ipadd-face)
+     )
+    "Font locking definitions for cisco router mode")
+
+  ;; Imenu definitions.
+  (defvar ios-config-imenu-expression
+    '(
+      ("Interfaces"        "^[\t ]*interface *\\(.*\\)" 1)
+      ("VRFs"              "^ip vrf *\\(.*\\)" 1)
+      ("Controllers"       "^[\t ]*controller *\\(.*\\)" 1)
+      ("Routing protocols" "^router *\\(.*\\)" 1)
+      ("Class maps"        "^class-map *\\(.*\\)" 1)
+      ("Policy maps"       "^policy-map *\\(.*\\)" 1)
+      ))
+
+  ;; Indentation definitions.
+  (defun ios-config-indent-line ()
+    "Indent current line as cisco router config line"
+    (let ((indent0 "^interface\\|redundancy\\|^line\\|^ip vrf \\|^controller\\|^class-map\\|^policy-map\\|router\\|access-list\\|route-map")
+          (indent1 " *main-cpu\\| *class\\W"))
+      (beginning-of-line)
+      (let ((not-indented t)
+            (cur-indent 0))
+        (cond ((or (bobp) (looking-at indent0) (looking-at "!")) ; Handles the indent0 and indent1 lines
+               (setq not-indented nil
+                     cur-indent 0))
+              ((looking-at indent1)
+               (setq not-indented nil
+                     cur-indent 1)))
+        (save-excursion ; Indents regular lines depending on the block they're in.
+          (while not-indented
+            (forward-line -1)
+            (cond ((looking-at indent1)
+                   (setq cur-indent 2
+                         not-indented nil))
+                  ((looking-at indent0)
+                   (setq cur-indent 1
+                         not-indented nil))
+                  ((looking-at "!")
+                   (setq cur-indent 0
+                         not-indented nil))
+                  ((bobp)
+                   (setq cur-indent 0
+                         not-indented nil)))))
+        (indent-line-to cur-indent))))
+
+
+  ;; Custom syntax table
+  (defvar ios-config-mode-syntax-table (make-syntax-table)
+    "Syntax table for cisco router mode")
+
+  (modify-syntax-entry ?_ "w" ios-config-mode-syntax-table) ;All _'s are part of words.
+  (modify-syntax-entry ?- "w" ios-config-mode-syntax-table) ;All -'s are part of words.
+  (modify-syntax-entry ?! "<" ios-config-mode-syntax-table) ;All !'s start comments.
+  (modify-syntax-entry ?\n ">" ios-config-mode-syntax-table) ;All newlines end comments.
+  (modify-syntax-entry ?\r ">" ios-config-mode-syntax-table) ;All linefeeds end comments.
+
+  ;; Entry point
+  (defun ios-config-mode  ()
+    "Major mode for editing Cisco IOS (tm) configuration files"
+    (interactive)
+    (kill-all-local-variables)
+    (set-syntax-table ios-config-mode-syntax-table)
+    (use-local-map ios-config-mode-map)
+    (set (make-local-variable 'font-lock-defaults) '(ios-config-font-lock-keywords))
+    (set (make-local-variable 'indent-line-function) 'ios-config-indent-line)
+    (set (make-local-variable 'comment-start) "!")
+    (set (make-local-variable 'comment-start-skip) "\\(\\(^\\|[^\\\\\n]\\)\\(\\\\\\\\\\)*\\)!+ *")
+    (setq imenu-case-fold-search nil)
+    (set (make-local-variable 'imenu-generic-expression) ios-config-imenu-expression)
+    (imenu-add-to-menubar "Imenu")
+    (setq major-mode 'ios-config-mode
+          mode-name "IOS configuration")
+    (run-hooks ios-config-mode-hook))
+
+  (add-to-list 'auto-mode-alist '("\\.cfg\\'" . ios-config-mode))
+#+end_src
+** Rust
+#+name: rust-setup
+#+begin_src emacs-lisp
+  ;; Rust development environment
+  ;; https://github.com/brotzeit/rustic#installation
+  (use-package rustic
+    :ensure
+    :bind (:map rustic-mode-map
+                ("M-j" . lsp-ui-imenu)
+                ("M-?" . lsp-find-references)
+                ("C-c C-c l" . flycheck-list-errors)
+                ("C-c C-c a" . lsp-execute-code-action)
+                ("C-c C-c r" . lsp-rename)
+                ("C-c C-c q" . lsp-workspace-restart)
+                ("C-c C-c Q" . lsp-workspace-shutdown)
+                ("C-c C-c s" . lsp-rust-analyzer-status))
+    :config
+    ;; uncomment for less flashiness
+    ;; (setq lsp-eldoc-hook nil)
+    ;; (setq lsp-enable-symbol-highlighting nil)
+    ;; (setq lsp-signature-auto-activate nil)
+
+    ;; comment to disable rustfmt on save
+    (setq rustic-format-on-save t)
+    (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
+
+  (defun rk/rustic-mode-hook ()
+    ;; so that run C-c C-c C-r works without having to confirm, but don't try to
+    ;; save rust buffers that are not file visiting. Once
+    ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
+    ;; no longer be necessary.
+    (when buffer-file-name
+      (setq-local buffer-save-without-query t))
+    (add-hook 'before-save-hook 'lsp-format-buffer nil t))
+
+  (use-package lsp-mode
+    :ensure
+    :commands lsp
+    :custom
+    ;; what to use when checking on-save. "check" is default, I prefer clippy
+    (lsp-rust-analyzer-cargo-watch-command "clippy")
+    (lsp-eldoc-render-all t)
+    (lsp-idle-delay 0.6)
+    ;; enable / disable the hints as you prefer:
+    (lsp-rust-analyzer-server-display-inlay-hints t)
+    (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+    (lsp-rust-analyzer-display-chaining-hints t)
+    (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
+    (lsp-rust-analyzer-display-closure-return-type-hints t)
+    (lsp-rust-analyzer-display-parameter-hints nil)
+    (lsp-rust-analyzer-display-reborrow-hints nil)
+    :config
+    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+  (use-package lsp-ui
+    :ensure
+    :commands lsp-ui-mode
+    :custom
+    (lsp-ui-peek-always-show t)
+    (lsp-ui-sideline-show-hover t)
+    (lsp-ui-doc-enable nil))
+
+  (defun org-babel-edit-prep:rust (babel-info)
+    (setq-local buffer-file-name (->> babel-info caddr (alist-get :tangle)))
+    (lsp))
+#+end_src
+** Haskell
+#+name: haskell-setup
+#+begin_src emacs-lisp
+  ;; haskell-mode configuration
+  ;; https://github.com/haskell/haskell-mode
+  (use-package haskell-mode
+    ;; haskell-mode swaps `C-m' and `C-j' behavior. Revert it back
+    :bind (:map haskell-mode-map
+                ("C-m" . newline)
+                ("C-j" . electric-newline-and-maybe-indent))
+    :config
+    (defun my-haskell-mode-hook ()
+      "Hook for `haskell-mode'."
+      (set (make-local-variable 'company-backends)
+           '((company-intero company-files))))
+    (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
+    (add-hook 'haskell-mode-hook 'company-mode)
+    (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+
+    ;; intero-mode for a complete IDE solution to haskell
+    ;; commercialhaskell.github.io/intero
+    (use-package intero
+      :config (add-hook 'haskell-mode-hook 'intero-mode))
+
+    ;; hindent - format haskell code automatically
+    ;; https://github.com/chrisdone/hindent
+    (when (executable-find "hindent")
+      (use-package hindent
+        :diminish hindent-mode
+        :config
+        (add-hook 'haskell-mode-hook #'hindent-mode)
+        ;; reformat the buffer using hindent on save
+        (setq hindent-reformat-buffer-on-save t))))
+#+end_src
+** Web
+#+name: web-setup
+#+begin_src emacs-lisp
+  (use-package web-mode
+    :bind (("C-c ]" . emmet-next-edit-point)
+           ("C-c [" . emmet-prev-edit-point)
+           ("C-c o b" . browse-url-of-file))
+    :mode
+    (("\\.js\\'" . web-mode)
+     ("\\.html?\\'" . web-mode)
+     ("\\.phtml?\\'" . web-mode)
+     ("\\.tpl\\.php\\'" . web-mode)
+     ("\\.[agj]sp\\'" . web-mode)
+     ("\\.as[cp]x\\'" . web-mode)
+     ("\\.erb\\'" . web-mode)
+     ("\\.mustache\\'" . web-mode)
+     ("\\.djhtml\\'" . web-mode)
+     ("\\.jsx$" . web-mode))
+    :config
+    (setq web-mode-markup-indent-offset 2
+          web-mode-css-indent-offset 2
+          web-mode-code-indent-offset 2)
+
+    (add-hook 'web-mode-hook 'jsx-flycheck)
+
+    ;; highlight enclosing tags of the element under cursor
+    (setq web-mode-enable-current-element-highlight t)
+
+    (defadvice web-mode-highlight-part (around tweak-jsx activate)
+      (if (equal web-mode-content-type "jsx")
+          (let ((web-mode-enable-part-face nil))
+            ad-do-it)
+        ad-do-it))
+
+    (defun jsx-flycheck ()
+      (when (equal web-mode-content-type "jsx")
+        ;; enable flycheck
+        (flycheck-select-checker 'jsxhint-checker)
+        (flycheck-mode)))
+
+    ;; editing enhancements for web-mode
+    ;; https://github.com/jtkDvlp/web-mode-edit-element
+    (use-package web-mode-edit-element
+      :config (add-hook 'web-mode-hook 'web-mode-edit-element-minor-mode))
+
+    ;; snippets for HTML
+    ;; https://github.com/smihica/emmet-mode
+    (use-package emmet-mode
+      :init (setq emmet-move-cursor-between-quotes t) ;; default nil
+      :diminish (emmet-mode . " e"))
+    (add-hook 'web-mode-hook 'emmet-mode)
+
+    (defun my-web-mode-hook ()
+      "Hook for `web-mode' config for company-backends."
+      (set (make-local-variable 'company-backends)
+           '((company-tern company-css company-web-html company-files))))
+    (add-hook 'web-mode-hook 'my-web-mode-hook)
+
+    ;; Enable JavaScript completion between <script>...</script> etc.
+    (defadvice company-tern (before web-mode-set-up-ac-sources activate)
+      "Set `tern-mode' based on current language before running company-tern."
+      (message "advice")
+      (if (equal major-mode 'web-mode)
+          (let ((web-mode-cur-language
+                 (web-mode-language-at-pos)))
+            (if (or (string= web-mode-cur-language "javascript")
+                    (string= web-mode-cur-language "jsx"))
+                (unless tern-mode (tern-mode))
+              (if tern-mode (tern-mode -1))))))
+    (add-hook 'web-mode-hook 'company-mode)
+
+    ;; to get completion data for angularJS
+    (use-package ac-html-angular :defer t)
+    ;; to get completion for twitter bootstrap
+    (use-package ac-html-bootstrap :defer t)
+
+    ;; to get completion for HTML stuff
+    ;; https://github.com/osv/company-web
+    (use-package company-web)
+
+    (add-hook 'web-mode-hook 'company-mode))
+
+  ;; configure CSS mode company backends
+  (use-package css-mode
+    :config
+    (defun my-css-mode-hook ()
+      (set (make-local-variable 'company-backends)
+           '((company-css company-dabbrev-code company-files))))
+    (add-hook 'css-mode-hook 'my-css-mode-hook)
+    (add-hook 'css-mode-hook 'company-mode))
+
+  ;; impatient mode - Live refresh of web pages
+  ;; https://github.com/skeeto/impatient-mode
+  (use-package impatient-mode
+    :diminish (impatient-mode . " i")
+    :commands (impatient-mode))
+#+end_src
+** Python
+#+name: python-setup
+#+begin_src emacs-lisp
+  ;;; package --- python configs
+  ;;; Commentary:
+  ;;; Contains my python configs
+
+  ;;; Code:
+
+  (use-package python
+    :mode ("\\.py" . python-mode)
+    :config
+    (use-package elpy
+      :init
+      (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
+      :config
+      (setq elpy-rpc-backend "jedi")
+      (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+      flycheck-python-flake8-executable "/usr/local/bin/flake8"
+      :bind (:map elpy-mode-map
+                ("M-." . elpy-goto-definition)
+                ("M-," . pop-tag-mark)))
+    (elpy-enable))
+
+  (use-package pip-requirements
+    :config
+    (add-hook 'pip-requirements-mode-hook #'pip-requirements-auto-complete-setup))
+
+  (use-package py-autopep8)
+
+
+  (use-package pyenv-mode
+    :if
+    (executable-find "pyenv")
+    :init
+    (add-to-list 'exec-path "~/.pyenv/shims")
+    (setenv "WORKON_HOME" "~/.pyenv/versions/")
+    :config
+    (pyenv-mode)
+    :bind
+    ("C-x p e" . pyenv-activate-current-project))
+
+  (defun pyenv-init()
+    (setq global-pyenv (replace-regexp-in-string "\n" "" (shell-command-to-string "pyenv global")))
+    (message (concat "Setting pyenv version to " global-pyenv))
+    (pyenv-mode-set global-pyenv)
+    (defvar pyenv-current-version nil global-pyenv))
+
+  (defun pyenv-activate-current-project ()
+    "Automatically activates pyenv version if .python-version file exists."
+    (interactive)
+    (f-traverse-upwards
+     (lambda (path)
+       (message path)
+       (let ((pyenv-version-path (f-expand ".python-version" path)))
+         (if (f-exists? pyenv-version-path)
+            (progn
+              (setq pyenv-current-version (s-trim (f-read-text pyenv-version-path 'utf-8)))
+              (pyenv-mode-set pyenv-current-version)
+              (pyvenv-workon pyenv-current-version)
+              (message (concat "Setting virtualenv to " pyenv-current-version))))))))
+
+  (add-hook 'after-init-hook 'pyenv-init)
+  (add-hook 'projectile-after-switch-project-hook 'pyenv-activate-current-project)
+
+  (use-package jedi
+    :ensure t)
+  ;;(add-hook 'python-mode-hook 'jedi:setup)
+  (setq jedi:complete-on-dot t)
+
+  ;; Jupyter Notebooks!
+  (use-package jupyter
+    :straight t)
+  (use-package ein
+    :ensure t)
+#+end_src
+** GDScript
+-[[https://github.com/godotengine/emacs-gdscript-mode][GDscript-mode github]]
+  #+name: gdscript-install
+  #+begin_src emacs-lisp
+    (use-package gdscript-mode
+	:straight (gdscript-mode
+		   :type git
+		   :host github
+		   :repo "godotengine/emacs-gdscript-mode"))
+  #+end_src
+
+** Ansible
+
+#+name: ansible
+#+begin_src emacs-lisp
+  (use-package ansible
+    :ensure t)
+#+end_src
+
+** Language Server Protocol (LSP)
+- [[https://emacs-lsp.github.io/lsp-mode/][LSP github]]
+  #+name: lsp-install
+  #+begin_src emacs-lisp
+    (use-package lsp-mode
+      :init
+      ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+      (setq lsp-keymap-prefix "C-c l")
+      :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+             (gdscript-mode . lsp)
+             ;; if you want which-key integration
+             (lsp-mode . lsp-enable-which-key-integration))
+      :commands lsp)
+
+    ;; optionally
+    (use-package lsp-ui :commands lsp-ui-mode)
+    ;; if you are helm user
+    (use-package helm-lsp :commands helm-lsp-workspace-symbol)
+    (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+    ;; optionally if you want to use debugger
+    (use-package dap-mode)
+    ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+    ;; optional if you want which-key integration
+    (use-package which-key
+        :config
+        (which-key-mode))
+  #+end_src
+** Company
+#+name: company-setup
+#+begin_src emacs-lisp
+  (use-package company
+    :ensure
+    :custom
+    (company-idle-delay 0.5) ;; how long to wait until popup
+    ;; (company-begin-commands nil) ;; uncomment to disable popup
+    :bind
+    (:map company-active-map
+                ("C-n". company-select-next)
+                ("C-p". company-select-previous)
+                ("M-<". company-select-first)
+                ("M->". company-select-last)
+                ("<tab>". tab-indent-or-complete)
+                ("TAB". tab-indent-or-complete)))
+
+  ;; Enables company autocomplete in org-babel
+  (defun add-pcomplete-to-capf ()
+    (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+  (add-hook 'org-mode-hook #'add-pcomplete-to-capf)
+#+end_src
+** Yasnippet
+#+name: yasnippet-setup
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :ensure
+    :config
+    (yas-reload-all)
+    (add-hook 'prog-mode-hook 'yas-minor-mode)
+    (add-hook 'text-mode-hook 'yas-minor-mode))
+
+  ;;; Yasnippet Company integration:
+
+  (defun company-yasnippet-or-completion ()
+    (interactive)
+    (or (do-yas-expand)
+        (company-complete-common)))
+
+  (defun check-expansion ()
+    (save-excursion
+      (if (looking-at "\\_>") t
+        (backward-char 1)
+        (if (looking-at "\\.") t
+          (backward-char 1)
+          (if (looking-at "::") t nil)))))
+
+  (defun do-yas-expand ()
+    (let ((yas/fallback-behavior 'return-nil))
+      (yas/expand)))
+
+  (defun tab-indent-or-complete ()
+    (interactive)
+    (if (minibufferp)
+        (minibuffer-complete)
+      (if (or (not yas/minor-mode)
+              (null (do-yas-expand)))
+          (if (check-expansion)
+              (company-complete-common)
+            (indent-for-tab-command)))))
+#+end_src
+** Indentation improvements
+#+name: indentation improvements
+#+begin_src emacs-lisp
+  ; https://github.com/Malabarba/aggressive-indent-mode
+  ;(use-package aggressive-indent
+  ;  :ensure t)
+  ;;(add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+  ;;(add-hook 'css-mode-hook #'aggressive-indent-mode)
+  ; To enable aggressive-indent for specific modes:
+  ; (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+  ; (add-hook 'python-mode-hook #'aggressive-indent-mode)
+  ;(add-hook 'org-mode-hook #'aggressive-indent-mode)
+  ; Global aggressive-indent with exclusions:
+  ; (global-aggressive-indent-mode 1)
+  ; (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
+
+  ; Tabs are Evil
+  ; https://www.emacswiki.org/emacs/TabsAreEvil
+
+  ; Smart tabs is the solution suggested in former article.
+  (use-package smart-tabs-mode
+    :ensure t)
+  ; ^ With this, you can retab the whole file by pressing ‘C-x h C-M-\’.
+
+  ; Disable smart tabs globally, enable only for specific modes.
+  (setq-default indent-tabs-mode nil)
+  ; Hook for C mode
+  (add-hook 'c-mode-common-hook
+            (lambda () (setq indent-tabs-mode t)))
+
+  (use-package highlight-indent-guides
+    :ensure t)
+
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+#+end_src
+
+** SX (Stack Overflow)
+- [[https://github.com/vermiculus/sx.el/][SX github]]
+  #+name: sx-install
+  #+begin_src emacs-lisp
+    (require 'use-package)
+
+    (use-package sx
+      :config
+      (bind-keys :prefix "C-c s"
+		 :prefix-map my-sx-map
+		 :prefix-docstring "Global keymap for SX."
+		 ("q" . sx-tab-all-questions)
+		 ("i" . sx-inbox)
+		 ("o" . sx-open-link)
+		 ("u" . sx-tab-unanswered-my-tags)
+		 ("a" . sx-ask)
+		 ("s" . sx-search)))
+  #+end_src
+
+** Color identifiers
+  #+name: color-identifiers-mode-install
+  #+begin_src emacs-lisp
+    (use-package color-identifiers-mode
+      :ensure t)
+    (add-hook 'after-init-hook 'global-color-identifiers-mode)
+  #+end_src
+
+** Fill column indicator
+  #+name: fill-column-indicator-install
+  #+begin_src emacs-lisp
+    (use-package fill-column-indicator
+      :ensure t)
+    (add-hook 'prog-mode-hook #'display-fill-column-indicator-mode)
+  #+end_src
+
+** Docker
+- [[https://github.com/Silex/docker.el][Github page, includes documentation]]
+#+name: docker
+#+begin_src emacs-lisp
+  (use-package docker
+    :ensure t
+    :bind ("C-c d" . docker))
+#+end_src
+
+** Tramp
+For remote programming.
+- [[https://www.emacswiki.org/emacs/TrampMode][Tramp docs on EmacsWiki]]
+
+#+name: tramp
+#+begin_src emacs-lisp
+  (setq tramp-default-method "ssh")
+#+end_src
+
+** Org-Babel
+#+name: ob-setup
+#+begin_src emacs-lisp
+  ;;; org-babel setup
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (haskell . nil)
+     ;;(ledger . t)
+     (shell . t)
+     (python . t)
+     (ruby . t)
+     (jupyter . t)
+     (ein . t)))
+#+end_src
+* General
+  #+name: general
+  #+begin_src emacs-lisp
+    ; I don't like the scratch buffer in my face :(
+    (setq initial-scratch-message nil)
+    (kill-buffer "*scratch*")
+
+    ; restore previous buffers
+    (desktop-save-mode 1)
+
+    ; so I can use C-x b to cycle buffers
+    (ido-mode 1)
+
+    (setq org-src-tab-acts-natively t)
+
+    ; Flyspell spell checker
+    (setq ispell-program-name "hunspell")
+    (setq ispell-local-dictionary "en_US")
+    (setq ispell-local-dictionary-alist
+      '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)))
+    (flyspell-mode 1)
+
+    ; Autocomplete from company-mode
+    (add-hook 'after-init-hook 'global-company-mode)
+
+    #+end_src
+* Package Management
+  #+name: quelpa-setup
+  #+begin_src emacs-lisp
+  ;;; Quelpa
+    (unless (package-installed-p 'quelpa)
+      (with-temp-buffer
+        (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+        (eval-buffer)
+        (quelpa-self-upgrade)))
+  #+end_src
+* Org-mode
+** Org-Contrib
+
+ob-ledger got moved to org-contrib, therefore I need to install it for ledger support.
+
+  #+begin_src emacs-lisp
+    (use-package org-contrib
+        :ensure t)
+  #+end_src
+
+** Configuration
+   #+name org-mode-config
+   #+begin_src emacs-lisp
+     (with-eval-after-load 'org
+       (setq org-directory "~/Documents"))
+
+					     ; Do not truncate lines and enable word wrap
+     (set-default 'truncate-lines nil)
+     (set-default 'word-wrap t)
+     (setq helm-buffers-truncate-lines nil)
+     (setq org-startup-truncated nil)
+
+					     ; Set bullets for heading levels
+     (setq org-bullets-bullet-list (quote ("♚" "♛" "♜" "♝" "♞" "♟")))
+
+					     ; Fold content on startup
+     (setq org-startup-folded t)
+
+					     ; Autocomplete
+					     ;(add-to-list 'ac-modes 'org-mode)
+					     ;(ac-set-trigger-key "TAB")
+#+end_src
+
+** Agenda
+  #+name: org-agenda-config
+  #+begin_src emacs-lisp
+    (setq org-agenda-files '("~/Documents"))
+  #+end_src
+
+  #+name: org-super-agenda-install
+  #+begin_src emacs-lisp
+    (use-package org-super-agenda :ensure t)
+  #+end_src
+
+  #+name: org-super-agenda-config
+  #+begin_src emacs-lisp
+    (let ((org-super-agenda-groups
+	   '(;; Each group has an implicit boolean OR operator between its selectors.
+	     (:name "Today"  ; Optionally specify section name
+		    :time-grid t  ; Items that appear on the time grid
+		    :todo "TODAY")  ; Items that have this TODO keyword
+	     (:name "Important"
+		    ;; Single arguments given alone
+		    :tag "bills"
+		    :priority "A")
+	     ;; Set order of multiple groups at once
+	     (:order-multi (2 (:name "Shopping in town"
+				     ;; Boolean AND group matches items that match all subgroups
+				     :and (:tag "shopping" :tag "@town"))
+			      (:name "Food-related"
+				     ;; Multiple args given in list with implicit OR
+				     :tag ("food" "dinner"))
+			      (:name "Personal"
+				     :habit t
+				     :tag "personal")
+			      (:name "Space-related (non-moon-or-planet-related)"
+				     ;; Regexps match case-insensitively on the entire entry
+				     :and (:regexp ("space" "NASA")
+						   ;; Boolean NOT also has implicit OR between selectors
+						   :not (:regexp "moon" :tag "planet")))))
+	     ;; Groups supply their own section names when none are given
+	     (:todo "WAITING" :order 8)  ; Set order of this section
+	     (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
+		    ;; Show this group at the end of the agenda (since it has the
+		    ;; highest number). If you specified this group last, items
+		    ;; with these todo keywords that e.g. have priority A would be
+		    ;; displayed in that group instead, because items are grouped
+		    ;; out in the order the groups are listed.
+		    :order 9)
+	     (:priority<= "B"
+			  ;; Show this section after "Today" and "Important", because
+			  ;; their order is unspecified, defaulting to 0. Sections
+			  ;; are displayed lowest-number-first.
+			  :order 1)
+	     ;; After the last group, the agenda will display items that didn't
+	     ;; match any of these groups, with the default order position of 99
+	     )))
+      (org-agenda nil "a"))
+  #+end_src
+
+** Ledger
+
+Depends on org-contrib:
+
+  #+name: ledger-mode-install
+  #+begin_src emacs-lisp
+    (use-package ledger-mode
+      :ensure t)
+  #+end_src
+
+** Projectile
+- [[https://docs.projectile.mx/projectile/usage.html][Projectile Documentation]]
+  #+name: projectile-install
+  #+begin_src emacs-lisp
+    (use-package projectile
+      :ensure t)
+  #+end_src
+
+  #+name: projectile-config
+  #+begin_src emacs-lisp
+    (projectile-mode +1)
+    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  #+end_src
+
+** Roam
+- [[https://github.com/org-roam/org-roam][Org-roam github]]
+  #+name: org-roam-install
+  #+begin_src emacs-lisp
+    (use-package org-roam
+	  :ensure t
+	  :hook
+	  (after-init . org-roam-mode)
+	  :custom
+	  (org-roam-directory "~/Documents")
+	  :bind (:map org-roam-mode-map
+		  (("C-c n l" . org-roam)
+		   ("C-c n f" . org-roam-find-file)
+		   ("C-c n g" . org-roam-graph))
+		  :map org-mode-map
+		  (("C-c n i" . org-roam-insert))
+		  (("C-c n I" . org-roam-insert-immediate))))
+  #+end_src
+
+** Download
+  #+name: org-download-install
+  #+begin_src emacs-lisp
+    (use-package org-download
+      :ensure t)
+    ;; Drag-and-drop to `dired`
+    (add-hook 'dired-mode-hook 'org-download-enable)
+  #+end_src
+
+** Rifle
+  #+name: org-rifle-helm-install
+  #+begin_src emacs-lisp
+    (use-package helm-org-rifle
+      :ensure t)
+  #+end_src
+
+** Hugo
+  #+name: hugo-install
+  #+begin_src emacs-lisp
+    (use-package ox-hugo
+      :ensure t            ;Auto-install the package from Melpa (optional)
+      :after ox)
+  #+end_src
+* EXWM
+  - [[https://wiki.archlinux.org/title/EXWM][Arch wiki page for EXWM]]
+  #+name: EXWM
+  #+begin_src emacs-lisp
+    ;;; My EXWM configuation using org-babel - commented out because I'm not using it currently.
+    ;; (org-babel-load-file "~/.emacs.d/babel/exwm.org")
+  #+end_src
+* Programs
+** Keepass
+  #+name: keepass-mode-install
+  #+begin_src emacs-lisp
+    (use-package keepass-mode
+      :ensure t)
+  #+end_src
+** vterm
+   #+name: vterm-install
+   #+begin_src emacs-lisp
+     (use-package vterm
+       :ensure t)
+   #+end_src
+* Interface
+- [[https://github.com/ema2159/centaur-tabs][Centaur tabs github]]
+  #+name: centaur-tabs-install
+  #+begin_src emacs-lisp
+    (use-package centaur-tabs
+      :demand
+      :bind
+      ("C-<prior>" . centaur-tabs-backward)
+      ("C-<next>" . centaur-tabs-forward))
+
+  #+end_src
+
+  #+name: centaur-tabs-config
+  #+begin_src emacs-lisp
+    (centaur-tabs-mode t)
+    (setq centaur-tabs-set-icons t)
+    (setq centaur-tabs-style "bar")
+    (setq centaur-tabs-set-bar 'under)
+    (setq x-underline-at-descent-line t)
+    (setq centaur-tabs-cycle-scope 'tabs)
+  #+end_src
+** Dashboard
+- [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard github]]
+  #+name: dashboard
+  #+begin_src emacs-lisp
+    (use-package dashboard
+      :ensure t
+      :config
+      (dashboard-setup-startup-hook))
+  #+end_src
+
+  #+name: dashboard-config
+  #+begin_src emacs-lisp
+    (setq dashboard-items '((recents  . 5)
+			    (bookmarks . 5)
+			    (projects . 5)
+			    (agenda . 5)
+			    (registers . 5)))
+    (setq dashboard-set-navigator t)
+    (setq dashboard-week-agenda t)
+    (setq dashboard-startup-banner 'logo)
+  #+end_src
+
+** Zooms
+- [[https://github.com/cyrus-and/zoom][Zoom github]]
+  #+name: zoom-install
+  #+begin_src emacs-lisp
+    (use-package zoom
+      :ensure t)
+  #+end_src
+
+  #+name: zoom-config
+  #+begin_src emacs-lisp
+    (custom-set-variables
+     '(zoom-size '(0.618 . 0.618)))
+  #+end_src
+
+** Treemacs
+- [[https://github.com/Alexander-Miller/treemacs][Treemacs github]]
+  #+name: treemacs-install
+  #+begin_src emacs-lisp
+    (use-package treemacs
+      :ensure t
+      :defer t
+      :init
+      (with-eval-after-load 'winum
+	(define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+      :config
+      (progn
+	(setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+	      treemacs-deferred-git-apply-delay      0.5
+	      treemacs-directory-name-transformer    #'identity
+	      treemacs-display-in-side-window        t
+	      treemacs-eldoc-display                 t
+	      treemacs-file-event-delay              5000
+	      treemacs-file-extension-regex          treemacs-last-period-regex-value
+	      treemacs-file-follow-delay             0.2
+	      treemacs-file-name-transformer         #'identity
+	      treemacs-follow-after-init             t
+	      treemacs-git-command-pipe              ""
+	      treemacs-goto-tag-strategy             'refetch-index
+	      treemacs-indentation                   2
+	      treemacs-indentation-string            " "
+	      treemacs-is-never-other-window         nil
+	      treemacs-max-git-entries               5000
+	      treemacs-missing-project-action        'ask
+	      treemacs-move-forward-on-expand        nil
+	      treemacs-no-png-images                 nil
+	      treemacs-no-delete-other-windows       t
+	      treemacs-project-follow-cleanup        nil
+	      treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+	      treemacs-position                      'left
+	      treemacs-read-string-input             'from-child-frame
+	      treemacs-recenter-distance             0.1
+	      treemacs-recenter-after-file-follow    nil
+	      treemacs-recenter-after-tag-follow     nil
+	      treemacs-recenter-after-project-jump   'always
+	      treemacs-recenter-after-project-expand 'on-distance
+	      treemacs-show-cursor                   nil
+	      treemacs-show-hidden-files             t
+	      treemacs-silent-filewatch              nil
+	      treemacs-silent-refresh                nil
+	      treemacs-sorting                       'alphabetic-asc
+	      treemacs-space-between-root-nodes      t
+	      treemacs-tag-follow-cleanup            t
+	      treemacs-tag-follow-delay              1.5
+	      treemacs-user-mode-line-format         nil
+	      treemacs-user-header-line-format       nil
+	      treemacs-width                         35
+	      treemacs-workspace-switch-cleanup      nil)
+
+	;; The default width and height of the icons is 22 pixels. If you are
+	;; using a Hi-DPI display, uncomment this to double the icon size.
+	;;(treemacs-resize-icons 44)
+
+	(treemacs-follow-mode t)
+	(treemacs-filewatch-mode t)
+	(treemacs-fringe-indicator-mode 'always)
+	(pcase (cons (not (null (executable-find "git")))
+		     (not (null treemacs-python-executable)))
+	  (`(t . t)
+	   (treemacs-git-mode 'deferred))
+	  (`(t . _)
+	   (treemacs-git-mode 'simple))))
+      :bind
+      (:map global-map
+	    ("M-0"       . treemacs-select-window)
+	    ("C-x t 1"   . treemacs-delete-other-windows)
+	    ("C-x t t"   . treemacs)
+	    ("C-x t B"   . treemacs-bookmark)
+	    ("C-x t C-t" . treemacs-find-file)
+	    ("C-x t M-t" . treemacs-find-tag)))
+
+    (use-package treemacs-projectile
+      :after (treemacs projectile)
+      :ensure t)
+
+    (use-package treemacs-icons-dired
+      :after (treemacs dired)
+      :ensure t
+      :config (treemacs-icons-dired-mode))
+
+    (use-package treemacs-magit
+      :after (treemacs magit)
+      :ensure t)
+  #+end_src
+
+** Doom Modeline
+- [[https://seagle0128.github.io/doom-modeline/][Doom Modeline website]]
+  #+name: doom-modeline-install
+  #+begin_src emacs-lisp
+    (use-package doom-modeline
+      :ensure t
+      :init (doom-modeline-mode 1))
+
+    ;; Or use this
+    ;; Use `window-setup-hook' if the right segment is displayed incorrectly
+    (use-package doom-modeline
+      :ensure t
+      :hook (after-init . doom-modeline-mode))
+
+    (use-package all-the-icons
+      :ensure t)
+
+  #+end_src
+~This package requires the fonts included with all-the-icons to be installed. Run [M-x all-the-icons-install-fonts] to do so. Please refer to the installation guide.~
+
+** Dash
+  #+name: dash-install
+  #+begin_src emacs-lisp
+    (use-package dash
+      :ensure t)
+    (use-package helm-dash
+      :ensure t)
+  #+end_src
+
+** Dumb Jump
+- [[https://github.com/jacktasia/dumb-jump][dumb-jump github]]
+  #+name: dumb-jump-install
+  #+begin_src emacs-lisp
+    (use-package dumb-jump
+      :ensure t)
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+  #+end_src
+
+** imenu-anywhere
+  #+name: imenu-anywhere-install
+  #+begin_src emacs-lisp
+    (use-package imenu-anywhere
+      :ensure t)
+  #+end_src
+
+** imenu-list
+  #+name: imenu-list-install
+  #+begin_src emacs-lisp
+    (use-package imenu-list
+      :ensure t)
+  #+end_src
+
+** Nyan Mode
+   #+name: nyan-mode-install
+   #+begin_src emacs-lisp
+     (use-package nyan-mode
+       :ensure t)
+     (nyan-mode +1)
+   #+end_src
+
+** Beacon Mode
+   #+name: beacon-mode-install
+   #+begin_src emacs-lisp
+     (use-package beacon
+       :ensure t)
+     (beacon-mode 1)
+   #+end_src
+* Feeds
+** Elfeed
+- [[https://github.com/skeeto/elfeed][Elfeed Github]]
+  #+name: elfeed-install
+  #+begin_src emacs-lisp
+  (use-package elfeed
+    :ensure t)
+  #+end_src
+
+  #+name: elfeed-org-install
+  #+begin_src emacs-lisp
+    (use-package elfeed-org
+      :ensure t)
+  #+end_src
+
+  #+name: elfeed-org-config
+  #+begin_src emacs-lisp
+    ;; Initialize elfeed-org
+    ;; This hooks up elfeed-org to read the configuration when elfeed
+    ;; is started with =M-x elfeed=
+    (elfeed-org)
+
+    ;; Optionally specify a number of files containing elfeed
+    ;; configuration. If not set then the location below is used.
+    ;; Note: The customize interface is also supported.
+    (setq rmh-elfeed-org-files (list "~/Documents/rss.org"))
+  #+end_src
+
+* Communication
+** Email
+- [[http://juanjose.garciaripoll.com/blog/emacs-wanderlust-email/index.html][Configuration example]]
+  #+name: wanderlust-install
+  #+begin_src emacs-lisp
+    (use-package wl
+      :ensure wanderlust
+      :init
+      (autoload 'wl "wl" "Wanderlust" t))
+    (add-hook 'mime-view-mode-hook #'(lambda () (setq show-trailing-whitespace nil)))
+  #+end_src
+
+* Misc
+** XKCD + dashboard
+  #+name: xkcd
+  #+begin_src emacs-lisp
+      (use-package xkcd
+	:ensure t)
+
+    ;;  ;; to get a rand comic and to set dashboard image (png)
+    ;;  (let ((rand-id-xkcd nil))
+    ;;    (with-temp-buffer
+    ;;      (setq rand-id-xkcd (string-to-number (xkcd-rand)))
+    ;;      (xkcd-kill-buffer))
+    ;;    (let ((last-xkcd-png (concat xkcd-cache-dir (number-to-string rand-id-xkcd) ".png")))
+    ;;      (if (file-exists-p last-xkcd-png)
+    ;;      (setq dashboard-banner-official-png last-xkcd-png))))
+  #+end_src
+
+** Restart Emacs
+  #+name: restart-emacs-install
+  #+begin_src emacs-lisp
+    (use-package restart-emacs
+      :ensure t)
+  #+end_src
+
+** F
+  #+name: f-install
+  #+begin_src emacs-lisp
+    (use-package f
+      :ensure t)
+  #+end_src
+
+** S
+  #+name: s-install
+  #+begin_src emacs-lisp
+    (use-package s
+      :ensure t)
+  #+end_src
+
+** CTRLF
+  #+name: ctrlf-install
+  #+begin_src emacs-lisp
+    (use-package ctrlf
+      :ensure t)
+  #+end_src
+
+** IDO
+  #+name: ido-install
+  #+begin_src emacs-lisp
+    (use-package ido
+      :ensure t)
+  #+end_src
+
+* Work Related
+** Trello
+   [[https://org-trello.github.io/][Github page]]
+  #+name: trello
+  #+begin_src emacs-lisp
+    (use-package org-trello
+      :ensure t)
+    (custom-set-variables '(org-trello-files '("~/Documents/Org-Notebooks/miningstore-trello.org")))
+  #+end_src

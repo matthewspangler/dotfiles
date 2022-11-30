@@ -1,0 +1,42 @@
+!! Global
+*font: xft:Inconsolata for Powerline:size=11,xft:DejaVu Sans Mono for Powerline:size=9
+
+!! URxvt
+URxvt.internalBorder:    1
+URxvt.externalBorder:    1
+! Set depth to make transparency work.
+URxvt*depth: 32
+URxvt.saveLines:         10000
+URxvt*geometry:          96x23
+URxvt*terminalName:      rxvt-unicode-256color
+URxvt*visualBell:        false
+URxvt.perl-ext-common: tabbed
+!urxvt*blurRadius: 10
+!URxvt.font: xft:DejaVu Sans Mono for Powerline:size=9
+!URxvt.letterspace: -2
+URxvt.locale: true
+URxvt.utf8: true
+
+!! Scrollbar
+URxvt.scrollBar:         false
+URxvt*scrollTtyOutput:   false
+URxvt*scrollWithBuffer:  true
+URxvt*scrollTtyKeypress: true
+!URxvt*transparent: true
+!URxvt*shading: 25
+!URxvt.letterSpace:       true
+
+!! Rofi
+rofi.modi: run,ssh,window
+rofi.separator-style: solid
+rofi.show-icons: true
+rofi.drun-icon-theme: Paper
+rofi.sidebar-mode:    true
+rofi.padding:         10
+rofi.bw:              0
+rofi.scrollbar-width: 0
+rofi.line-margin:     0
+rofi.lines: 10
+rofi.terminal: urxvt
+rofi.case-sensitive: false
+

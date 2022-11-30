@@ -1,0 +1,29 @@
+- hosts: localhost
+  connection: local
+  remote_user: "{{ localuser }}"
+  become: true
+  vars:
+    oh_my_zsh_theme: agnoster
+    oh_my_zsh_plugins:
+      - git
+      - aws
+      - archlinux
+      - autopep8
+      - cp
+      - docker
+      - docker-compose
+      - emacs
+      - kubectl
+      - man
+      - rust
+      - python
+      - systemd
+      - tmux
+      - thefuck
+      - ufw
+      - virtualenv
+      - vscode
+    users:
+      - username: "{{ localuser }}"
+  roles:
+    - gantsign.oh-my-zsh

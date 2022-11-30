@@ -1,0 +1,15 @@
+- name: Update pacman cache
+  become: yes
+  community.general.pacman:
+    update_cache: true
+
+- name: Install bash
+  become: yes
+  community.general.pacman:
+    name: bash
+    state: present
+
+- name: Symlink bash dotfiles
+  shell: stow -d ~/dotfiles/home -t ~/ {{ item }}
+  with_items:
+    - bash

@@ -1,0 +1,3 @@
+!.gitignore
+galaxy/roles/*
+!galaxy/roles/.gitkeep

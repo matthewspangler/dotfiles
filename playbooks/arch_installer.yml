@@ -1,0 +1,20 @@
+---
+- hosts: localhost
+  connection: local
+  remote_user: "{{ localuser }}"
+  vars:
+    user: "{{ localuser }}"
+  roles:
+    - core
+    - zsh
+    - emacs
+    # - plasma
+    # - themeing
+    - bash
+    # - weechat
+    - xonsh
+    - vim
+    # - tmux
+    # - xresources
+    # - wanderlust
+    # - exwm
