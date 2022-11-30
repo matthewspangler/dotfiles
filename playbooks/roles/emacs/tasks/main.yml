@@ -134,6 +134,6 @@
     state: present
 
 - name: Symlink emacs dotfiles
-  shell: stow -d ~/dotfiles/home -t ~/ {{ item }}
+  shell: stow --no-folding -d ~/dotfiles/home -t ~/ {{ item }}
   with_items:
     - emacs
