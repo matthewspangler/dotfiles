@@ -33,26 +33,6 @@ title() {
     printf "\n${color}$1${nc}\n"
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-archlinux_install () {
-  # Don't ask for confirmation, and don't reinstall:
-  title "Install ansible"
-  sudo pacman -Syy --noconfirm --needed ansible
-
-  title "Install galaxy powered collections"
-  ansible-galaxy collection install -r ~/dotfiles/galaxy/requirements.yml
-
-  title "Install galaxy powered roles"
-  ansible-galaxy install --roles-path=~/dotfiles/galaxy/roles -r ~/dotfiles/galaxy/requirements.yml
-  ansible-playbook -K ~/dotfiles/galaxy/main.yml -e "localuser=$USER"
-
-  title "Run dotfiles ansible installer"
-  # I use two different user variables here because of ansible-role-zsh requirements:
-  ansible-playbook ~/dotfiles/playbooks/arch_installer.yml --extra-vars="localuser=$USER" -vvv
-=======
-=======
->>>>>>> 8d14638 (Added kubernetes and other tweaks to emacs config)
 setup_ansible() {
     PASS_STRING=""
     if [[ $1 ]];
@@ -62,10 +42,6 @@ setup_ansible() {
     echo $1
     title "Install ansible"
     $PASS_STRING sudo pacman -Syy --noconfirm --needed ansible
-<<<<<<< HEAD
->>>>>>> 8d14638 (Added kubernetes and other tweaks to emacs config)
-=======
->>>>>>> 8d14638 (Added kubernetes and other tweaks to emacs config)
 }
 
 setup_galaxy_collections() {
