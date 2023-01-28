@@ -1,4 +1,4 @@
- 
+
 - name: Update pacman cache
   become: yes
   community.general.pacman:

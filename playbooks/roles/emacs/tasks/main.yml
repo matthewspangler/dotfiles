@@ -97,6 +97,12 @@
   ansible.builtin.pip:
     name: rope
 
+- name: Remove rust to avoid conflict with rustup
+  become: yes
+  community.general.pacman:
+    name: rust
+    state: absent
+
 - name: Install Rust via rustup
   become: yes
   community.general.pacman:
@@ -137,3 +143,33 @@
   shell: stow --no-folding -d ~/dotfiles/home -t ~/ {{ item }}
   with_items:
     - emacs
+
+- name: Install Bitlbee
+  kewlfft.aur.aur:
+    name: bitlbee
+    use: paru
+    state: present
+
+- name: Install pidgin
+  become: yes
+  community.general.pacman:
+    name: pidgin
+    state: present
+
+- name: Install purple-plugin-pack
+  become: yes
+  community.general.pacman:
+    name: purple-plugin-pack
+    state: present
+
+- name: Install purple-facebook
+  become: yes
+  community.general.pacman:
+    name: purple-facebook
+    state: present
+
+- name: Install purple-discord-git
+  kewlfft.aur.aur:
+    name: purple-discord-git
+    use: paru
+    state: present

@@ -7,7 +7,7 @@
 ;;; Code:
 
 (add-to-list 'load-path (concat user-emacs-directory "elisp"))
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (setq vc-follow-symlinks t)
 
 ;;; My configuation using org-babel

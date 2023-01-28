@@ -1,0 +1,6 @@
+ 
+- name: Install pywal
+  become: yes
+  community.general.pacman:
+    name: python-pywal
+    state: present

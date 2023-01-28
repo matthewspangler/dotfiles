@@ -3,20 +3,27 @@
   community.general.pacman:
     update_cache: true
 
-- name: Install git
-  become: yes
+- command: "awk '{print $1}' '{{role_path}}/pkglist.txt'"
+  register: _pkgs
+  delegate_to: localhost
+  run_once: true
+
+- name: Install packages from pkglist.txt
   community.general.pacman:
-    name: git
+    name: "{{ _pkgs.stdout_lines }}"
     state: present
 
-- name: Install GNU Stow
+- name: Create the `aur_builder` user per kewlfft.aur
   become: yes
-  community.general.pacman:
-    name: stow
-    state: present
+  ansible.builtin.user:
+    name: aur_builder
+    create_home: yes
+    group: wheel
 
-- name: Install Docker
+- name: Allow the `aur_builder` user to run `sudo pacman` without a password
   become: yes
+<<<<<<< HEAD
+<<<<<<< HEAD
   community.general.pacman:
     name: docker
     state: present
@@ -38,3 +45,22 @@
   community.general.pacman:
     name: thefuck
     state: present
+
+- name: Create the `aur_builder` user per kewlfft.aur
+  become: yes
+  ansible.builtin.user:
+    name: aur_builder
+    create_home: yes
+    group: wheel
+
+- name: Allow the `aur_builder` user to run `sudo pacman` without a password
+  become: yes
+=======
+>>>>>>> 8d14638 (Added kubernetes and other tweaks to emacs config)
+=======
+>>>>>>> 8d14638 (Added kubernetes and other tweaks to emacs config)
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/11-install-aur_builder
+    line: 'aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman'
+    create: yes
+    validate: 'visudo -cf '

@@ -1084,7 +1084,7 @@ For remote programming.
    'org-babel-load-languages
    '((emacs-lisp . t)
      (haskell . nil)
-     ;;(ledger . t)
+     (ledger . t)
      (shell . t)
      (python . t)
      (ruby . t)
@@ -1094,12 +1094,23 @@ For remote programming.
 ** Kubernetes
 #+name: kubernetes
 #+begin_src emacs-lisp
+  ;; https://github.com/kubernetes-el/kubernetes-el
+  ;; Manage kubernetes clusters
   (use-package kubernetes
     :ensure t
     :commands (kubernetes-overview)
     :config
     (setq kubernetes-poll-frequency 3600
           kubernetes-redraw-frequency 3600))
+
+  ;; https://github.com/jypma/kubectl
+  ;; Similar to the above package, but with TRAMP and more features
+
+  ;; https://github.com/TxGVNN/emacs-k8s-mode
+  ;; Kubernetes file mode in Emacs, helps with yaml
+  (use-package k8s-mode
+    :ensure t
+    :hook (k8s-mode . yas-minor-mode))
 #+end_src
 * General
   #+name: general
@@ -1144,27 +1155,63 @@ ob-ledger got moved to org-contrib, therefore I need to install it for ledger su
     (use-package org-contrib
         :ensure t)
   #+end_src
-** Configuration
-   #+name org-mode-config
-   #+begin_src emacs-lisp
+** Base Settings
+#+name org-directory
+#+begin_src emacs-lisp
      (with-eval-after-load 'org
-       (setq org-directory "~/Documents"))
+       (setq org-directory "~/Documents/Notetaking"))
+#+end_src
 
-					     ; Do not truncate lines and enable word wrap
-     (set-default 'truncate-lines nil)
-     (set-default 'word-wrap t)
-     (setq helm-buffers-truncate-lines nil)
-     (setq org-startup-truncated nil)
+#+name: org-general
+#+begin_src emacs-lisp
+  ; Do not truncate lines and enable word wrap
+  (set-default 'truncate-lines nil)
+  (set-default 'word-wrap t)
+  (setq helm-buffers-truncate-lines nil)
+  (setq org-startup-truncated nil)
+#+end_src
 
-					     ; Set bullets for heading levels
-     (setq org-bullets-bullet-list (quote ("♚" "♛" "♜" "♝" "♞" "♟")))
+#+name: org-bullets
+#+begin_src emacs-lisp
+                                          ; Set bullets for heading levels
+  (setq org-bullets-bullet-list (quote ("♚" "♛" "♜" "♝" "♞" "♟")))
+#+end_src
 
-					     ; Fold content on startup
-     (setq org-startup-folded t)
+#+name: org-folding
+#+begin_src emacs-lisp
+                                          ; Fold content on startup
+  (setq org-startup-folded t)
 
-					     ; Autocomplete
-					     ;(add-to-list 'ac-modes 'org-mode)
-					     ;(ac-set-trigger-key "TAB")
+#+end_src
+
+#+name: org-autocomplete
+#+begin_src emacs-lisp
+  ; Autocomplete
+  ;(add-to-list 'ac-modes 'org-mode)
+  ;(ac-set-trigger-key "TAB")
+#+end_src
+
+- [[https://orgmode.org/manual/Structure-Templates.html][Org-mode Structure Template Doc]]
+#+name: org-tempo
+#+begin_src emacs-lisp
+  (require 'org-tempo)
+
+  ;; Custom templates
+  ;; Example: to use src block in org-mode, type: '< s TAB'
+  (setq org-structure-template-alist
+    '(("a" . "export ascii\n")
+      ("c" . "center\n")
+      ("C" . "comment\n")
+      ("e" . "example\n")
+      ("E" . "export")
+      ("h" . "export html\n")
+      ("l" . "export latex\n")
+      ("q" . "quote\n")
+      ("s" . "src")
+      ("v" . "verse\n")
+      ("j" . "src ein-python")
+      ("b" . "src bash")
+      ))
 #+end_src
 
 ** Agenda
@@ -1305,12 +1352,27 @@ Depends on org-contrib:
     (use-package keepass-mode
       :ensure t)
   #+end_src
+** password-store
+#+name: password-store-setup
+#+begin_src emacs-lisp
+  ;; https://github.com/NicolasPetton/pass
+  (use-package pass
+    :ensure t)
+#+end_src
+
 ** vterm
    #+name: vterm-install
    #+begin_src emacs-lisp
      (use-package vterm
        :ensure t)
    #+end_src
+* Virtualization
+** Vagrant
+#+name: vagrant-setup
+#+begin_src emacs-lisp
+  (use-package vagrant
+    :ensure t)
+#+end_src
 * Interface
 ** Centaur tabs
 - [[https://github.com/ema2159/centaur-tabs][Centaur tabs github]]
