@@ -86,6 +86,7 @@
 #    name: autopep8
 
 - name: Install autopep8
+  become: yes
   community.general.pacman:
     name: autopep8
     state: present
