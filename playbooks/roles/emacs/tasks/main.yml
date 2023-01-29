@@ -81,9 +81,14 @@
     name: python-jedi
     state: present
 
-- name: Install autopep8 python package
-  ansible.builtin.pip:
+#- name: Install autopep8 python package
+#  ansible.builtin.pip:
+#    name: autopep8
+
+- name: Install autopep8
+  community.general.pacman:
     name: autopep8
+    state: present
 
 - name: Install pylint python package
   ansible.builtin.pip:
