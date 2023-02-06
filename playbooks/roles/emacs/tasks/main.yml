@@ -101,7 +101,7 @@
 #  ansible.builtin.pip:
 #    name: pylint
 
-- name: Install pylint
+- name: Install rope
   become: yes
   community.general.pacman:
     name: python-rope
