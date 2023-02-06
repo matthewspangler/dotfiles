@@ -91,13 +91,15 @@
     name: autopep8
     state: present
 
-- name: Install pylint python package
-  ansible.builtin.pip:
-    name: pylint
+- name: Install pylint
+  become: yes
+  community.general.pacman:
+    name: python-pylint
+    state: present
 
-- name: Install pylint python package
-  ansible.builtin.pip:
-    name: pylint
+#- name: Install pylint python package
+#  ansible.builtin.pip:
+#    name: pylint
 
 - name: Install rope python package
   ansible.builtin.pip:
