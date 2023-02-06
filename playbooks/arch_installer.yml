@@ -10,7 +10,8 @@
     - emacs
     # - plasma
     # - themeing
-    - bash
+    # Bash is broken on fresh arch installs because stow doesn't want to override existing .bashrc:
+    # - bash
     # - weechat
     - xonsh
     - vim
