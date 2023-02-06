@@ -101,9 +101,15 @@
 #  ansible.builtin.pip:
 #    name: pylint
 
-- name: Install rope python package
-  ansible.builtin.pip:
-    name: rope
+- name: Install pylint
+  become: yes
+  community.general.pacman:
+    name: python-rope
+    state: present
+
+#- name: Install rope python package
+#  ansible.builtin.pip:
+#    name: rope
 
 - name: Remove rust to avoid conflict with rustup
   become: yes
