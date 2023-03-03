@@ -9,6 +9,7 @@
   run_once: true
 
 - name: Install packages from pkglist.txt
+  become: yes
   community.general.pacman:
     name: "{{ _pkgs.stdout_lines }}"
     state: present
