@@ -1338,6 +1338,87 @@ Depends on org-contrib:
       :ensure t            ;Auto-install the package from Melpa (optional)
       :after ox)
   #+end_src
+** org-fs-tree
+- [[https://github.com/ScriptDevil/org-fs-tree][Github page]]
+#+name: org-fs-tree-dependencies
+#+begin_src emacs-lisp
+  (use-package names)
+  (use-package f)
+#+end_src
+#+name: org-fs-tree-setup
+#+begin_src emacs-lisp
+  ;;; org-fs-tree.el --- converts filesystem trees to org trees -*- lexical-binding: t -*-
+
+  ;; Copyright (C) 2020 Ashok Gautham Jadatharan
+
+  ;; Author: Ashok Gautham Jadatharan <ScriptDevil@zoho.com>
+  ;; Version: 0.2.0
+  ;; Package-Requires: ((f "0") (names "0"))
+  ;; Keywords: org-mode
+
+  ;; This program is free software; you can redistribute it and/or modify
+  ;; it under the terms of the GNU General Public License as published by
+  ;; the Free Software Foundation, either version 3 of the License, or
+  ;; (at your option) any later version.
+
+  ;; This program is distributed in the hope that it will be useful,
+  ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ;; GNU General Public License for more details.
+
+  ;; You should have received a copy of the GNU General Public License
+  ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+  ;;; Commentary:
+
+  ;; converts filesystem trees to org trees
+  ;;
+  ;; See documentation on https://github.com/ScriptDevil/org-fs-tree
+
+  ;;; Code:
+  (require 'f)
+  (require 'names)
+
+  (define-namespace org-fs-tree-
+
+  (defun -make-link (s link)
+    (concat "[[" link "][" s "]]"))
+
+  (defun -make-heading (s level)
+    (concat (make-string level ?*) " " s "\n"))
+
+  (defun -create-tree (base-dir level limit-level)
+    (let* ((full-path (f-full base-dir))
+           (short-name  (if (f-dir? base-dir)
+                            (concat (f-filename base-dir) "/")
+                          (f-filename base-dir)))
+           (link (-make-link short-name full-path))
+           (heading (-make-heading link level)))
+      (if (or (null limit-level) (< level limit-level))
+          (if (f-directory? base-dir)
+              (concat heading
+                      (apply 'concat (mapcar
+                                      (lambda (d)  (-create-tree d (+ 1 level) limit-level))
+                                      (f-entries base-dir))))
+            heading)
+        heading)))
+
+  ;;;###autoload
+  (defun dump (arg dirname)
+    "Dump the file system tree rooted at DIRNAME as an org tree.
+  Each heading in the org-tree will be a link to the corresponding
+  file or directory that can be opened using org-open-at-point.
+
+  Optional prefix argument can be used to limit the number of
+  levels.
+  "
+
+    (interactive "P\nDDirectory to dump: ")
+    (insert (-create-tree dirname 1 arg)))
+  )
+
+  (provide 'org-fs-tree)
+#+end_src
 * EXWM
   - [[https://wiki.archlinux.org/title/EXWM][Arch wiki page for EXWM]]
   #+name: EXWM
@@ -1345,6 +1426,7 @@ Depends on org-contrib:
     ;;; My EXWM configuation using org-babel - commented out because I'm not using it currently.
     ;; (org-babel-load-file "~/.emacs.d/babel/exwm.org")
   #+end_src
+
 * Programs
 ** Keepass
   #+name: keepass-mode-install
@@ -1352,6 +1434,7 @@ Depends on org-contrib:
     (use-package keepass-mode
       :ensure t)
   #+end_src
+
 ** password-store
 #+name: password-store-setup
 #+begin_src emacs-lisp
@@ -1366,6 +1449,7 @@ Depends on org-contrib:
      (use-package vterm
        :ensure t)
    #+end_src
+
 * Virtualization
 ** Vagrant
 #+name: vagrant-setup
@@ -1373,7 +1457,15 @@ Depends on org-contrib:
   (use-package vagrant
     :ensure t)
 #+end_src
+
 * Interface
+** Pretty page breaks
+#+name: page-breaks
+#+begin_src emacs-lisp
+  (use-package page-break-lines
+    :ensure t)
+#+end_src
+
 ** Centaur tabs
 - [[https://github.com/ema2159/centaur-tabs][Centaur tabs github]]
   #+name: centaur-tabs-install
@@ -1395,7 +1487,9 @@ Depends on org-contrib:
     (setq x-underline-at-descent-line t)
     (setq centaur-tabs-cycle-scope 'tabs)
   #+end_src
+
 ** Dashboard
+
 - [[https://github.com/emacs-dashboard/emacs-dashboard][Dashboard github]]
   #+name: dashboard
   #+begin_src emacs-lisp
@@ -1408,13 +1502,17 @@ Depends on org-contrib:
   #+name: dashboard-config
   #+begin_src emacs-lisp
     (setq dashboard-items '((recents  . 5)
-			    (bookmarks . 5)
-			    (projects . 5)
-			    (agenda . 5)
-			    (registers . 5)))
+                            (bookmarks . 5)
+                            (projects . 5)
+                            (agenda . 5)
+                            (registers . 5)))
     (setq dashboard-set-navigator t)
-    (setq dashboard-week-agenda t)
+    ;(setq dashboard-week-agenda t)
     (setq dashboard-startup-banner 'logo)
+    ;; Content is not centered by default. To center, set
+    (setq dashboard-center-content t)
+    ;; Display today's agenda
+    ;(add-to-list 'dashboard-items '(agenda) t)
   #+end_src
 
 ** Zooms
@@ -1440,72 +1538,72 @@ Depends on org-contrib:
       :defer t
       :init
       (with-eval-after-load 'winum
-	(define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+        (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
       :config
       (progn
-	(setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
-	      treemacs-deferred-git-apply-delay      0.5
-	      treemacs-directory-name-transformer    #'identity
-	      treemacs-display-in-side-window        t
-	      treemacs-eldoc-display                 t
-	      treemacs-file-event-delay              5000
-	      treemacs-file-extension-regex          treemacs-last-period-regex-value
-	      treemacs-file-follow-delay             0.2
-	      treemacs-file-name-transformer         #'identity
-	      treemacs-follow-after-init             t
-	      treemacs-git-command-pipe              ""
-	      treemacs-goto-tag-strategy             'refetch-index
-	      treemacs-indentation                   2
-	      treemacs-indentation-string            " "
-	      treemacs-is-never-other-window         nil
-	      treemacs-max-git-entries               5000
-	      treemacs-missing-project-action        'ask
-	      treemacs-move-forward-on-expand        nil
-	      treemacs-no-png-images                 nil
-	      treemacs-no-delete-other-windows       t
-	      treemacs-project-follow-cleanup        nil
-	      treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-	      treemacs-position                      'left
-	      treemacs-read-string-input             'from-child-frame
-	      treemacs-recenter-distance             0.1
-	      treemacs-recenter-after-file-follow    nil
-	      treemacs-recenter-after-tag-follow     nil
-	      treemacs-recenter-after-project-jump   'always
-	      treemacs-recenter-after-project-expand 'on-distance
-	      treemacs-show-cursor                   nil
-	      treemacs-show-hidden-files             t
-	      treemacs-silent-filewatch              nil
-	      treemacs-silent-refresh                nil
-	      treemacs-sorting                       'alphabetic-asc
-	      treemacs-space-between-root-nodes      t
-	      treemacs-tag-follow-cleanup            t
-	      treemacs-tag-follow-delay              1.5
-	      treemacs-user-mode-line-format         nil
-	      treemacs-user-header-line-format       nil
-	      treemacs-width                         35
-	      treemacs-workspace-switch-cleanup      nil)
+        (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+              treemacs-deferred-git-apply-delay      0.5
+              treemacs-directory-name-transformer    #'identity
+              treemacs-display-in-side-window        t
+              treemacs-eldoc-display                 t
+              treemacs-file-event-delay              5000
+              treemacs-file-extension-regex          treemacs-last-period-regex-value
+              treemacs-file-follow-delay             0.2
+              treemacs-file-name-transformer         #'identity
+              treemacs-follow-after-init             t
+              treemacs-git-command-pipe              ""
+              treemacs-goto-tag-strategy             'refetch-index
+              treemacs-indentation                   2
+              treemacs-indentation-string            " "
+              treemacs-is-never-other-window         nil
+              treemacs-max-git-entries               5000
+              treemacs-missing-project-action        'ask
+              treemacs-move-forward-on-expand        nil
+              treemacs-no-png-images                 nil
+              treemacs-no-delete-other-windows       t
+              treemacs-project-follow-cleanup        nil
+              treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+              treemacs-position                      'left
+              treemacs-read-string-input             'from-child-frame
+              treemacs-recenter-distance             0.1
+              treemacs-recenter-after-file-follow    nil
+              treemacs-recenter-after-tag-follow     nil
+              treemacs-recenter-after-project-jump   'always
+              treemacs-recenter-after-project-expand 'on-distance
+              treemacs-show-cursor                   nil
+              treemacs-show-hidden-files             t
+              treemacs-silent-filewatch              nil
+              treemacs-silent-refresh                nil
+              treemacs-sorting                       'alphabetic-asc
+              treemacs-space-between-root-nodes      t
+              treemacs-tag-follow-cleanup            t
+              treemacs-tag-follow-delay              1.5
+              treemacs-user-mode-line-format         nil
+              treemacs-user-header-line-format       nil
+              treemacs-width                         35
+              treemacs-workspace-switch-cleanup      nil)
 
-	;; The default width and height of the icons is 22 pixels. If you are
-	;; using a Hi-DPI display, uncomment this to double the icon size.
-	;;(treemacs-resize-icons 44)
+        ;; The default width and height of the icons is 22 pixels. If you are
+        ;; using a Hi-DPI display, uncomment this to double the icon size.
+        ;;(treemacs-resize-icons 44)
 
-	(treemacs-follow-mode t)
-	(treemacs-filewatch-mode t)
-	(treemacs-fringe-indicator-mode 'always)
-	(pcase (cons (not (null (executable-find "git")))
-		     (not (null treemacs-python-executable)))
-	  (`(t . t)
-	   (treemacs-git-mode 'deferred))
-	  (`(t . _)
-	   (treemacs-git-mode 'simple))))
+        (treemacs-follow-mode t)
+        (treemacs-filewatch-mode t)
+        (treemacs-fringe-indicator-mode 'always)
+        (pcase (cons (not (null (executable-find "git")))
+                     (not (null treemacs-python-executable)))
+          (`(t . t)
+           (treemacs-git-mode 'deferred))
+          (`(t . _)
+           (treemacs-git-mode 'simple))))
       :bind
       (:map global-map
-	    ("M-0"       . treemacs-select-window)
-	    ("C-x t 1"   . treemacs-delete-other-windows)
-	    ("C-x t t"   . treemacs)
-	    ("C-x t B"   . treemacs-bookmark)
-	    ("C-x t C-t" . treemacs-find-file)
-	    ("C-x t M-t" . treemacs-find-tag)))
+            ("M-0"       . treemacs-select-window)
+            ("C-x t 1"   . treemacs-delete-other-windows)
+            ("C-x t t"   . treemacs)
+            ("C-x t B"   . treemacs-bookmark)
+            ("C-x t C-t" . treemacs-find-file)
+            ("C-x t M-t" . treemacs-find-tag)))
 
     (use-package treemacs-projectile
       :after (treemacs projectile)
@@ -1548,6 +1646,7 @@ Depends on org-contrib:
     (use-package helm-dash
       :ensure t)
   #+end_src
+
 ** Dumb Jump
 - [[https://github.com/jacktasia/dumb-jump][dumb-jump github]]
   #+name: dumb-jump-install
@@ -1563,6 +1662,7 @@ Depends on org-contrib:
     (use-package imenu-anywhere
       :ensure t)
   #+end_src
+
 ** imenu-list
   #+name: imenu-list-install
   #+begin_src emacs-lisp
@@ -1576,6 +1676,7 @@ Depends on org-contrib:
        :ensure t)
      (nyan-mode +1)
    #+end_src
+
 ** Beacon Mode
    #+name: beacon-mode-install
    #+begin_src emacs-lisp
@@ -1583,6 +1684,7 @@ Depends on org-contrib:
        :ensure t)
      (beacon-mode 1)
    #+end_src
+
 ** Helpful
 #+name: helpful
 #+begin_src emacs-lisp
@@ -1613,6 +1715,7 @@ Depends on org-contrib:
   ;; look at interactive functions.
   (global-set-key (kbd "C-h C") #'helpful-command)
 #+end_src
+
 ** Discover My Major
 #+name: discover-my-major
 #+begin_src emacs-lisp
@@ -1621,6 +1724,7 @@ Depends on org-contrib:
   (global-set-key (kbd "C-h C-m") 'discover-my-major)
   (global-set-key (kbd "C-h M-m") 'discover-my-mode)
 #+end_src
+
 * Feeds
 ** Elfeed
 - [[https://github.com/skeeto/elfeed][Elfeed Github]]
@@ -1646,7 +1750,7 @@ Depends on org-contrib:
     ;; Optionally specify a number of files containing elfeed
     ;; configuration. If not set then the location below is used.
     ;; Note: The customize interface is also supported.
-    (setq rmh-elfeed-org-files (list "~/Documents/rss.org"))
+    (setq rmh-elfeed-org-files (list "~/Documents/Notetaking/feeds.org"))
   #+end_src
 
 * Communication
@@ -1654,19 +1758,30 @@ Depends on org-contrib:
 - [[http://juanjose.garciaripoll.com/blog/emacs-wanderlust-email/index.html][Configuration example]]
   #+name: wanderlust-install
   #+begin_src emacs-lisp
-    (use-package wl
-      :ensure wanderlust
-      :init
-      (autoload 'wl "wl" "Wanderlust" t))
-    (add-hook 'mime-view-mode-hook #'(lambda () (setq show-trailing-whitespace nil)))
+    ;; Disabled until I start using emacs for email again.
+    ;(use-package wl
+    ;  :ensure wanderlust
+    ;  :init
+    ;  (autoload 'wl "wl" "Wanderlust" t))
+    ;(add-hook 'mime-view-mode-hook #'(lambda () (setq show-trailing-whitespace nil)))
   #+end_src
+
+** Matrix client
+#+name: ement.el
+#+begin_src emacs-lisp
+  (use-package ement
+    :ensure t)
+  (setq ement-save-sessions t)
+  ;(ement-connect :uri-prefix "http://localhost:8009")
+  ;(call-interactively #'ement-connect)
+#+end_src
 
 * Misc
 ** XKCD + dashboard
   #+name: xkcd
   #+begin_src emacs-lisp
-      (use-package xkcd
-	:ensure t)
+    ;(use-package xkcd
+    ;    :ensure t)
 
     ;;  ;; to get a rand comic and to set dashboard image (png)
     ;;  (let ((rand-id-xkcd nil))

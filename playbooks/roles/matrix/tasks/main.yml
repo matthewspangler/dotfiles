@@ -1,0 +1,87 @@
+- name: Update pacman cache
+  become: yes
+  community.general.pacman:
+    update_cache: true
+
+- name: Install element client
+  become: yes
+  community.general.pacman:
+    name: element-desktop
+    state: present
+
+- name: Install logbook
+  become: yes
+  community.general.pacman:
+    name: python-logbook
+    state: present
+
+- name: Install peewee
+  become: yes
+  community.general.pacman:
+    name: python-peewee
+    state: present
+
+- name: Install olm
+  become: yes
+  community.general.pacman:
+    name: python-olm
+    state: present
+
+- name: Install atomicwrites
+  become: yes
+  community.general.pacman:
+    name: python-atomicwrites
+    state: present
+
+- name: Install pydbus
+  become: yes
+  community.general.pacman:
+    name: python-pydbus
+    state: present
+
+- name: Install notify2
+  become: yes
+  community.general.pacman:
+    name: python-notify2
+    state: present
+
+- name: Install pantalaimon (for encrypting Matrix conversations)
+  ansible.builtin.pip:
+    name: pantalaimon
+
+#- name: Install pantalaimon UI
+#  ansible.builtin.pip:
+#    name: pantalaimon[ui]
+
+- name: Symlink zsh dotfiles
+  shell: stow -d ~/dotfiles/home -t ~/ {{ item }}
+  with_items:
+    - matrix
+
+- name: Create and fill pantalaimon systemd file
+  become: no
+  copy:
+    dest: "~/.config/systemd/user/pantalaimon.service"
+    content: |
+      [Unit]
+      Description=Pantalaimon E2E Matrix reverse proxy
+
+      [Service]
+      ExecStart=%h/.local/bin/pantalaimon
+
+      [Install]
+      WantedBy=default.target
+
+- name: Chmod pantalaimon systemd file
+  become: no
+  shell: chmod 664 ~/.config/systemd/user/pantalaimon.service
+
+# This depends on exporting ~/.local/bin to the PATH,
+#  which is done if you enable the bash ansible role:
+- name: Enable pantalaimon systemd service
+  become: no
+  systemd:
+    name: pantalaimon
+    state: started
+    scope: user
+    enabled: yes

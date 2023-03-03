@@ -45,6 +45,12 @@
     name: awesome-terminal-fonts
     state: present
 
+- name: Install pyenv
+  become: yes
+  community.general.pacman:
+    name: pyenv
+    state: present
+
 - name: Install python jupyter client
   become: yes
   community.general.pacman:

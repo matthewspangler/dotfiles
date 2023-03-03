@@ -6,9 +6,24 @@
 
 ;;; Code:
 
+
+;; Suppress messages on startup
+;; https://www.emacswiki.org/emacs/MessagesBuffer
+;;(setq inhibit-message t)
+;;(setq-default message-log-max nil)
+(setq inhibit-startup-message t)
+(setq initial-scratch-message "")
+
 (add-to-list 'load-path (concat user-emacs-directory "elisp"))
 ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (setq vc-follow-symlinks t)
+
+;; Turn off mouse interface early in startup to avoid momentary display
+(when window-system
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (tooltip-mode -1))
 
 ;;; My configuation using org-babel
 (org-babel-load-file "~/.emacs.d/babel/config.org")
