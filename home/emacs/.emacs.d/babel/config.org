@@ -1079,6 +1079,9 @@ For remote programming.
 ** Org-Babel
 #+name: ob-setup
 #+begin_src emacs-lisp
+  ;; ob-ledger is required, and is found in org-contrib. If org-contrib not installed here, config crashes.
+  (use-package org-contrib
+    :ensure t)
   ;;; org-babel setup
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -1149,12 +1152,6 @@ For remote programming.
         (quelpa-self-upgrade)))
   #+end_src
 * Org-mode
-** Org-Contrib
-ob-ledger got moved to org-contrib, therefore I need to install it for ledger support.
-  #+begin_src emacs-lisp
-    (use-package org-contrib
-        :ensure t)
-  #+end_src
 ** Base Settings
 #+name org-directory
 #+begin_src emacs-lisp
