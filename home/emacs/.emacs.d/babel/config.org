@@ -9,17 +9,33 @@
 - [[file:~/.emacs.d/init.el][init.el]]
 * Setup
 This is stuff that needs to be run first, because lines further down the config depend on these commands.
-** Base
-#+name: base-setup
+
+** Buffer rules
+#+end_src
+
+** Melpa
+#+name: melpa
 #+begin_src emacs-lisp
   (package-initialize)
   (add-to-list 'package-archives
                '("melpa" . "https://melpa.org/packages/")
                '("elpy" . "http://jorgenschaefer.github.io/packages/"))
+#+end_src
 
-  (when (not package-archive-contents)
-    (package-refresh-contents))
+** Quelpa
+  #+name: quelpa-setup
+  #+begin_src emacs-lisp
+  ;;; Quelpa
+    (unless (package-installed-p 'quelpa)
+      (with-temp-buffer
+        (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+        (eval-buffer)
+        (quelpa-self-upgrade)))
+  #+end_src
 
+** Bootstrap
+#+name: bootstrap
+#+begin_src emacs-lisp
   ; Straight - https://github.com/raxod502/straight.el#getting-started
   (defvar bootstrap-version)
   (let ((bootstrap-file
@@ -34,16 +50,24 @@ This is stuff that needs to be run first, because lines further down the config 
         (eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
 
+#+end_src
+
+** use-package
+#+name: use-package
+#+begin_src emacs-lisp
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package))
   (require 'use-package)
+#+end_src
 
+** Core
+#+name: core
+#+begin_src emacs-lisp
   (defconst private-dir  (expand-file-name "private" user-emacs-directory))
   (defconst temp-dir (format "%s/cache" private-dir)
     "Hostname-based elisp temp directories")
 
-  ;; Core settings
   ;; UTF-8 please
   (set-charset-priority 'unicode)
   (setq locale-coding-system   'utf-8)   ; pretty
@@ -73,6 +97,7 @@ This is stuff that needs to be run first, because lines further down the config 
         exec-path                          (append exec-path '("/usr/local/bin/"))
         indent-tabs-mode                   nil
         inhibit-startup-message            t
+        initial-scratch-message            ""
         fringes-outside-margins            t
         x-select-enable-clipboard          t
         use-package-always-ensure          t)
@@ -116,8 +141,39 @@ This is stuff that needs to be run first, because lines further down the config 
   ;; Delete trailing whitespace before save
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+  ; I don't like the scratch buffer in my face :(
+  (setq initial-scratch-message nil)
+  (kill-buffer "*scratch*")
+
+  ; restore previous buffers
+  ;(desktop-save-mode 1)
+
+  ; so I can use C-x b to cycle buffers
+  (ido-mode 1)
+
+  (setq org-src-tab-acts-natively t)
+
+  ; Flyspell spell checker
+  (setq ispell-program-name "hunspell")
+  (setq ispell-local-dictionary "en_US")
+  (setq ispell-local-dictionary-alist
+    '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)))
+  (flyspell-mode 1)
+
+  ; Autocomplete from company-mode
+  (add-hook 'after-init-hook 'global-company-mode)
+
 #+end_src
-** Theme
+
+** All the icons
+Don't forget to install all the icons fonts after this.
+  #+name: all-the-icons
+  #+begin_src emacs-lisp
+    (use-package all-the-icons
+      :ensure t)
+  #+end_src
+
+** Doom Themes
   #+name:
   #+begin_src emacs-lisp
     (use-package doom-themes
@@ -125,7 +181,7 @@ This is stuff that needs to be run first, because lines further down the config 
       :config
       ;; Global settings (defaults)
       (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-            doom-themes-enable-italic t) ; if nil, italics is universally disabled
+	    doom-themes-enable-italic t) ; if nil, italics is universally disabled
       (load-theme 'doom-one t)
 
       ;; Enable flashing mode-line on errors
@@ -138,6 +194,7 @@ This is stuff that needs to be run first, because lines further down the config 
       ;; Corrects (and improves) org-mode's native fontification.
       (doom-themes-org-config))
   #+end_src
+
 ** Base Extensions
 #+name base-extensions-setup
 #+begin_src emacs-lisp
@@ -307,6 +364,7 @@ This is stuff that needs to be run first, because lines further down the config 
     :config
       (dumb-jump-mode))
 #+end_src
+
 * Coding
 ** C
 #+name: c-setup
@@ -395,6 +453,7 @@ This is stuff that needs to be run first, because lines further down the config 
   (add-hook 'c-mode-hook 'alexott/cedet-hook)
   (add-hook 'c++-mode-hook 'alexott/cedet-hook)
 #+end_src
+
 ** Go
 #+name: go-setup
 #+begin_src emacs-lisp
@@ -431,6 +490,7 @@ This is stuff that needs to be run first, because lines further down the config 
 
 (provide 'lang-go)
 #+end_src
+
 ** Cisco iOS
 #+name: ios-setup
 #+begin_src emacs-lisp
@@ -588,6 +648,7 @@ This is stuff that needs to be run first, because lines further down the config 
 
   (add-to-list 'auto-mode-alist '("\\.cfg\\'" . ios-config-mode))
 #+end_src
+
 ** Rust
 #+name: rust-setup
 #+begin_src emacs-lisp
@@ -654,40 +715,7 @@ This is stuff that needs to be run first, because lines further down the config 
     (setq-local buffer-file-name (->> babel-info caddr (alist-get :tangle)))
     (lsp))
 #+end_src
-** Haskell
-#+name: haskell-setup
-#+begin_src emacs-lisp
-  ;; haskell-mode configuration
-  ;; https://github.com/haskell/haskell-mode
-  (use-package haskell-mode
-    ;; haskell-mode swaps `C-m' and `C-j' behavior. Revert it back
-    :bind (:map haskell-mode-map
-                ("C-m" . newline)
-                ("C-j" . electric-newline-and-maybe-indent))
-    :config
-    (defun my-haskell-mode-hook ()
-      "Hook for `haskell-mode'."
-      (set (make-local-variable 'company-backends)
-           '((company-intero company-files))))
-    (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
-    (add-hook 'haskell-mode-hook 'company-mode)
-    (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
 
-    ;; intero-mode for a complete IDE solution to haskell
-    ;; commercialhaskell.github.io/intero
-    (use-package intero
-      :config (add-hook 'haskell-mode-hook 'intero-mode))
-
-    ;; hindent - format haskell code automatically
-    ;; https://github.com/chrisdone/hindent
-    (when (executable-find "hindent")
-      (use-package hindent
-        :diminish hindent-mode
-        :config
-        (add-hook 'haskell-mode-hook #'hindent-mode)
-        ;; reformat the buffer using hindent on save
-        (setq hindent-reformat-buffer-on-save t))))
-#+end_src
 ** Web
 #+name: web-setup
 #+begin_src emacs-lisp
@@ -785,6 +813,7 @@ This is stuff that needs to be run first, because lines further down the config 
     :diminish (impatient-mode . " i")
     :commands (impatient-mode))
 #+end_src
+
 ** Python
 #+name: python-setup
 #+begin_src emacs-lisp
@@ -861,6 +890,7 @@ This is stuff that needs to be run first, because lines further down the config 
   (use-package ein
     :ensure t)
 #+end_src
+
 ** GDScript
 -[[https://github.com/godotengine/emacs-gdscript-mode][GDscript-mode github]]
   #+name: gdscript-install
@@ -909,6 +939,7 @@ This is stuff that needs to be run first, because lines further down the config 
         :config
         (which-key-mode))
   #+end_src
+
 ** Company
 #+name: company-setup
 #+begin_src emacs-lisp
@@ -931,6 +962,7 @@ This is stuff that needs to be run first, because lines further down the config 
     (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
   (add-hook 'org-mode-hook #'add-pcomplete-to-capf)
 #+end_src
+
 ** Yasnippet
 #+name: yasnippet-setup
 #+begin_src emacs-lisp
@@ -970,6 +1002,7 @@ This is stuff that needs to be run first, because lines further down the config 
               (company-complete-common)
             (indent-for-tab-command)))))
 #+end_src
+
 ** Indentation improvements
 #+name: indentation improvements
 #+begin_src emacs-lisp
@@ -1010,8 +1043,6 @@ This is stuff that needs to be run first, because lines further down the config 
 - [[https://github.com/vermiculus/sx.el/][SX github]]
   #+name: sx-install
   #+begin_src emacs-lisp
-    (require 'use-package)
-
     (use-package sx
       :config
       (bind-keys :prefix "C-c s"
@@ -1058,6 +1089,7 @@ This is stuff that needs to be run first, because lines further down the config 
   (defadvice projectile-project-root (around ignore-remote first activate)
       (unless (file-remote-p default-directory) ad-do-it))
 #+end_src
+
 ** Tramp
 For remote programming.
 - [[https://www.emacswiki.org/emacs/TrampMode][Tramp docs on EmacsWiki]]
@@ -1094,6 +1126,7 @@ For remote programming.
      (jupyter . t)
      (ein . t)))
 #+end_src
+
 ** Kubernetes
 #+name: kubernetes
 #+begin_src emacs-lisp
@@ -1115,43 +1148,8 @@ For remote programming.
     :ensure t
     :hook (k8s-mode . yas-minor-mode))
 #+end_src
-* General
-  #+name: general
-  #+begin_src emacs-lisp
-    ; I don't like the scratch buffer in my face :(
-    (setq initial-scratch-message nil)
-    (kill-buffer "*scratch*")
 
-    ; restore previous buffers
-    (desktop-save-mode 1)
-
-    ; so I can use C-x b to cycle buffers
-    (ido-mode 1)
-
-    (setq org-src-tab-acts-natively t)
-
-    ; Flyspell spell checker
-    (setq ispell-program-name "hunspell")
-    (setq ispell-local-dictionary "en_US")
-    (setq ispell-local-dictionary-alist
-      '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)))
-    (flyspell-mode 1)
-
-    ; Autocomplete from company-mode
-    (add-hook 'after-init-hook 'global-company-mode)
-
-    #+end_src
-* Package Management
-  #+name: quelpa-setup
-  #+begin_src emacs-lisp
-  ;;; Quelpa
-    (unless (package-installed-p 'quelpa)
-      (with-temp-buffer
-        (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-        (eval-buffer)
-        (quelpa-self-upgrade)))
-  #+end_src
-* Org-mode
+* Org
 ** Base Settings
 #+name org-directory
 #+begin_src emacs-lisp
@@ -1191,7 +1189,9 @@ For remote programming.
 - [[https://orgmode.org/manual/Structure-Templates.html][Org-mode Structure Template Doc]]
 #+name: org-tempo
 #+begin_src emacs-lisp
-  (require 'org-tempo)
+  (use-package org-tempo ;; part of org-mode
+    :after (org)
+    :ensure nil) ;; if use-package-always-ensure is set to t use-package looks for an org-tempo *package*
 
   ;; Custom templates
   ;; Example: to use src block in org-mode, type: '< s TAB'
@@ -1211,61 +1211,42 @@ For remote programming.
       ))
 #+end_src
 
+** No eval toggle
+#+name: no-eval-toggle
+#+begin_src emacs-lisp
+  (defun org-toggle-src-eval-no ()
+    "Will toggle ':eval no' on the src block begin line"
+
+    (defun in-src-block-p ()
+      "Returns t when the point is inside a source code block"
+      (string= "src" (org-in-block-p '("src"))))
+
+    (defun beginning-src ()
+      "Find the beginning of the src block"
+      (let ((case-fold-search t)) (search-backward "#+BEGIN_SRC")))
+
+    (defun toggle-eval-no ()
+      "Handles the toggling of ' :eval no'"
+       (save-excursion
+        (end-of-line)
+        (let ((case-fold-search t)) (search-backward "#+BEGIN_SRC")
+         (if (search-forward " :eval no" (line-end-position) "f")
+             (replace-match "")
+           (insert " :eval no")
+           ))))
+
+    (if (in-src-block-p) (toggle-eval-no)))
+
+  (defun add-org-toggle-src-key ()
+    (local-set-key (kbd "C-c t") (lambda () (interactive) (org-toggle-src-eval-no))))
+
+  (add-hook 'org-mode-hook 'add-org-toggle-src-key)
+#+end_src
+
 ** Agenda
   #+name: org-agenda-config
   #+begin_src emacs-lisp
-    (setq org-agenda-files '("~/Documents"))
-  #+end_src
-
-  #+name: org-super-agenda-install
-  #+begin_src emacs-lisp
-    (use-package org-super-agenda :ensure t)
-  #+end_src
-
-  #+name: org-super-agenda-config
-  #+begin_src emacs-lisp
-    (let ((org-super-agenda-groups
-	   '(;; Each group has an implicit boolean OR operator between its selectors.
-	     (:name "Today"  ; Optionally specify section name
-		    :time-grid t  ; Items that appear on the time grid
-		    :todo "TODAY")  ; Items that have this TODO keyword
-	     (:name "Important"
-		    ;; Single arguments given alone
-		    :tag "bills"
-		    :priority "A")
-	     ;; Set order of multiple groups at once
-	     (:order-multi (2 (:name "Shopping in town"
-				     ;; Boolean AND group matches items that match all subgroups
-				     :and (:tag "shopping" :tag "@town"))
-			      (:name "Food-related"
-				     ;; Multiple args given in list with implicit OR
-				     :tag ("food" "dinner"))
-			      (:name "Personal"
-				     :habit t
-				     :tag "personal")
-			      (:name "Space-related (non-moon-or-planet-related)"
-				     ;; Regexps match case-insensitively on the entire entry
-				     :and (:regexp ("space" "NASA")
-						   ;; Boolean NOT also has implicit OR between selectors
-						   :not (:regexp "moon" :tag "planet")))))
-	     ;; Groups supply their own section names when none are given
-	     (:todo "WAITING" :order 8)  ; Set order of this section
-	     (:todo ("SOMEDAY" "TO-READ" "CHECK" "TO-WATCH" "WATCHING")
-		    ;; Show this group at the end of the agenda (since it has the
-		    ;; highest number). If you specified this group last, items
-		    ;; with these todo keywords that e.g. have priority A would be
-		    ;; displayed in that group instead, because items are grouped
-		    ;; out in the order the groups are listed.
-		    :order 9)
-	     (:priority<= "B"
-			  ;; Show this section after "Today" and "Important", because
-			  ;; their order is unspecified, defaulting to 0. Sections
-			  ;; are displayed lowest-number-first.
-			  :order 1)
-	     ;; After the last group, the agenda will display items that didn't
-	     ;; match any of these groups, with the default order position of 99
-	     )))
-      (org-agenda nil "a"))
+    (setq org-agenda-files '("~/Documents/Notetaking"))
   #+end_src
 
 ** Ledger
@@ -1335,6 +1316,7 @@ Depends on org-contrib:
       :ensure t            ;Auto-install the package from Melpa (optional)
       :after ox)
   #+end_src
+
 ** org-fs-tree
 - [[https://github.com/ScriptDevil/org-fs-tree][Github page]]
 #+name: org-fs-tree-dependencies
@@ -1373,8 +1355,8 @@ Depends on org-contrib:
   ;; See documentation on https://github.com/ScriptDevil/org-fs-tree
 
   ;;; Code:
-  (require 'f)
-  (require 'names)
+  (use-package f)
+  (use-package names)
 
   (define-namespace org-fs-tree-
 
@@ -1416,6 +1398,7 @@ Depends on org-contrib:
 
   (provide 'org-fs-tree)
 #+end_src
+
 * EXWM
   - [[https://wiki.archlinux.org/title/EXWM][Arch wiki page for EXWM]]
   #+name: EXWM
@@ -1494,6 +1477,7 @@ Depends on org-contrib:
       :ensure t
       :config
       (dashboard-setup-startup-hook))
+    (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
   #+end_src
 
   #+name: dashboard-config
@@ -1504,7 +1488,7 @@ Depends on org-contrib:
                             (agenda . 5)
                             (registers . 5)))
     (setq dashboard-set-navigator t)
-    ;(setq dashboard-week-agenda t)
+    (setq dashboard-week-agenda t)
     (setq dashboard-startup-banner 'logo)
     ;; Content is not centered by default. To center, set
     (setq dashboard-center-content t)
@@ -1630,11 +1614,8 @@ Depends on org-contrib:
       :ensure t
       :hook (after-init . doom-modeline-mode))
 
-    (use-package all-the-icons
-      :ensure t)
-
   #+end_src
-~This package requires the fonts included with all-the-icons to be installed. Run [M-x all-the-icons-install-fonts] to do so. Please refer to the installation guide.~
+
 ** Dash
   #+name: dash-install
   #+begin_src emacs-lisp
@@ -1666,6 +1647,7 @@ Depends on org-contrib:
     (use-package imenu-list
       :ensure t)
   #+end_src
+
 ** Nyan Mode
    #+name: nyan-mode-install
    #+begin_src emacs-lisp
@@ -1720,6 +1702,67 @@ Depends on org-contrib:
 
   (global-set-key (kbd "C-h C-m") 'discover-my-major)
   (global-set-key (kbd "C-h M-m") 'discover-my-mode)
+#+end_src
+
+** Emojis
+#+name: emojis
+#+begin_src emacs-lisp
+  (use-package emojify
+    :hook (after-init . global-emojify-mode))
+#+end_src
+
+** Vertico
+#+name:
+#+begin_src emacs-lisp
+  ;; Enable vertico
+  (use-package vertico
+    :init
+    (vertico-mode)
+
+    ;; Different scroll margin
+    ;; (setq vertico-scroll-margin 0)
+
+    ;; Show more candidates
+    ;; (setq vertico-count 20)
+
+    ;; Grow and shrink the Vertico minibuffer
+    ;; (setq vertico-resize t)
+
+    ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+    ;; (setq vertico-cycle t)
+    )
+
+  ;; Persist history over Emacs restarts. Vertico sorts by history position.
+  (use-package savehist
+    :init
+    (savehist-mode))
+
+  ;; A few more useful configurations...
+  (use-package emacs
+    :init
+    ;; Add prompt indicator to `completing-read-multiple'.
+    ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+    (defun crm-indicator (args)
+      (cons (format "[CRM%s] %s"
+                    (replace-regexp-in-string
+                     "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                     crm-separator)
+                    (car args))
+            (cdr args)))
+    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+    ;; Do not allow the cursor in the minibuffer prompt
+    (setq minibuffer-prompt-properties
+          '(read-only t cursor-intangible t face minibuffer-prompt))
+    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+    ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+    ;; Vertico commands are hidden in normal buffers.
+    ;; (setq read-extended-command-predicate
+    ;;       #'command-completion-default-include-p)
+
+    ;; Enable recursive minibuffers
+    (setq enable-recursive-minibuffers t))
 #+end_src
 
 * Feeds
