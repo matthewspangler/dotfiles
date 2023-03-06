@@ -2,11 +2,6 @@
 #+AUTHOR: Matthew Spangler
 #+EMAIL: mattspangler@protonmail.com
 #+OPTIONS: num:nil
-* Help
-** Useful plugins
-[[https://github.com/emacs-tw/awesome-emacs][Awesome Emacs Github Page]]
-* Emacs Directory
-- [[file:~/.emacs.d/init.el][init.el]]
 * Setup
 This is stuff that needs to be run first, because lines further down the config depend on these commands.
 
@@ -196,7 +191,7 @@ Don't forget to install all the icons fonts after this.
   #+end_src
 
 ** Base Extensions
-#+name base-extensions-setup
+#+name: base-extensions-setup
 #+begin_src emacs-lisp
 
   (use-package avy
