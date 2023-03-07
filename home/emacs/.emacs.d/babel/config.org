@@ -291,8 +291,8 @@ Don't forget to install all the icons fonts after this.
 
   (use-package org
     :config
-    (setq org-directory "~/org-files"
-          org-default-notes-file (concat org-directory "/todo.org"))
+    (setq org-directory "~/Documents/Notetaking"
+          org-default-notes-file (concat org-directory "/planner.org"))
     :bind
     ("C-c l" . org-store-link)
     ("C-c a" . org-agenda))
@@ -300,7 +300,7 @@ Don't forget to install all the icons fonts after this.
   (use-package org-projectile
     :config
     (org-projectile-per-project)
-    (setq org-projectile-per-project-filepath "todo.org"
+    (setq org-projectile-per-project-filepath "planner.org"
           org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
 
   (use-package org-bullets
@@ -1878,5 +1878,5 @@ Depends on org-contrib:
   #+begin_src emacs-lisp
     (use-package org-trello
       :ensure t)
-    (custom-set-variables '(org-trello-files '("~/Documents/Org-Notebooks/miningstore-trello.org")))
+    (custom-set-variables '(org-trello-files '("~/Documents/Notetaking/employment/trello.org")))
   #+end_src
