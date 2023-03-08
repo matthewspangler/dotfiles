@@ -1,3 +1,4 @@
 !.gitignore
 galaxy/roles/*
 !galaxy/roles/.gitkeep
+home/emacs/.emacs.d/emacs-custom.el
