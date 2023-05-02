@@ -13,3 +13,9 @@
   community.general.pacman:
     name: "{{ _pkgs.stdout_lines }}"
     state: present
+
+- name: Setup AUR helper
+  become: yes
+  community.general.pacman:
+    name: paru
+    state: present

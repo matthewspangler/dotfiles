@@ -1,0 +1,17 @@
+- name: Update pacman cache
+  become: yes
+  community.general.pacman:
+    update_cache: true
+
+- name: Install rofi
+  become: yes
+  community.general.pacman:
+    name: rofi
+    state: present
+
+# TODO: Install espanso with AUR
+
+- name: Symlink rofi dotfiles
+  shell: stow --no-folding -d ~/dotfiles/home -t ~/ {{ item }}
+  with_items:
+    - rofi

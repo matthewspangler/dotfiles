@@ -5,9 +5,10 @@
   vars:
     user: "{{ localuser }}"
   roles:
-    - core
+    - archlinux_core
     - zsh
     - emacs
+    - espanso
     # - plasma
     # - themeing
     # Bash is broken on fresh arch installs because stow doesn't want to override existing .bashrc:
@@ -15,6 +16,9 @@
     # - weechat
     - xonsh
     - vim
+    - swhkd
+    - eww
+    - rofi
     # - tmux
     # - xresources
     # - wanderlust

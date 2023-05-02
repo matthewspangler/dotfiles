@@ -826,12 +826,15 @@ Don't forget to install all the icons fonts after this.
       (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
       :config
       (setq elpy-rpc-backend "jedi")
-      (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+      ;(add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
       flycheck-python-flake8-executable "/usr/local/bin/flake8"
       :bind (:map elpy-mode-map
                 ("M-." . elpy-goto-definition)
                 ("M-," . pop-tag-mark)))
     (elpy-enable))
+
+  (setq elpy-rpc-virtualenv-path 'current)
+
 
   (use-package pip-requirements
     :config
