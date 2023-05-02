@@ -4,7 +4,7 @@ My Arch Linux development environment dotfiles orchestrated with GNU Stow and An
 
 # Installation
 
-1) Clone this repo and all recursive submodules:
+1) Clone this repo and all recursive submodules inside your home directory:
 ```
 cd ~
 git clone --recurse-submodules https://github.com/matthewspangler/dotfiles
