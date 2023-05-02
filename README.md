@@ -6,7 +6,7 @@ My Arch Linux development environment dotfiles orchestrated with GNU Stow and An
 
 1) Install Python 3.
 2) Download install.py from this repo: ```curl --location --remote-header-name --remote-name https://github.com/matthewspangler/dotfiles/install.py```.
-3) Run the installer with your system's admin password as an argument: ```python3 install.py -p <your password>```.
+3) Run the installer with your admin password as an argument: ```python3 install.py -p <your password>```.
 4) Run Emacs and let it configure itself.
 5) Setup tab icons by doing this in Emacs: ```M-x all-the-icons-install-fonts```
 
