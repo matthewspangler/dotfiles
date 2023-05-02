@@ -4,6 +4,8 @@ My Arch Linux development environment dotfiles orchestrated with GNU Stow and An
 
 # Installation
 
+These dotfiles depend on cloning recursive submodules: ```git clone --recurse-submodules https://github.com/matthewspangler/dotfiles```
+
 Edit ./playbooks/arch_installer.yml and uncomment roles you'd like to install.
 
 Run the following commands:
