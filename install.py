@@ -1,20 +1,27 @@
+HELP_MESSAGE = """
+Installs dotfiles.
+Syntax: install.py [-p|h]
+options:
+p     Specify user password for running ansible/pacman.
+h     Print this Help.
+"""
 GITHUB_URL = "https://github.com/"
 GIT_REPO = "matthewspangler/dotfiles"
 
-# Built-in python libraries
+# Built-in libraries:
 import argparse
 import subprocess
 import platform
 import os
 import sys
 import re
-# Check python version
+# Check python version:
 if sys.version_info[0] < 3:
     sys.exit("Must be using Python 3")
 else:
     # pip install requirements file from remote repo:
     subprocess.call(f"pip3 install -r https://raw.githubusercontent.com/{GIT_REPO}/master/requirements.txt", shell=True)
-# Pypi python libraries below
+# Pypi libraries:
 from typing import Any
 import distro
 import loguru
@@ -87,14 +94,7 @@ class Debian(DistroSetup):
 
 
 def show_help():
-    # Display Help
-    print("Installs dotfiles.")
-    print()
-    print("Syntax: install.py [-p|h]")
-    print("options:")
-    print("p     Specify user password for running ansible/pacman.")
-    print("h     Print this Help.")
-    print()
+    print(HELP_MESSAGE)
 
 def title(text):
     color='\033[1;37m'
