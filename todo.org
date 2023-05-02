@@ -1,3 +1,4 @@
 * Change ansible playbooks/stow commands so dotfiles folder can be in any dir and still symlink properly
 * Make KDE Plasma tiling WM playbook, install shortcuts and other settings
 * Get bashrc symlinks working again
+* Refactor so dotfiles can be installed on Arch, Debian, or Mac. Write Ansible playbooks for those OS's.
