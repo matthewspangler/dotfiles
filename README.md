@@ -30,9 +30,9 @@ GNU Stow is a handy tool that symlinks dotfiles to wherever they belong in your 
 ## How to add dotfiles or ansible scripts
 
 Steps:
-1) Create a role playbook in ```playbooks/roles/<role name>/tasks/main.yml```
-2) Add ```<role name>``` to ```playbooks/install_roles.yml``` so that install.py runs it automatically.
-3) Create ```home/<dotfile folder name>```, I name the folders based on the app whose dotfiles I am managing.
+1) Create a role playbook in ```~/dotfiles/playbooks/roles/<role name>/tasks/main.yml```
+2) Add ```<role name>``` to ```~/dotfiles/playbooks/install_roles.yml``` so that install.py runs it automatically.
+3) Create ```~/dotfiles/home/<dotfile folder name>```, I name the folders based on the app whose dotfiles I am managing.
 4) Make the ```<dotfile folder name>``` subdirectory tree structure mirror where you want the dotfiles stored in your user's home directory. Here's an example for emacs: ```~/.emacs.d``` --> ```~/dotfiles/home/emacs/.emacs.d```
 5) Use the main.yml playbook you just created to install/unstow/symlink the dotfiles. For example:
 ```
