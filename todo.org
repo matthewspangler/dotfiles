@@ -3,3 +3,4 @@
 * Get bashrc symlinks working again
 * Refactor so dotfiles can be installed on Arch, Debian, or Mac. Write Ansible playbooks for those OS's.
 * Alter Emacs config.org to remove babel settings causing it to not run on Mac
+* Allow specifying roles through -r in install.py
