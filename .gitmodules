@@ -1,0 +1,6 @@
+[submodule "home/espanso/.config/espanso/match/espanso-hacks"]
+	path = home/espanso/.config/espanso/match/espanso-hacks
+	url = https://github.com/matthewspangler/espanso-hacks
+[submodule "packages"]
+	path = home/espanso/.config/espanso/match/packages
+	url = https://github.com/matthewspangler/espanso-hacks
