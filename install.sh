@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script is Arch linux only, and unmaintained. Use install.py instead.
+
 show_help() {
    # Display Help
    echo "Installs dotfiles."
