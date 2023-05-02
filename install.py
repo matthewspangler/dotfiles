@@ -1,13 +1,23 @@
+GITHUB_URL = "https://github.com/"
+GIT_REPO = "matthewspangler/dotfiles"
+
+# Built-in python libraries
 import argparse
 import subprocess
 import platform
-from typing import Any
-import distro
 import os
 import sys
 import re
-
-GIT_REPO = "https://github.com/matthewspangler/dotfiles"
+# Check python version
+if sys.version_info[0] < 3:
+    sys.exit("Must be using Python 3")
+else:
+    # pip install requirements file from remote repo:
+    subprocess.call(f"pip3 install -r https://raw.githubusercontent.com/{GIT_REPO}/master/requirements.txt", shell=True)
+# Pypi python libraries below
+from typing import Any
+import distro
+import loguru
 
 class DistroSetup:
     def __init__(self, admin_pass):
@@ -16,7 +26,7 @@ class DistroSetup:
 
     def get_repo(self):
         title("Clone dotfiles")
-        subprocess.call(f"git clone --recurse-submodules {GIT_REPO} ~/dotfiles", shell=True)
+        subprocess.call(f"git clone --recurse-submodules {GITHUB_URL}{GIT_REPO} ~/dotfiles", shell=True)
 
     def get_ansible(self, admin_pass):
         # Override in distro child class
@@ -61,7 +71,7 @@ class Darwin(DistroSetup):
         subprocess.call("brew install ansible git", shell=True)
 
 
-class Archlinux(DistroSetup):
+class Arch(DistroSetup):
     def __init__(self, admin_pass):
         super().__init__(admin_pass)
 
@@ -99,16 +109,10 @@ def get_os():
     return system, release, distro
 
 def install(distro, admin_pass):
-    if 'darwin' in distro:
-        Darwin(admin_pass)
-    # If Arch Linux:
-    elif 'arch' in distro:
-        Archlinux(admin_pass)
-    # If Debian Linux:
-    elif 'debian' in distro:
-        Debian(admin_pass)
-    else:
-        sys.exit("Installer does not support this OS/distribution.")
+    # Get+init class dynamically by matching distro string with class name:
+    distro_class = globals()[distro.capitalize()]
+    # __init__ function calls run() automatically, which runs the install process.
+    distro_class(admin_pass)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -117,10 +121,7 @@ def main():
     args = parser.parse_args()
 
     # Get OS/distro info
-    system, release, distro = get_os()
-
-    if sys.version_info[0] < 3:
-        sys.exit("Must be using Python 3")
+    _, _, distro = get_os()
     
     install(distro, args.password)
 

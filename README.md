@@ -4,24 +4,11 @@ My Arch Linux development environment dotfiles orchestrated with GNU Stow and An
 
 # Installation
 
-1) Clone this repo and all recursive submodules inside your home directory:
-```
-cd ~
-git clone --recurse-submodules https://github.com/matthewspangler/dotfiles
-cd ~/dotfiles
-```
-
-2) Edit ./playbooks/arch_installer.yml and uncomment roles you'd like to install.
-
-3) Run the installer:
-```
-chmod a+x ./install.sh
-./install.sh
-```
-
-4) Run emacs and wait for it to download packages from Elpa and install everything.
-
-5) Tab icons in Emacs won't show until you do: ```M-x all-the-icons-install-fonts```
+1) Install Python 3.
+2) Download install.py from this repo: ```curl --location --remote-header-name --remote-name https://github.com/matthewspangler/dotfiles/install.py```.
+3) Run the installer with your system's admin password as an argument: ```python3 install.py -p <your password>```.
+4) Run Emacs and let it configure itself.
+5) Setup tab icons by doing this in Emacs: ```M-x all-the-icons-install-fonts```
 
 # Troubleshooting
 
