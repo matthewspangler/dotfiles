@@ -70,7 +70,7 @@ class DistroSetup:
         if admin_pass:
             pass_string = f"ansible_become_pass={admin_pass}"
         title("Run dotfiles ansible installer")
-        subprocess.call(f"ansible-playbook ~/dotfiles/playbooks/arch_installer.yml --extra-vars=\"localuser=$USER {pass_string}\" -vvv", shell=True)
+        subprocess.call(f"ansible-playbook ~/dotfiles/playbooks/install_roles.yml --extra-vars=\"localuser=$USER {pass_string}\" -vvv", shell=True)
 
     def run(self):
         logger.info(f'Running the {self.__class__} class install process.')
@@ -91,7 +91,7 @@ class Darwin(DistroSetup):
         curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh
         echo "{} yes" | /bin/bash -c "./install.sh"
         """.format(admin_pass)
-        
+
         # Check if homebrew exists, install it if not. Then install Ansible with homebrew:
         if not os.path.exists("/usr/local/bin/brew"):
             subprocess.check_output(hb_install, shell=True)
