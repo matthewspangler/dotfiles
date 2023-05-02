@@ -4,23 +4,24 @@ My Arch Linux development environment dotfiles orchestrated with GNU Stow and An
 
 # Installation
 
-These dotfiles depend on cloning recursive submodules: ```git clone --recurse-submodules https://github.com/matthewspangler/dotfiles```
-
-Edit ./playbooks/arch_installer.yml and uncomment roles you'd like to install.
-
-Run the following commands:
-
+1) Clone this repo and all recursive submodules:
 ```
 cd ~
-git clone https://github.com/matthewspangler/dotfiles
+git clone --recurse-submodules https://github.com/matthewspangler/dotfiles
 cd ~/dotfiles
+```
+
+2) Edit ./playbooks/arch_installer.yml and uncomment roles you'd like to install.
+
+3) Run the installer:
+```
 chmod a+x ./install.sh
 ./install.sh
 ```
 
-Run emacs and wait for it to download packages from Elpa and install everything.
+4) Run emacs and wait for it to download packages from Elpa and install everything.
 
-Tab icons won't show until you do: ```M-x all-the-icons-install-fonts```
+5) Tab icons in Emacs won't show until you do: ```M-x all-the-icons-install-fonts```
 
 # Troubleshooting
 
