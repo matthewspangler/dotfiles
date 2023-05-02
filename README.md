@@ -1,6 +1,6 @@
 # About
 
-My Arch Linux development environment dotfiles orchestrated with GNU Stow and Ansible.
+My dotfiles + dev environment orchestrated with GNU Stow and Ansible.
 
 # Installation
 
