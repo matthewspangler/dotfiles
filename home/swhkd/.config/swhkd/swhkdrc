@@ -1,5 +1,22 @@
-super
-    rofi -show drun
-
+# Show rofi dmenu
 super + x
     rofi -show drun
+
+# Open KDE Application menu
+super + shift + x
+    dbus-send --type=method_call --dest=org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.activateLauncherMenu
+
+# Open yakuake
+super + Return
+    dbus-send --type=method_call --dest=org.kde.yakuake /yakuake/window org.kde.yakuake.toggleWindowState
+
+# Close focused window in KDE
+super + e
+    qdbus org.kde.KWin /KWin org.kde.KWin.killWindow
+
+# Make window fullscreen
+super + shift + f
+    qdbus org.kde.KWin /KWin org.kde.KWin.toggleFullscreen
+
+# Toggle tiling mode
+
