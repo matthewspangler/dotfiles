@@ -1,0 +1,11 @@
+
+- name: Update pacman cache
+  become: yes
+  community.general.pacman:
+    update_cache: true
+
+- name: Install bash
+  become: yes
+  community.general.pacman:
+    name: bash
+    state: present

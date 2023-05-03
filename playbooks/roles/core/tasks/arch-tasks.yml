@@ -1,0 +1,21 @@
+- name: Update pacman cache
+  become: yes
+  community.general.pacman:
+    update_cache: true
+
+- command: "awk '{print $1}' '{{role_path}}/pkglist.txt'"
+  register: _pkgs
+  delegate_to: localhost
+  run_once: true
+
+- name: Install packages from pkglist.txt
+  become: yes
+  community.general.pacman:
+    name: "{{ _pkgs.stdout_lines }}"
+    state: present
+
+- name: Setup AUR helper
+  become: yes
+  community.general.pacman:
+    name: paru
+    state: present

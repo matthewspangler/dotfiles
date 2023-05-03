@@ -1,0 +1,10 @@
+- name: Update pacman cache
+  become: yes
+  community.general.pacman:
+    update_cache: true
+
+- name: Install zsh
+  become: yes
+  community.general.pacman:
+    name: zsh
+    state: present

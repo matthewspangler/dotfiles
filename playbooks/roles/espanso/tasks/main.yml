@@ -1,15 +1,14 @@
-- name: Update pacman cache
-  become: yes
-  community.general.pacman:
-    update_cache: true
+- include_tasks: arch-tasks.yml
+  when: ansible_os_family == "Archlinux"
 
-- name: Install espanso
-  kewlfft.aur.aur:
-    use: paru
-    name:
-      - espanso
+- include_tasks: debian-tasks.yml
+  when: ansible_os_family == "Debian"
+
+- include_tasks: macos-tasks.yml
+  when: ansible_os_family == "Darwin"
 
 - name: Symlink espanso dotfiles
   shell: stow --no-folding -d ~/dotfiles/home -t ~/ {{ item }}
   with_items:
     - espanso
+  when: ansible_os_family == "Archlinux" or ansible_os_family == "Debian"
