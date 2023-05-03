@@ -1,0 +1,27 @@
+---
+- hosts: localhost
+  connection: local
+  remote_user: "{{ localuser }}"
+  vars:
+    user: "{{ localuser }}"
+  tasks:
+
+  - name: Find all folders containing a main.yml file
+    find:
+      paths: "{{ playbook_dir }}/roles"
+      file_type: directory
+      recurse: no
+    register: role_folders
+
+  - name: Role folders list
+    debug:
+      msg: "{{ item | basename }}"
+    with_items: "{{ role_folders.files | map(attribute='path') | list }}"
+
+  # Include roles based on the folders found above
+  - include_role:
+      name: "{{ item | basename }}"
+      tasks_from: "main.yml"
+      apply:
+        tags: "{{ item | basename }}"
+    with_items: "{{ role_folders.files | map(attribute='path') | list }}"

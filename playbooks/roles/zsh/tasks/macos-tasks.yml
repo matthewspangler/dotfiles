@@ -1,0 +1,10 @@
+- name: Install tmux
+  homebrew:
+    name: tmux
+    state: present
+
+# Install thefuck
+- name: Install thefuck
+  homebrew:
+    name: thefuck
+    state: present
