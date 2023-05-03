@@ -13,8 +13,8 @@
     - espanso
   when: ansible_os_family == "Archlinux" or ansible_os_family == "Debian"
 
-- name: Symlink espanso dotfiles (Mac only)
-  shell: stow --no-folding -d ~/dotfiles/home -t ~/ {{ item }}
+- name: Unstow espanso dotfiles (Mac OS only)
+  shell: stow --no-folding -d ~/dotfiles/home/espanso/.config/ -t ~/Library/Application\ Support/espanso {{ item }}
   with_items:
     - espanso
   when: ansible_os_family == "Darwin"

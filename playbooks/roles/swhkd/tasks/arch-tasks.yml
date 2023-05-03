@@ -1,0 +1,39 @@
+
+- name: Install swhkd
+  kewlfft.aur.aur:
+    use: paru
+    name:
+      - swhkd-bin
+
+- name: Symlink swhkd dotfiles
+  shell: stow --no-folding -d ~/dotfiles/home -t ~/ {{ item }}
+  with_items:
+    - swhkd
+
+- name: Create swhkd config directory in etc, make sure we are privileged
+  become: yes
+  file:
+    path: /etc/swhkd
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Chown /etc/swhkd to current user
+  become: yes
+  file:
+    path: /etc/swhkd
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0755
+
+- name: Symlink swhkd config file to etc, make sure we are privileged
+  become: no
+  file:
+    path: /etc/swhkd/swhkdrc
+    src: ~/.config/swhkd/swhkdrc
+    state: link
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0755

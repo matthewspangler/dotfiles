@@ -4,11 +4,10 @@
 - include_tasks: debian-tasks.yml
   when: ansible_os_family == "Debian"
 
-- include_tasks: macos-tasks.yml
-  when: ansible_os_family == "Darwin"
+#- include_tasks: macos-tasks.yml
+#  when: ansible_os_family == "Darwin"
 
-- name: Symlink emacs dotfiles
+- name: Symlink Emacs dotfiles 
   shell: stow --no-folding -d ~/dotfiles/home -t ~/ {{ item }}
   with_items:
     - emacs
-  when: ansible_os_family == "Archlinux" or ansible_os_family == "Debian"
