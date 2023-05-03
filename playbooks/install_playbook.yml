@@ -6,14 +6,14 @@
     user: "{{ localuser }}"
   tasks:
 
-  - name: Find all folders containing a main.yml file
+  - name: Find all role folders
     find:
       paths: "{{ playbook_dir }}/roles"
       file_type: directory
       recurse: no
     register: role_folders
 
-  - name: Role folders list
+  - name: Role folders list debug message
     debug:
       msg: "{{ item | basename }}"
     with_items: "{{ role_folders.files | map(attribute='path') | list }}"
