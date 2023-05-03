@@ -98,20 +98,28 @@ class Darwin(DistroSetup):
         subprocess.call("brew install ansible git", shell=True)
 
 
-class Arch(DistroSetup):
-    def __init__(self, admin_pass):
-        super().__init__(admin_pass)
-
-    def get_ansible(self, admin_pass):
-        subprocess.call(f"echo {admin_pass} | sudo -S pacman -S ansible git", shell=True)
-
-
 class Debian(DistroSetup):
     def __init__(self, admin_pass):
         super().__init__(admin_pass)
 
     def get_ansible(self, admin_pass):
         subprocess.call(f"echo {admin_pass} | sudo -S apt install ansible git", shell=True)
+
+class Arch(DistroSetup):
+    def __init__(self, admin_pass):
+        super().__init__(admin_pass)
+
+    def get_ansible(self, admin_pass):
+        subprocess.call(f"echo {admin_pass} | sudo -S pacman -S ansible git", shell=True)
+        
+class Endeavouros(Arch):
+    def __init__(self, admin_pass):
+        super().__init__(admin_pass)
+        
+
+class Manjaro(Arch):
+    def __init__(self, admin_pass):
+        super().__init__(admin_pass)
 
 
 def show_help():
