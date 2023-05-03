@@ -1,0 +1,161 @@
+
+- name: Update pacman cache
+  become: yes
+  community.general.pacman:
+    update_cache: true
+
+- name: Install python
+  become: yes
+  community.general.pacman:
+    name: python
+    state: present
+
+- name: Install pip
+  become: yes
+  community.general.pacman:
+    name: python-pip
+    state: present
+
+- name: Install emacs
+  become: yes
+  community.general.pacman:
+    name: emacs
+    state: present
+
+- name: Install libvterm
+  become: yes
+  community.general.pacman:
+    name: libvterm
+    state: present
+
+- name: Install cmake
+  become: yes
+  community.general.pacman:
+    name: cmake
+    state: present
+
+- name: Install Hunspell US English dictionary
+  become: yes
+  community.general.pacman:
+    name: hunspell-en_us
+    state: present
+
+- name: Install awesome fonts
+  become: yes
+  community.general.pacman:
+    name: awesome-terminal-fonts
+    state: present
+
+- name: Install pyenv
+  become: yes
+  community.general.pacman:
+    name: pyenv
+    state: present
+
+- name: Install python jupyter client
+  become: yes
+  community.general.pacman:
+    name: python-jupyter_client
+    state: present
+
+- name: Install python jupyter core
+  become: yes
+  community.general.pacman:
+    name: python-jupyter_core
+    state: present
+
+- name: Install python jupyterlab server
+  become: yes
+  community.general.pacman:
+    name: python-jupyterlab_server
+    state: present
+
+- name: Install Jupyter notebook
+  become: yes
+  community.general.pacman:
+    name: jupyter-notebook
+    state: present
+
+- name: Install Jupyter server
+  become: yes
+  community.general.pacman:
+    name: jupyter-server
+    state: present
+
+- name: Install jedi for python
+  become: yes
+  community.general.pacman:
+    name: python-jedi
+    state: present
+
+#- name: Install autopep8 python package
+#  ansible.builtin.pip:
+#    name: autopep8
+
+- name: Install autopep8
+  become: yes
+  community.general.pacman:
+    name: autopep8
+    state: present
+
+- name: Install pylint
+  become: yes
+  community.general.pacman:
+    name: python-pylint
+    state: present
+
+#- name: Install pylint python package
+#  ansible.builtin.pip:
+#    name: pylint
+
+- name: Install rope
+  become: yes
+  community.general.pacman:
+    name: python-rope
+    state: present
+
+#- name: Install rope python package
+#  ansible.builtin.pip:
+#    name: rope
+
+- name: Remove rust to avoid conflict with rustup
+  become: yes
+  community.general.pacman:
+    name: rust
+    state: absent
+
+- name: Install Rust via rustup
+  become: yes
+  community.general.pacman:
+    name: rustup
+    state: present
+
+- name: Install Rust stable toolchain
+  ansible.builtin.shell: rustup default stable
+
+- name: Install Rust source code for rust-analyzer
+  ansible.builtin.shell: rustup component add rust-src
+
+- name: Install rust-analyzer
+  become: yes
+  community.general.pacman:
+    name: rust-analyzer
+    state: present
+
+- name: Install Clippy for Rust linting
+  ansible.builtin.shell: rustup component add clippy
+
+- name: Install Rustfmt style formatting tool for Rust
+  ansible.builtin.shell: rustup component add rustfmt
+
+- name: Install clang
+  become: yes
+  community.general.pacman:
+    name: clang
+    state: present
+
+- name: Install cmake
+  become: yes
+  community.general.pacman:
+    name: cmake
+    state: present

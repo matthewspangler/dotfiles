@@ -1,0 +1,30 @@
+- name: Install Emacs with native-compilation
+  homebrew:
+    name: emacs-plus@28
+    state: present
+    install_options: --with-native-comp
+
+- name: Install python
+  homebrew:
+    name: python
+    state: present
+
+- name: Install pip for python3
+  homebrew:
+    name: pip3
+    state: present
+
+- name: Install libvterm for emacs
+  homebrew:
+    name: libvterm
+    state: present
+
+- name: Install cmake
+  homebrew:
+    name: cmake
+    state: present
+
+- name: Install Jupyterlab
+  homebrew:
+    name: jupyterlab
+    state: present

@@ -138,7 +138,7 @@ def get_os():
     return system, release, dist
 
 def install(dist, admin_pass):
-    # Get+init class dynamically by matching distro string with class name:
+    # Find and init class dynamically by matching distro string with class name:
     distro_class = globals()[dist.capitalize()]
     # __init__ function calls run() automatically, which runs the install process.
     distro_class(admin_pass)
