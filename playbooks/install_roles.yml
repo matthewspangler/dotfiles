@@ -5,7 +5,7 @@
   vars:
     user: "{{ localuser }}"
   roles:
-    - archlinux_core
+    - core
     - zsh
     - emacs
     - espanso
