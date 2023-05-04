@@ -9,7 +9,14 @@
     name: python-pywal
     state: present
 
+- name: Install latte dock
+  become: yes
+  community.general.pacman:
+    name: latte-dock
+    state: present
+
 - name: Install bismuth tiling window manager script for KDE Plasma
+  become: yes
   kewlfft.aur.aur:
     use: paru
     name:

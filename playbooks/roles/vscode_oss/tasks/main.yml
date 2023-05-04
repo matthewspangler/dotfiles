@@ -1,0 +1,14 @@
+- include_tasks: arch-tasks.yml
+  when: ansible_os_family == "Archlinux"
+
+- include_tasks: debian-tasks.yml
+  when: ansible_os_family == "Debian"
+
+#- include_tasks: macos-tasks.yml
+#  when: ansible_os_family == "Darwin"
+
+- name: Symlink zsh dotfiles
+  shell: stow -d ~/dotfiles/home -t ~/ {{ item }}
+  with_items:
+    - vscode_oss
+  when: ansible_os_family == "Archlinux" or ansible_os_family == "Debian"

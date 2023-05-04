@@ -1,0 +1,17 @@
+- name: Update pacman cache
+  become: yes
+  community.general.pacman:
+    update_cache: true
+
+# Marketplace explained: https://wiki.archlinux.org/title/Visual_Studio_Code
+- name: Install code-marketplace so I can install extensions from the vscode marketplace
+  kewlfft.aur.aur:
+    use: paru
+    name:
+      - code-marketplace
+
+- name: Install Code OSS
+  become: yes
+  community.general.pacman:
+    name: code
+    state: present

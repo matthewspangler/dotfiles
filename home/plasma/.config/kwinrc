@@ -2,30 +2,24 @@
 update_info=kwin.upd:replace-scalein-with-scale,kwin.upd:port-minimizeanimation-effect-to-js,kwin.upd:port-scale-effect-to-js,kwin.upd:port-dimscreen-effect-to-js,kwin.upd:auto-bordersize,kwin.upd:animation-speed,kwin.upd:desktop-grid-click-behavior,kwin.upd:no-swap-encourage,kwin.upd:make-translucency-effect-disabled-by-default,kwin.upd:remove-flip-switch-effect,kwin.upd:remove-cover-switch-effect,kwin.upd:remove-cubeslide-effect,kwin.upd:remove-xrender-backend,kwin.upd:enable-scale-effect-by-default,kwin.upd:overview-group-plugin-id,kwin.upd:animation-speed-cleanup,bismuth_new_logger.upd:bismuth-new-logger,kwin.upd:replace-cascaded-zerocornered
 
 [Desktops]
-Id_1=67c48771-3491-4ef4-8633-f068216f70a1
-Id_2=0522a745-80e8-44c4-9d24-b47468ca8519
-Id_3=e4ac11cb-2c35-4f43-a6f9-f0a2180c030e
-Id_4=3c427a69-490d-4f99-8c84-c6058979b1ca
-Id_5=6f85984d-c546-4951-9a79-f65a1349b18d
-Id_6=9538ae9b-004f-4cbd-a1e8-f6b79f443dd7
-Name_1=1
-Name_2=2
-Name_3=3
-Name_4=4
-Name_5=5
-Name_6=6
+Id_1=352c2779-71fb-403f-87c5-37688f89273f
+Id_2=86df1df4-d130-435c-835f-8f301e8b3732
+Id_3=47a14e7f-1f99-408a-b415-fcc8136a67bf
+Id_4=5cb4804c-f8b4-4a17-b39e-2ed7ec06bc3c
+Id_5=0d36683b-e611-4b54-ac40-b393a2c44ebd
+Id_6=f88194d3-cb15-4707-8d2f-532b4c877fe5
+Name_1[$d]
+Name_2[$d]
 Number=6
-Rows=1
+Rows=6
 
 [Plugins]
 bismuthEnabled=true
 kwin4_effect_fadeEnabled=true
-kwin4_effect_fadedesktopEnabled=true
 kwin4_effect_scaleEnabled=false
 kwin4_effect_squashEnabled=false
 kwin4_effect_translucencyEnabled=true
 magiclampEnabled=true
-slideEnabled=false
 wobblywindowsEnabled=true
 
 [Script-bismuth]
@@ -37,7 +31,15 @@ screenGapRight=12
 screenGapTop=12
 tileLayoutGap=12
 
+[SubSession: 0f0f6ad3-5998-4537-bee1-7d784b349097]
+active=-1
+count=0
+
 [SubSession: 200b6089-e9ea-474b-9104-99e1294a581c]
+active=-1
+count=0
+
+[SubSession: 3dbdd839-2562-4a5f-a504-1020299f5fce]
 active=-1
 count=0
 
@@ -45,7 +47,19 @@ count=0
 active=-1
 count=0
 
+[SubSession: 8a404ad3-fe86-4377-887a-16a584e29de2]
+active=-1
+count=0
+
+[SubSession: b38816d8-3dde-4279-bd0d-9b186a072b66]
+active=-1
+count=0
+
 [SubSession: b54128e5-6f65-4fd6-a9fe-0f4d78bd5668]
+active=-1
+count=0
+
+[SubSession: fa89eedb-d119-4dbf-9f81-486412b31751]
 active=-1
 count=0
 

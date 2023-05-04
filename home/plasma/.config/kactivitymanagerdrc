@@ -2,30 +2,21 @@
 org.kde.ActivityManager.VirtualDesktopSwitchEnabled=true
 
 [activities]
-0f0f6ad3-5998-4537-bee1-7d784b349097=1 Note
-3dbdd839-2562-4a5f-a504-1020299f5fce=2 Work
-8a404ad3-fe86-4377-887a-16a584e29de2=4 Chat
-b38816d8-3dde-4279-bd0d-9b186a072b66=5 Learn
-fa89eedb-d119-4dbf-9f81-486412b31751=3 Play
-fb33f293-c806-4b73-ac58-572d72ae37a6=6 Art
+5ffb288c-796b-40ae-be9a-eb600abb03a3=Creative
+6d2ec8f6-9f64-4539-adbc-e026417e1f38=Personal
+dda891df-9282-4a48-ae2b-fad8d361349b=Focus
+fb33f293-c806-4b73-ac58-572d72ae37a6=Work
 
 [activities-descriptions]
-0f0f6ad3-5998-4537-bee1-7d784b349097=Organization
-3dbdd839-2562-4a5f-a504-1020299f5fce=Web browsing
-8a404ad3-fe86-4377-887a-16a584e29de2=Development space
-b38816d8-3dde-4279-bd0d-9b186a072b66=Audio production
-fa89eedb-d119-4dbf-9f81-486412b31751=System administration
 fb33f293-c806-4b73-ac58-572d72ae37a6=Art production
 
 [activities-icons]
-0f0f6ad3-5998-4537-bee1-7d784b349097=knotes
-3dbdd839-2562-4a5f-a504-1020299f5fce=planwork
-8a404ad3-fe86-4377-887a-16a584e29de2=org.kde.neochat
-b38816d8-3dde-4279-bd0d-9b186a072b66=calibre-ebook-edit
-fa89eedb-d119-4dbf-9f81-486412b31751=preferences-desktop-gaming
-fb33f293-c806-4b73-ac58-572d72ae37a6=kolourpaint
+5ffb288c-796b-40ae-be9a-eb600abb03a3=kolourpaint
+6d2ec8f6-9f64-4539-adbc-e026417e1f38=preferences-desktop-gaming
+dda891df-9282-4a48-ae2b-fad8d361349b=ktimetracker
+fb33f293-c806-4b73-ac58-572d72ae37a6=libreoffice-writer
 
 [main]
 currentActivity=fb33f293-c806-4b73-ac58-572d72ae37a6
-runningActivities=fa89eedb-d119-4dbf-9f81-486412b31751,8a404ad3-fe86-4377-887a-16a584e29de2,3dbdd839-2562-4a5f-a504-1020299f5fce,fb33f293-c806-4b73-ac58-572d72ae37a6,b38816d8-3dde-4279-bd0d-9b186a072b66,0f0f6ad3-5998-4537-bee1-7d784b349097
+runningActivities=fb33f293-c806-4b73-ac58-572d72ae37a6
 stoppedActivities=
