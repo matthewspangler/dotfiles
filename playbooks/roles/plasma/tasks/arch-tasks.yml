@@ -15,6 +15,12 @@
     name: latte-dock
     state: present
 
+- name: Install kvantum
+  become: yes
+  community.general.pacman:
+    name: kvantum
+    state: present
+
 - name: Install bismuth tiling window manager script for KDE Plasma
   become: yes
   kewlfft.aur.aur:
