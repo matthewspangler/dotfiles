@@ -1,5 +1,16 @@
-- name: Install pywal
+- name: Update pacman cache
   become: yes
   community.general.pacman:
+    update_cache: true
+
+- name: Install pywal
+  become: yes
+  kewlfft.aur.aur:
     name: python-pywal
     state: present
+
+- name: Install bismuth tiling window manager script for KDE Plasma
+  kewlfft.aur.aur:
+    use: paru
+    name:
+      - kwin-bismuth

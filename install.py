@@ -109,6 +109,14 @@ class Debian(DistroSetup):
 
     def get_ansible(self):
         subprocess.call(f"echo {self.admin_pass} | sudo -S apt install ansible git", shell=True)
+        
+class Ubuntu(Debian):
+    def __init__(self, install_args):
+        super().__init__(install_args)
+        
+class Linuxmint(Ubuntu):
+    def __init__(self, install_args):
+        super().__init__(install_args)
 
 class Arch(DistroSetup):
     def __init__(self, install_args):
