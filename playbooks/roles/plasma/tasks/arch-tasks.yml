@@ -3,6 +3,42 @@
   community.general.pacman:
     update_cache: true
 
+- name: Install KDE Plasma
+  become: yes
+  community.general.pacman:
+    name: plasma-meta
+    state: present
+
+- name: Install konsole terminal emulator
+  become: yes
+  community.general.pacman:
+    name: konsole
+    state: present
+
+- name: Install kwrite text editor
+  become: yes
+  community.general.pacman:
+    name: kwrite
+    state: present
+
+- name: Install dolphin file manager
+  become: yes
+  community.general.pacman:
+    name: dolphin
+    state: present
+
+- name: Install ark 
+  become: yes
+  community.general.pacman:
+    name: ark
+    state: present
+
+- name: Install KDE applications
+  become: yes
+  community.general.pacman:
+    name: kde-applications
+    state: present
+
 - name: Install pywal
   become: yes
   kewlfft.aur.aur:
