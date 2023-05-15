@@ -19,3 +19,10 @@
   community.general.pacman:
     name: paru
     state: present
+
+- name: Install pacdef from AUR using paru
+  kewlfft.aur.aur:
+    use: paru
+    name:
+      - pacdef
+    state: present
