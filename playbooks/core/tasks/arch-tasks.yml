@@ -32,7 +32,7 @@
       - rustup
     state: present
 
-- name: Set default version of cargo to nightly
+- name: Set default version of cargo to stable
   become: yes
   command: rustup default stable
 
