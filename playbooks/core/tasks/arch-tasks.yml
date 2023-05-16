@@ -20,6 +20,10 @@
     name: "{{ _pkgs.stdout_lines }}"
     state: present
 
+- name: Packages from pkglist.txt list debug message
+  debug:
+    msg: "{{ _pkgs.stdout_lines }}"
+
 - name: Setup AUR helper
   become: yes
   community.general.pacman:
@@ -38,6 +42,10 @@
   register: _aur_pkgs
   delegate_to: localhost
   run_once: true
+
+- name: Packages from aur_pkglist.txt list debug message
+  debug:
+    msg: "{{ _aur_pkgs.stdout_lines }}"
 
 - name: Install packages from aur_pkglist.txt
   kewlfft.aur.aur:
