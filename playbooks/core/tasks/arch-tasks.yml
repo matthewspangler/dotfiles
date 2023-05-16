@@ -38,6 +38,14 @@
     dest: /tmp/paru
     update: no
 
+- name: Chown paru folder to local user
+  become: yes
+  file:
+    path: /tmp/paru
+    owner: "{{ localuser }}"
+    group: "{{ localuser }}"
+    recurse: yes
+
 - name: Install paru from AUR using makepkg
   become: no
   command: makepkg -si
