@@ -46,7 +46,7 @@
     with_items: "{{ conflict_files.results | map(attribute='stdout_lines') | list | flatten }}"
 
   - name: Symlink dotfiles
-    shell: stow -d ~/dotfiles/home -t ~/ {{ item }}
+    shell: stow -d {{ dotfile_packages }} -t ~/ {{ item }}
     with_items: "{{ dotfile_folders.files | map(attribute='path') | list | map('basename') }}"
 
   - name: Find all role folders
