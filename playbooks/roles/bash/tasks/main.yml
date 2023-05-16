@@ -11,8 +11,9 @@
 # https://unix.stackexchange.com/questions/705401/delete-all-target-links-and-files-before-running-gnu-stow
 # https://unix.stackexchange.com/questions/680413/opposite-of-adopt-option-for-gnu-stow
 - name: Get list of dotfiles to check for GNU Stow conflicts
-  chdir: ~/dotfiles
   shell: find ./home/{{ item }} \( -type f -o -type l \) | sed 's/.\/home\/{{ item }}\///g'
+  args:
+    chdir: ~/dotfiles
   register: conflict_files
   with_items:
     - plasma
