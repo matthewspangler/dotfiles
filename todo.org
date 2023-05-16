@@ -4,3 +4,4 @@
 * Refactor so dotfiles can be installed on Arch, Debian, or Mac. Write Ansible playbooks for those OS's.
 * Alter Emacs config.org to remove babel settings causing it to not run on Mac
 * Allow specifying roles through -r in install.py, or allow the user to exit the script before ansible runs so they can configure roles
+* Clean up GNU stow conflict scripts, combine to one function used across many playbooks
