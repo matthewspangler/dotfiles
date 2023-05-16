@@ -16,14 +16,14 @@
     chdir: ~/dotfiles
   register: conflict_files
   with_items:
-    - plasma
+    - bash
 
 - name: Show list of files to be checked for GNU Stow conflicts
   debug:
     var: conflict_files
 
 - name: Delete conflicting files
-  shell: rm -rf {{ item }}
+  shell: rm -rf ~/{{ item }}
   with_items: "{{ conflict_files.results | map(attribute='stdout_lines') | list }}"
 
 - name: Symlink bash dotfiles
