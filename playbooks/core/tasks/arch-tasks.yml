@@ -32,3 +32,15 @@
     name:
       - pacdef
     state: present
+
+- name: Register packages from aur_pkglist.txt
+  command: "awk '{print $1}' '{{playbook_dir}}/core/aur_pkglist.txt'"
+  register: _aur_pkgs
+  delegate_to: localhost
+  run_once: true
+
+- name: Install packages from aur_pkglist.txt
+  kewlfft.aur.aur:
+    use: paru
+    name: "{{ _aur_pkgs.stdout_lines }}"
+    state: present
