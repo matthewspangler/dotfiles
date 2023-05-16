@@ -3,6 +3,12 @@
   community.general.pacman:
     update_cache: true
 
+- name: If Arch Linux, install GNU Stow with pacman
+  when: ansible_os_family == "Archlinux"
+  community.general.pacman:
+    name: stow
+    state: present
+
 - command: "awk '{print $1}' '{{role_path}}/pkglist.txt'"
   register: _pkgs
   delegate_to: localhost
