@@ -20,8 +20,7 @@
 
 - name: Show list of files to be checked for GNU Stow conflicts
   debug:
-    msg: "{{ item }}"
-  with_items: "{{ conflict_files.stdout_lines }}"
+    var: conflict_files
 
 - name: Delete conflicting files
   shell: rm -rf {{ item }}
