@@ -9,6 +9,6 @@
 #  when: ansible_os_family == "Darwin"
 
 - name: Symlink rofi dotfiles
-  shell: stow --no-folding -d ~/dotfiles/home -t ~/ {{ item }}
+  shell: stow --no-folding --adopt -d ~/dotfiles/home -t ~/ {{ item }}
   with_items:
     - plasma
