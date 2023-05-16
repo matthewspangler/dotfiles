@@ -28,3 +28,43 @@
       apply:
         tags: "{{ item | basename }}"
     with_items: "{{ role_folders.files | map(attribute='path') | list }}"
+
+  # GNU Stow does not overwrite existing files that it does not own, this is intended behavior.
+  #   This doesn't meet my needs, which is to automate my dotfile deployment after 
+  #   my desktop environment is already installed. GNU stow has the '--adopt' option, but this clutters
+  #   up my dotfiles' home directory with files that I don't want to track in git. 
+  #   I could automate a git reset, but that would require me to git commit every time 
+  #   before I run this playbook to avoid losing wanted changes,
+  #   but my brain likely just won't remember to do that. The solution I arrived at was to scan
+  #   my home dir for possible conflicts and delete the files myself before running GNU Stow.
+  # Reference these stackoverflow conversations:
+  #   https://unix.stackexchange.com/questions/705401/delete-all-target-links-and-files-before-running-gnu-stow
+  #   https://unix.stackexchange.com/questions/680413/opposite-of-adopt-option-for-gnu-stow
+  # My solution below is to use sed to strip the base path, I use a relative directory because
+  #   using the absolute directory would result in me having to inject the $HOME variable into the
+  #   sed expression, which would require more thoughtful effort. 
+  #   I may do that in the future, but for now this works as long as I chdir first.
+  - name: Get list of dotfiles to check for GNU Stow conflicts
+    shell: find ./home/{{ item }} \( -type f -o -type l \) | sed 's/.\/home\/{{ item }}\///g'
+    args:
+      chdir: ~/dotfiles
+    register: conflict_files
+    with_items: "{{ role_folders.files | map(attribute='path') | list | basename }}"
+
+  - name: Show list of files to be checked for GNU Stow conflicts
+    debug:
+      var: conflict_files
+
+#  - name: Delete conflicting files
+#    shell: rm -rf ~/{{ item }}
+#    with_items: "{{ conflict_files.results | map(attribute='stdout_lines') | list }}"
+
+#  - name: Symlink bash dotfiles
+#    shell: stow -d ~/dotfiles/home -t ~/ {{ item }}
+#    with_items:
+#      - bash
+
+# End playbook
+  - name: End playbook
+    meta: end_play
+    
