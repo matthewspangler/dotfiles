@@ -1,0 +1,78 @@
+- name: Install renoise from aur 
+  kewlfft.aur.aur:
+    use: paru
+    name:
+      - renoise
+    state: present
+
+- name: Install yabridge
+  become: yes
+  community.general.pacman:
+    name:
+      - yabridge
+      - yabridgectl
+      - wine
+    state: present
+
+- name: Install reaper
+  become: yes
+  community.general.pacman:
+    name:
+      - reaper
+    state: present
+
+- name: Install ardour
+  become: yes
+  community.general.pacman:
+    name:
+      - ardour
+    state: present
+
+- name: Install audacity 
+  become: yes
+  community.general.pacman:
+    name:
+      - audacity
+    state: present
+
+- name: Install carla 
+  become: yes
+  community.general.pacman:
+    name:
+      - carla
+    state: present
+
+- name: Install audio plugins
+  become: yes
+  community.general.pacman:
+    name:
+      - ladspa-plugins
+      - 
+      - zam-plugins-vst
+      - zam-plugins-vst3
+      - zam-plugins-lv2
+      - yoshimi
+      - hexter
+      - zynaddsubfx
+      - surge-xt
+      - opl-synth 
+      - opnplug-vst
+      - ob-xd
+      - lsp-plugins-vst
+      - helm-synth-vst
+      - dragonfly-reverb-vst
+      - dragonfly-reverb-vst3
+      - amsynth
+      - adlplug-vst
+      - dexed-vst
+      - dexed-vst3
+      - dpf-plugins-vst
+      - dpf-plugins-vst3
+    state: present
+
+- name: Install audio plugins from AUR
+  kewlfft.aur.aur:
+    use: paru
+    name:
+      - tal-plugins
+    state: present
