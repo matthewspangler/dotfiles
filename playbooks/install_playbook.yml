@@ -39,7 +39,13 @@
 
   - name: Show list of files to be checked for GNU Stow conflicts
     debug:
-      var: "{{ conflict_files.results | map(attribute='stdout_lines') | list | flatten }}"
+      msg: "{{ item }}" 
+    with_items: "{{ conflict_files.results | map(attribute='stdout_lines') | list | flatten }}"
+
+  # If we don't unstow first, the delete operation erases all our dotfile sources!
+  - name: Unstow all packages deleting conflict files.
+    shell: stow -D -d {{ dotfile_packages }} -t ~/ {{ item }}
+    with_items: "{{ dotfile_folders.files | map(attribute='path') | list | map('basename') }}"
 
   - name: Delete conflicting files
     shell: rm -rf ~/{{ item }}
