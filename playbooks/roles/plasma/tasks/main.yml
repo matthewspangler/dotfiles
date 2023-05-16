@@ -25,7 +25,7 @@
 
 - name: Delete conflicting files
   shell: rm -rf ~/{{ item }}
-  with_items: "{{ conflict_files.stdout_lines }}"
+  with_items: "{{ conflict_files.results | map(attribute='stdout_lines') | list }}"
 
 - name: Symlink rofi dotfiles
   shell: stow --no-folding -d ~/dotfiles/home -t ~/ {{ item }}
