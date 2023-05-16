@@ -48,7 +48,7 @@
   when: paru_exists.stat.exists == false
 
 - name: Install paru
-  become: yes
+  become: no
   kewlfft.aur.aur:
     name: paru
     use: makepkg
