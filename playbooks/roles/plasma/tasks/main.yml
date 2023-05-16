@@ -12,7 +12,7 @@
 # https://unix.stackexchange.com/questions/705401/delete-all-target-links-and-files-before-running-gnu-stow
 # https://unix.stackexchange.com/questions/680413/opposite-of-adopt-option-for-gnu-stow
 - name: Get list of dotfiles to check for GNU Stow conflicts, so we can delete any unwanted files in the home directory before symlinking, make sure to remove ~/dotfiles/home/ from the path
-  shell: find ~/dotfiles/home/{{ item }} \( -type f -o -type l \) | sed 's/.\/home\/{{ item }}\///g'
+  shell: find ./home/{{ item }} \( -type f -o -type l \) | sed 's/.\/home\/{{ item }}\///g'
   register: conflict_files
   with_items:
     - plasma
