@@ -32,13 +32,20 @@
       - rustup
     state: present
 
+- name: Check if paru exists
+  stat:
+    path: /usr/bin/paru
+  register: paru_exists
+
 - name: Install stable version of rust
   become: no
   command: rustup install stable
+  when: paru_exists.stat.exists == false
 
 - name: Set default version of cargo to stable
   become: no
   command: rustup default stable
+  when: paru_exists.stat.exists == false
 
 - name: Clone paru from AUR using git
   become: yes
@@ -46,6 +53,7 @@
     repo: https://aur.archlinux.org/paru.git
     dest: /tmp/paru
     update: no
+  when: paru_exists.stat.exists == false
 
 - name: Chown paru folder to local user
   become: yes
@@ -54,12 +62,14 @@
     owner: "{{ localuser }}"
     group: "{{ localuser }}"
     recurse: yes
+  when: paru_exists.stat.exists == false
 
 - name: Install paru with makepkg
   become: no
   command: makepkg -si
   args:
     chdir: /tmp/paru
+  when: paru_exists.stat.exists == false
 
 - name: Remove paru from AUR build files
   become: yes
@@ -67,6 +77,7 @@
     path: /tmp/paru
     state: absent
     recursive: yes
+  when: paru_exists.stat.exists == false
 
 - name: Install pacdef from AUR using paru
   kewlfft.aur.aur:
