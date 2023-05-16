@@ -6,29 +6,6 @@
     user: "{{ localuser }}"
   tasks:
 
-  - name: Include tasks from from core/tasks/main.yml
-    include_tasks: "{{ playbook_dir }}/core/tasks/main.yml"
-
-  - name: Find all role folders
-    find:
-      paths: "{{ playbook_dir }}/roles"
-      file_type: directory
-      recurse: no
-    register: role_folders
-
-  - name: Role folders list debug message
-    debug:
-      msg: "{{ item | basename }}"
-    with_items: "{{ role_folders.files | map(attribute='path') | list }}"
-
-  # Include roles based on the folders found above
-  - include_role:
-      name: "{{ item | basename }}"
-      tasks_from: "main.yml"
-      apply:
-        tags: "{{ item | basename }}"
-    with_items: "{{ role_folders.files | map(attribute='path') | list }}"
-
   - name: Find all dotfiles subfolders
     find:
       paths: "{{ playbook_dir }}/home"
@@ -69,3 +46,26 @@
   - name: Symlink bash dotfiles
     shell: stow -d ~/dotfiles/home -t ~/ {{ item }}
     with_items: "{{ dotfile_folders.files | map(attribute='path') | list | map('basename') }}"
+
+  - name: Include tasks from from core/tasks/main.yml
+    include_tasks: "{{ playbook_dir }}/core/tasks/main.yml"
+
+  - name: Find all role folders
+    find:
+      paths: "{{ playbook_dir }}/roles"
+      file_type: directory
+      recurse: no
+    register: role_folders
+
+  - name: Role folders list debug message
+    debug:
+      msg: "{{ item | basename }}"
+    with_items: "{{ role_folders.files | map(attribute='path') | list }}"
+
+  # Include roles based on the folders found above
+  - include_role:
+      name: "{{ item | basename }}"
+      tasks_from: "main.yml"
+      apply:
+        tags: "{{ item | basename }}"
+    with_items: "{{ role_folders.files | map(attribute='path') | list }}"
