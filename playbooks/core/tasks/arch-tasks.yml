@@ -9,7 +9,7 @@
     name: stow
     state: present
 
-- command: "awk '{print $1}' '{{role_path}}/pkglist.txt'"
+- command: "awk '{print $1}' '{{playbook_dir}}/core/pkglist.txt'"
   register: _pkgs
   delegate_to: localhost
   run_once: true
