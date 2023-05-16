@@ -39,7 +39,7 @@
     update: no
 
 - name: Install paru from AUR using makepkg
-  become: yes
+  become: no
   command: makepkg -si
   args:
     chdir: /tmp/paru
