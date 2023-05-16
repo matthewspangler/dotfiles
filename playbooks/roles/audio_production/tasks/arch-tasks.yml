@@ -61,10 +61,3 @@
       - dpf-plugins-vst
       - dpf-plugins-vst3
     state: present
-
-- name: Install audio plugins from AUR
-  kewlfft.aur.aur:
-    use: paru
-    name:
-      - tal-plugins
-    state: present
