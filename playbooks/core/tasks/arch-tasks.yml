@@ -32,8 +32,12 @@
       - rustup
     state: present
 
+- name: Install stable version of rust
+  become: no
+  command: rustup install stable
+
 - name: Set default version of cargo to stable
-  become: yes
+  become: no
   command: rustup default stable
 
 - name: Clone paru from AUR using git
