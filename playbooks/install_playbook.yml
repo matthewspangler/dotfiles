@@ -42,10 +42,12 @@
       msg: "{{ item }}" 
     with_items: "{{ conflict_files.results | map(attribute='stdout_lines') | list | flatten }}"
 
-  # If we don't unstow first, the delete operation erases any previously stowed dotfile sources:
+  # If we don't unstow first, the delete operation erases any previously stowed dotfile sources.
+  # Ignoring errors because sometimes unstow will fail to finish because OS added some untracked files.
   - name: Unstow all packages deleting conflict files.
     shell: stow -D -d {{ dotfile_packages }} -t ~/ {{ item }}
     with_items: "{{ dotfile_folders.files | map(attribute='path') | list | map('basename') }}"
+    ignore_errors: yes
 
   - name: Delete conflicting files
     shell: rm -rf ~/{{ item }}
