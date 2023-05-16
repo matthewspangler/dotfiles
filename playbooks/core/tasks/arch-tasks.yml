@@ -29,7 +29,12 @@
     name:
       - git
       - base-devel
+      - rustup
     state: present
+
+- name: Set default version of cargo to nightly
+  become: yes
+  command: rustup default stable
 
 - name: Clone paru from AUR using git
   become: yes
