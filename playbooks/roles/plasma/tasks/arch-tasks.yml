@@ -58,7 +58,7 @@
     state: present
 
 - name: Install bismuth tiling window manager script for KDE Plasma
-  become: yes
+  become: no
   kewlfft.aur.aur:
     use: paru
     name:
