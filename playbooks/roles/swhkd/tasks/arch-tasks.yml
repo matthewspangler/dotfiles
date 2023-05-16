@@ -5,11 +5,6 @@
     name:
       - swhkd-bin
 
-- name: Symlink swhkd dotfiles
-  shell: stow --no-folding -d ~/dotfiles/home -t ~/ {{ item }}
-  with_items:
-    - swhkd
-
 - name: Create swhkd config directory in etc, make sure we are privileged
   become: yes
   file:

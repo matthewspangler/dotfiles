@@ -6,8 +6,3 @@
 
 - include_tasks: macos-tasks.yml
   when: ansible_os_family == "Darwin"
-
-- name: Symlink rofi dotfiles
-  shell: stow --no-folding -d ~/dotfiles/home -t ~/ {{ item }}
-  with_items:
-    - rofi

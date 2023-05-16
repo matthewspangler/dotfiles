@@ -7,12 +7,6 @@
 - include_tasks: macos-tasks.yml
   when: ansible_os_family == "Darwin"
 
-- name: Symlink espanso dotfiles (Linux only)
-  shell: stow --no-folding -d ~/dotfiles/home -t ~/ {{ item }}
-  with_items:
-    - espanso
-  when: ansible_os_family == "Archlinux" or ansible_os_family == "Debian"
-
 - name: Unstow espanso dotfiles (Mac OS only)
   shell: stow --no-folding -d ~/dotfiles/home/espanso/.config/ -t ~/Library/Application\ Support/espanso {{ item }}
   with_items:
