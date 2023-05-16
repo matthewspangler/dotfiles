@@ -8,7 +8,7 @@
 
   - name: Find all dotfiles subfolders
     find:
-      paths: "{{ playbook_dir }}/home"
+      paths: "~/dotfiles/home"
       file_type: directory
       recurse: no
     register: dotfile_folders
@@ -43,12 +43,9 @@
     shell: rm -rf ~/{{ item }}
     with_items: "{{ conflict_files.results | map(attribute='stdout_lines') | list | flatten }}"
 
-  - name: Symlink bash dotfiles
+  - name: Symlink dotfiles
     shell: stow -d ~/dotfiles/home -t ~/ {{ item }}
     with_items: "{{ dotfile_folders.files | map(attribute='path') | list | map('basename') }}"
-
-  - name: Include tasks from from core/tasks/main.yml
-    include_tasks: "{{ playbook_dir }}/core/tasks/main.yml"
 
   - name: Find all role folders
     find:
@@ -61,6 +58,9 @@
     debug:
       msg: "{{ item | basename }}"
     with_items: "{{ role_folders.files | map(attribute='path') | list }}"
+
+  - name: Include tasks from from core/tasks/main.yml
+    include_tasks: "{{ playbook_dir }}/core/tasks/main.yml"
 
   # Include roles based on the folders found above
   - include_role:
