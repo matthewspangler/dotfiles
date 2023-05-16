@@ -27,6 +27,6 @@
   with_items: "{{ conflict_files.stdout_lines }}"
 
 - name: Symlink rofi dotfiles
-  shell: stow --no-folding --adopt -d ~/dotfiles/home -t ~/ {{ item }}
+  shell: stow --no-folding -d ~/dotfiles/home -t ~/ {{ item }}
   with_items:
     - plasma
