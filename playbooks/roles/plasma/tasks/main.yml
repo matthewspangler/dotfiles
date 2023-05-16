@@ -11,17 +11,18 @@
 # Pulled from these stackoverflow conversations:
 # https://unix.stackexchange.com/questions/705401/delete-all-target-links-and-files-before-running-gnu-stow
 # https://unix.stackexchange.com/questions/680413/opposite-of-adopt-option-for-gnu-stow
-- name: Get list of files to check for GNU Stow conflicts
-  shell: find . -maxdepth 1 \( -type f -o -type l \) -print0 | sed -z "s|^.|$HOME|" | xargs -0 -I{} echo {}
+- name: Get list of dotfiles to check for GNU Stow conflicts, so we can delete any unwanted files in the home directory before symlinking
+  shell: find . -maxdepth 1 \( -type f -o -type l \) -exec basename {} \;
+  register: conflict_files
 
 - name: Show list of files to be checked for GNU Stow conflicts
   debug:
     msg: "{{ item }}"
-  with_items: "{{ (shell.stdout | from_json) | map('basename') | list }}"
+  with_items: "{{ conflict_files.stdout_lines }}"
 
 - name: Delete conflicting files
   shell: rm -rf {{ item }}
-  with_items: "{{ (shell.stdout | from_json) | map('basename') | list }}"
+  with_items: "{{ conflict_files.stdout_lines }}"
 
 - name: Symlink rofi dotfiles
   shell: stow --no-folding --adopt -d ~/dotfiles/home -t ~/ {{ item }}
