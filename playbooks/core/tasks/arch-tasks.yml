@@ -24,11 +24,32 @@
   debug:
     msg: "{{ _pkgs.stdout_lines }}"
 
-- name: Setup AUR helper
-  become: yes
+- name: Install paru dependencies
   community.general.pacman:
-    name: paru
+    name:
+      - git
+      - base-devel
     state: present
+
+- name: Clone paru from AUR using git
+  become: yes
+  git:
+    repo: https://aur.archlinux.org/paru.git
+    dest: /tmp/paru
+    update: no
+
+- name: Install paru from AUR using makepkg
+  become: yes
+  command: makepkg -si
+  args:
+    chdir: /tmp/paru
+
+- name: Remove paru from AUR build files
+  become: yes
+  file:
+    path: /tmp/paru
+    state: absent
+    recursive: yes
 
 - name: Install pacdef from AUR using paru
   kewlfft.aur.aur:
