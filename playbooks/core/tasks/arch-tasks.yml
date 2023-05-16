@@ -55,7 +55,7 @@
     group: "{{ localuser }}"
     recurse: yes
 
-- name: Install paru from AUR using makepkg
+- name: Install paru with makepkg
   become: no
   command: makepkg -si
   args:
