@@ -5,6 +5,13 @@
     name:
       - swhkd-bin
 
+- name: Make run_swhkd.sh executable
+  become: no
+  file:
+    path: ~/Scripts/run_swhkd.sh
+    state: file
+    mode: 0755
+
 - name: Create swhkd config directory in etc, make sure we are privileged
   become: yes
   file:

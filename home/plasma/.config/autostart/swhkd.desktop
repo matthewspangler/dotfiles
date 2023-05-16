@@ -1,5 +1,5 @@
 [Desktop Entry]
-Exec=swhkd
+Exec=~/Scripts/run_swhkd.sh
 Icon=
 Name=swhkd
 Path=
