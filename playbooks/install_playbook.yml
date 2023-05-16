@@ -49,22 +49,17 @@
     args:
       chdir: ~/dotfiles
     register: conflict_files
-    with_items: "{{ role_folders.files | map(attribute='path') | list | basename }}"
+    with_items: "{{ role_folders.files | map(attribute='path') | list | map('basename') }}"
 
   - name: Show list of files to be checked for GNU Stow conflicts
     debug:
-      var: conflict_files
+      var: "{{ conflict_files.results | map(attribute='stdout_lines') | list | flatten }}"
 
-#  - name: Delete conflicting files
-#    shell: rm -rf ~/{{ item }}
-#    with_items: "{{ conflict_files.results | map(attribute='stdout_lines') | list }}"
+  - name: Delete conflicting files
+    shell: rm -rf ~/{{ item }}
+    with_items: "{{ conflict_files.results | map(attribute='stdout_lines') | list | flatten }}"
 
-#  - name: Symlink bash dotfiles
-#    shell: stow -d ~/dotfiles/home -t ~/ {{ item }}
-#    with_items:
-#      - bash
-
-# End playbook
-  - name: End playbook
-    meta: end_play
+  - name: Symlink bash dotfiles
+    shell: stow -d ~/dotfiles/home -t ~/ {{ item }}
+    with_items: "{{ role_folders.files | map(attribute='path') | list | map('basename') }}"
     
