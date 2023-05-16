@@ -4,11 +4,13 @@
   remote_user: "{{ localuser }}"
   vars:
     user: "{{ localuser }}"
+    repo_dir: "~/dotfiles"
+    dotfile_packages: "{{ repo_dir }}/home"
   tasks:
 
   - name: Find all dotfiles subfolders
     find:
-      paths: "~/dotfiles/home"
+      paths: "{{ dotfile_packages }}"
       file_type: directory
       recurse: no
     register: dotfile_folders
@@ -31,7 +33,7 @@
   - name: Get list of dotfiles to check for GNU Stow conflicts
     shell: find ./home/{{ item }} \( -type f -o -type l \) | sed 's/.\/home\/{{ item }}\///g'
     args:
-      chdir: ~/dotfiles
+      chdir: "{{ repo_dir }}"
     register: conflict_files
     with_items: "{{ dotfile_folders.files | map(attribute='path') | list | map('basename') }}"
 
