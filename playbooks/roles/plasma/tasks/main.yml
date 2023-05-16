@@ -8,6 +8,21 @@
 #- include_tasks: macos-tasks.yml
 #  when: ansible_os_family == "Darwin"
 
+# Pulled from these stackoverflow conversations:
+# https://unix.stackexchange.com/questions/705401/delete-all-target-links-and-files-before-running-gnu-stow
+# https://unix.stackexchange.com/questions/680413/opposite-of-adopt-option-for-gnu-stow
+- name: Get list of files to check for GNU Stow conflicts
+  shell: find . -maxdepth 1 \( -type f -o -type l \) -print0 | sed -z "s|^.|$HOME|" | xargs -0 -I{} echo {}
+
+- name: Show list of files to be checked for GNU Stow conflicts
+  debug:
+    msg: "{{ item }}"
+  with_items: "{{ (shell.stdout | from_json) | map('basename') | list }}"
+
+- name: Delete conflicting files
+  shell: rm -rf {{ item }}
+  with_items: "{{ (shell.stdout | from_json) | map('basename') | list }}"
+
 - name: Symlink rofi dotfiles
   shell: stow --no-folding --adopt -d ~/dotfiles/home -t ~/ {{ item }}
   with_items:
