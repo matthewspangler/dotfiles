@@ -29,6 +29,13 @@
         tags: "{{ item | basename }}"
     with_items: "{{ role_folders.files | map(attribute='path') | list }}"
 
+  - name: Find all dotfiles subfolders
+    find:
+      paths: "{{ playbook_dir }}/home"
+      file_type: directory
+      recurse: no
+    register: dotfile_folders
+
   # GNU Stow does not overwrite existing files that it does not own, this is intended behavior.
   #   This doesn't meet my needs, which is to automate my dotfile deployment after 
   #   my desktop environment is already installed. GNU stow has the '--adopt' option, but this clutters
@@ -49,7 +56,7 @@
     args:
       chdir: ~/dotfiles
     register: conflict_files
-    with_items: "{{ role_folders.files | map(attribute='path') | list | map('basename') }}"
+    with_items: "{{ dotfile_folders.files | map(attribute='path') | list | map('basename') }}"
 
   - name: Show list of files to be checked for GNU Stow conflicts
     debug:
@@ -61,5 +68,4 @@
 
   - name: Symlink bash dotfiles
     shell: stow -d ~/dotfiles/home -t ~/ {{ item }}
-    with_items: "{{ role_folders.files | map(attribute='path') | list | map('basename') }}"
-    
+    with_items: "{{ dotfile_folders.files | map(attribute='path') | list | map('basename') }}"
