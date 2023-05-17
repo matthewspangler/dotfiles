@@ -21,9 +21,6 @@ Right click window top boarder --> More Actions --> Special Application Settings
 ### install.py
 This installs git and ansible, clones the repo into '~/dotfiles', and then starts the ansible playbooks. It works on multiple Linux distros and Mac OS.
 
-### install_roles.yml
-Uncomment roles in this file install them.
-
 ### GNU Stow
 GNU Stow is a handy tool that symlinks dotfiles to wherever they belong in your home folder.
 
