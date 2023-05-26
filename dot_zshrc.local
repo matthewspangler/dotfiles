@@ -1,0 +1,31 @@
+# Lines configured by zsh-newuser-install
+HISTFILE=~/.histfile
+HISTSIZE=5000
+SAVEHIST=5000
+# End of lines configured by zsh-newuser-install
+# The following lines were added by compinstall
+zstyle :compinstall filename '/home/nebulasurfer/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+
+GUIX_PROFILE="$HOME/.guix-profile" ; \
+source "$GUIX_PROFILE/etc/profile"
+
+export PATH="${PATH}:/usr/lib/python3.10/site-packages"
+
+# Pywal setup
+
+# Import colorscheme from 'wal' asynchronously
+# &   # Run the process in the background.
+# ( ) # Hide shell job control messages.
+# Not supported in the "fish" shell.
+(cat ~/.cache/wal/sequences &)
+
+# Alternative (blocks terminal for 0-3ms)
+cat ~/.cache/wal/sequences
+
+# To add support for TTYs this line can be optionally added.
+source ~/.cache/wal/colors-tty.sh
+taut
